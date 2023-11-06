@@ -420,6 +420,35 @@ cblas_iamax(
     return cblas_izamax( n, x, incx );
 }
 
+// -----------------------------------------------------------------------------
+inline int
+cblas_iamin(
+    int n, float const *x, int incx )
+{
+    return cblas_isamin( n, x, incx );
+}
+
+inline int
+cblas_iamin(
+    int n, double const *x, int incx )
+{
+    return cblas_idamin( n, x, incx );
+}
+
+inline int
+cblas_iamin(
+    int n, std::complex<float> const *x, int incx )
+{
+    return cblas_icamin( n, x, incx );
+}
+
+inline int
+cblas_iamin(
+    int n, std::complex<double> const *x, int incx )
+{
+    return cblas_izamin( n, x, incx );
+}
+
 
 // -----------------------------------------------------------------------------
 inline float

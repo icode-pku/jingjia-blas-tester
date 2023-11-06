@@ -23,7 +23,7 @@ void amin(
     //check param
     device_blas_int n_ = to_device_blas_int(n);
     device_blas_int incx_ = to_device_blas_int(incx);
-    device_blas_int *result_ = to_device_blas_intp(result)
+    device_blas_int *result_ = to_device_blas_intp(result);
 
     blas::internal_set_device( queue.device() );
     #if defined( BLAS_HAVE_SYCL )

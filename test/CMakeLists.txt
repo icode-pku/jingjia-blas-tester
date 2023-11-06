@@ -107,6 +107,8 @@ add_executable(
     test_batch_syrk_device.cc
     test_batch_trmm_device.cc
     test_batch_trsm_device.cc
+    test_amax_device.cc
+    test_amin_device.cc
     test_asum_device.cc
     test_axpy_device.cc
     test_dot_device.cc
