@@ -133,7 +133,7 @@ void test_swap_device_work( Params& params, bool run )
         // swap must be exact!
         params.okay() = (error == 0);
     }
-
+    //test time
     int runs = params.runs();
     double stime;
     double all_time=0.0f;
