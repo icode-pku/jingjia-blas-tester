@@ -37,6 +37,7 @@ void test_dot_device_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.ref_gbytes();
+    params.runs();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -106,10 +107,8 @@ void test_dot_device_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::dot( n, dx, incx, dy, incy, result, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     if (mode == 'd') {
         device_memcpy( &result_host, result, 1, queue );
@@ -117,14 +116,11 @@ void test_dot_device_work( Params& params, bool run )
 
     double gflop = blas::Gflop<scalar_t>::dot( n );
     double gbyte = blas::Gbyte<scalar_t>::dot( n );
-    params.time()   = time * 1000;  // msec
-    params.gflops() = gflop / time;
-    params.gbytes() = gbyte / time;
 
     if (verbose >= 1) {
         printf( "dot = %.4e + %.4ei\n", real(result_host), imag(result_host) );
     }
-
+    double time;
     if (params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -150,6 +146,21 @@ void test_dot_device_work( Params& params, bool run )
         params.error() = error;
         params.okay() = okay;
     }
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::dot( n, dx, incx, dy, incy, result, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time * 1000;  // msec
+    params.gflops() = gflop / all_time;
+    params.gbytes() = gbyte / all_time;
+
 
     delete[] x;
     delete[] y;

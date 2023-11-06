@@ -30,7 +30,7 @@ void test_copy_device_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.ref_gbytes();
-
+    params.runs(); 
     // adjust header to msec
     params.time.name( "time (ms)" );
     params.ref_time.name( "ref time (ms)" );
@@ -92,16 +92,11 @@ void test_copy_device_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::copy( n, dx, incx, dy, incy, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     double gflop = blas::Gflop< scalar_t >::copy( n );
     double gbyte = blas::Gbyte< scalar_t >::copy( n );
-    params.time()   = time * 1000;  // msec
-    params.gflops() = gflop / time;
-    params.gbytes() = gbyte / time;
 
     // todo: should we have different incdx and incdy
     blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
@@ -112,7 +107,7 @@ void test_copy_device_work( Params& params, bool run )
         printf( "x2   = " ); print_vector( n, x, incx );
         printf( "y2   = " ); print_vector( n, y, incy );
     }
-
+    double time;
     if (params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -138,6 +133,20 @@ void test_copy_device_work( Params& params, bool run )
         // copy must be exact!
         params.okay() = (error == 0);
     }
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::copy( n, dx, incx, dy, incy, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time * 1000;  // msec
+    params.gflops() = gflop / all_time;
+    params.gbytes() = gbyte / all_time;
 
     delete[] x;
     delete[] y;

@@ -34,6 +34,7 @@ void test_nrm2_device_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.ref_gbytes();
+    params.runs();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -90,10 +91,8 @@ void test_nrm2_device_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::nrm2( n, dx, incx, result, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     if (mode == 'd') {
         device_memcpy( &result_host, result, 1, queue );
@@ -101,9 +100,6 @@ void test_nrm2_device_work( Params& params, bool run )
 
     double gflop = blas::Gflop< Tx >::nrm2( n );
     double gbyte = blas::Gbyte< Tx >::nrm2( n );
-    params.time()   = time * 1000;  // msec
-    params.gflops() = gflop / time;
-    params.gbytes() = gbyte / time;
 
     blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
     queue.sync();
@@ -111,7 +107,7 @@ void test_nrm2_device_work( Params& params, bool run )
     if (verbose >= 2) {
         printf( "x2   = " ); print_vector( n, x, incx );
     }
-
+    double time;
     if (params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -146,6 +142,21 @@ void test_nrm2_device_work( Params& params, bool run )
         params.error() = error;
         params.okay() = (error < u);
     }
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::nrm2( n, dx, incx, result, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time * 1000;  // msec
+    params.gflops() = gflop / all_time;
+    params.gbytes() = gbyte / all_time;
+
 
     delete[] x;
     delete[] xref;
