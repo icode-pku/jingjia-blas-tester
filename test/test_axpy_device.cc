@@ -33,6 +33,7 @@ void test_axpy_device_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.ref_gbytes();
+    params.runs();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -91,16 +92,11 @@ void test_axpy_device_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::axpy( n, alpha, dx, incx, dy, incy, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     double gflop = blas::Gflop< Ty >::axpy( n );
     double gbyte = blas::Gbyte< Ty >::axpy( n );
-    params.time()   = time * 1000;  // msec
-    params.gflops() = gflop / time;
-    params.gbytes() = gbyte / time;
 
     blas::device_copy_vector(n, dy, std::abs(incy), y, std::abs(incy), queue);
     queue.sync();
@@ -108,7 +104,7 @@ void test_axpy_device_work( Params& params, bool run )
     if (verbose >= 2) {
         printf( "y2   = " ); print_vector( n, y, incy );
     }
-
+    double time;
     if (params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -152,6 +148,21 @@ void test_axpy_device_work( Params& params, bool run )
         params.okay() = (error < u);
 
     }
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::axpy( n, alpha, dx, incx, dy, incy, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time * 1000;  // msec
+    params.gflops() = gflop / all_time;
+    params.gbytes() = gbyte / all_time;
+
 
     delete[] x;
     delete[] y;

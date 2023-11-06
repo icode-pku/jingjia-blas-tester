@@ -30,6 +30,7 @@ void test_swap_device_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.ref_gbytes();
+    params.runs();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -91,16 +92,11 @@ void test_swap_device_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::swap( n, dx, incx, dy, incy, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     double gflop = blas::Gflop< scalar_t >::swap( n );
     double gbyte = blas::Gbyte< scalar_t >::swap( n );
-    params.time()   = time * 1000;  // msec
-    params.gflops() = gflop / time;
-    params.gbytes() = gbyte / time;
 
     // todo: should we have different incdx and incdy
     blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
@@ -111,7 +107,7 @@ void test_swap_device_work( Params& params, bool run )
         printf( "x2   = " ); print_vector( n, x, incx );
         printf( "y2   = " ); print_vector( n, y, incy );
     }
-
+    double time;
     if (params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -137,6 +133,21 @@ void test_swap_device_work( Params& params, bool run )
         // swap must be exact!
         params.okay() = (error == 0);
     }
+    //test time
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::swap( n, dx, incx, dy, incy, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time * 1000;  // msec
+    params.gflops() = gflop / all_time;
+    params.gbytes() = gbyte / all_time;
 
     delete[] x;
     delete[] y;

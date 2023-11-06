@@ -570,6 +570,49 @@ void copy(
 // Level 2 BLAS - Device Interfaces
 
 //------------------------------------------------------------------------------
+void gbmv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    device_blas_int kl, device_blas_int ku,
+    float alpha, 
+    float const *dA, device_blas_int lda,
+    float const *dx, device_blas_int incx,
+    float beta,
+    float *y, device_blas_int incy,
+    blas::Queue& queue);
+
+void gbmv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    device_blas_int kl, device_blas_int ku,
+    double alpha, 
+    double const *dA, device_blas_int lda,
+    double const *dx, device_blas_int incx,
+    double beta,
+    double *y, device_blas_int incy,
+    blas::Queue& queue);
+
+
+void gbmv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    device_blas_int kl, device_blas_int ku,
+    std::complex<float> alpha, 
+    std::complex<float> const *dA, device_blas_int lda,
+    std::complex<float> const *dx, device_blas_int incx,
+    std::complex<float> beta,
+    std::complex<float> *y, device_blas_int incy,
+    blas::Queue& queue);
+
+
+void gbmv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    device_blas_int kl, device_blas_int ku,
+    std::complex<double> alpha, 
+    std::complex<double> const *dA, device_blas_int lda,
+    std::complex<double> const *dx, device_blas_int incx,
+    std::complex<double> beta,
+    std::complex<double> *y, device_blas_int incy,
+    blas::Queue& queue);
+
+
 
 //==============================================================================
 // Level 3 BLAS - Device Interfaces
