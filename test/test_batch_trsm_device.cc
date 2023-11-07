@@ -42,6 +42,7 @@ void test_device_batch_trsm_work( Params& params, bool run )
     params.gflops();
     params.ref_time();
     params.ref_gflops();
+    params.runs();
 
     if (! run)
         return;
@@ -163,19 +164,15 @@ void test_device_batch_trsm_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::batch::trsm( layout, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb,
                        batch, info, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     double gflop = batch * blas::Gflop< scalar_t >::trsm( side_, m_, n_ );
-    params.time()   = time;
-    params.gflops() = gflop / time;
 
     blas::device_copy_matrix(Bm, batch * Bn, dB, ldb_, B, ldb_, queue);
     queue.sync();
-
+    double time;
     if (params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -207,6 +204,21 @@ void test_device_batch_trsm_work( Params& params, bool run )
         params.error() = error;
         params.okay() = okay;
     }
+
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::batch::trsm( layout, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb,
+                       batch, info, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time;  // s
+    params.gflops() = gflop / all_time;
 
     delete[] A;
     delete[] B;

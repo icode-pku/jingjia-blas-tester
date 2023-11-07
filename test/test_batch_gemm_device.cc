@@ -39,6 +39,7 @@ void test_device_batch_gemm_work( Params& params, bool run )
     params.gflops();
     params.ref_time();
     params.ref_gflops();
+    params.runs();
 
     if (! run)
         return;
@@ -141,19 +142,15 @@ void test_device_batch_gemm_work( Params& params, bool run )
     info.resize( 0 );
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::batch::gemm( layout, transA, transB, m, n, k,
                        alpha, dAarray, ldda, dBarray, lddb, beta, dCarray, lddc,
                        batch, info, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     double gflop = batch * blas::Gflop< scalar_t >::gemm( m_, n_, k_ );
-    params.time()   = time;
-    params.gflops() = gflop / time;
     blas::device_copy_matrix(Cm, batch * Cn, dC, ldc_, C, ldc_, queue);
     queue.sync();
-
+    double time;
     if (params.ref() == 'y' || params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -181,6 +178,26 @@ void test_device_batch_gemm_work( Params& params, bool run )
         params.error() = error;
         params.okay() = okay;
     }
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    scalar_t alpha_r = 0.01 * params.alpha();
+    scalar_t beta_r = 0.01 * params.beta();
+    std::vector<scalar_t> alpha2(1, alpha_r);
+    std::vector<scalar_t> beta2(1, beta_r);
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::batch::gemm( layout, transA, transB, m, n, k,
+                       alpha2, dAarray, ldda, dBarray, lddb, beta2, dCarray, lddc,
+                       batch, info, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time;  // s
+    params.gflops() = gflop / all_time;
+
 
     delete[] A;
     delete[] B;
