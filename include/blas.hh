@@ -10,7 +10,7 @@
 
 // Version is updated by make_release.py; DO NOT EDIT.
 // Version 2023.08.25
-#define BLASPP_VERSION 20230825
+#define BLASPP_VERSION 20231107
 
 namespace blas {
 

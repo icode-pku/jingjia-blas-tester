@@ -39,6 +39,7 @@ void test_gemm_device_work( Params& params, bool run )
     params.gflops();
     params.ref_time();
     params.ref_gflops();
+    params.runs();
 
     if (! run)
         return;
@@ -146,22 +147,18 @@ void test_gemm_device_work( Params& params, bool run )
 
     // run test
     testsweeper::flush_cache( params.cache() );
-    double time = get_wtime();
     blas::gemm( layout, transA, transB, m, n, k,
                 alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
     queue.sync();
-    time = get_wtime() - time;
 
     double gflop = blas::Gflop< scalar_t >::gemm( m, n, k );
-    params.time()   = time;
-    params.gflops() = gflop / time;
     blas::device_copy_matrix(Cm, Cn, dC, ldc, C, ldc, queue);
     queue.sync();
 
     if (verbose >= 2) {
         printf( "C2 = " ); print_matrix( Cm, Cn, C, ldc );
     }
-
+    double time;
     if (params.ref() == 'y' || params.check() == 'y') {
         // run reference
         testsweeper::flush_cache( params.cache() );
@@ -187,6 +184,23 @@ void test_gemm_device_work( Params& params, bool run )
         params.error() = error;
         params.okay() = okay;
     }
+
+    int runs = params.runs();
+    double stime;
+    double all_time=0.0f;
+    alpha = 0.01 * params.alpha();
+    beta = 0.01 * params.beta();
+    for(int i = 0; i < runs; i++){
+        testsweeper::flush_cache( params.cache() );
+        stime = get_wtime();
+        blas::gemm( layout, transA, transB, m, n, k,
+            alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
+        queue.sync();
+        all_time += (get_wtime() - stime);
+    }
+    all_time/=(double)runs;
+    params.time()   = all_time;  // s
+    params.gflops() = gflop / all_time;
 
     delete[] A;
     delete[] B;
