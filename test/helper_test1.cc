@@ -19,10 +19,14 @@ void helper_test1()
     printf("The helper API for this routine test is as follows:  \n \
             cublasCreate  cublasDestroy \n \
             cublasSetStream cublasGetStream\n \
-            cublasSetPointerMode(Device) cublasSetPointerMode(Host) \n \
+            cublasSetPointerMode(Device) \n \
+            cublasSetPointerMode(Host) \n \
             cublasGetPointerMode \n \
             cublasSetVector  cublasGetVector\n \
-            cublasSetVectorAsync cublasGetVectorAsync\n");
+            cublasSetVectorAsync cublasGetVectorAsync\n \
+            cublasLoggerConfigure \n \
+            cublasSetLoggerCallback \n \
+            cublasGetLoggerCallback\n ");
     int64_t device = 0;
     if (blas::get_device_count() == 0) {
         printf("skipping: no GPU devices or no GPU support\n");
@@ -45,8 +49,10 @@ void helper_test1()
     HelperSafeCall(cublasGetPointerMode(handle, &mode));
 
     //set log
-    HelperSafeCall(cublasLoggerConfigure(1, 1, 1, "helper.log"));
-    HelperSafeCall(cublasSetLoggerCallback(print));
+    cublasLogCallback calfunc;
+    HelperSafeCall(cublasLoggerConfigure(1, 0, 0, "helper.log"));
+    HelperSafeCall(cublasSetLoggerCallback(NULL));
+    HelperSafeCall(cublasGetLoggerCallback(&calfunc));
 
 
     //test cublasGetStream()
