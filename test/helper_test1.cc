@@ -5,13 +5,13 @@
 #include "print_matrix.hh"
 #include  "../src/device_internal.hh"
 
-typedef void (*test_log_func_ptr)(void* userData, cublasStatus_t status, const char* msg);
+// typedef void (*test_log_func_ptr)(void* userData, cublasStatus_t status, const char* msg);
 
 
-void print(void* userData, cublasStatus_t status, const char* msg) {
-    // 在这里处理日志信息
-    printf("logging: %s\n", msg);
-}
+// void print(void* userData, cublasStatus_t status, const char* msg) {
+//     // 在这里处理日志信息
+//     printf("logging: %s\n", msg);
+// }
 
 
 void helper_test1()
