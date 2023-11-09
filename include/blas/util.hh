@@ -500,6 +500,16 @@ inline void throw_if( bool cond, const char* condstr, const char* func )
     }
 }
 
+inline void helper_safe_call( bool cond, const char* condstr, const char *filename, const int fileline,  const char *func)
+{
+    if(cond){
+        throw Error((std::string(condstr) + std::string("   filename is:  ") 
+        + std::string(filename) 
+        + std::string("  Error line is: ")
+        + std::to_string(fileline)).c_str(), func);
+    }
+}
+
 #if defined(_MSC_VER)
     #define BLASPP_ATTR_FORMAT(I, F)
 #else
