@@ -56,7 +56,7 @@ int main( int argc, char** argv )
         || strcmp( argv[argc-1], "-h" ) == 0
         || strcmp( argv[argc-1], "--help" ) == 0)
     {
-        printf(" please test1 or testxxx\n");
+        printf(" please test1 or test2\n");
         return 0;
     }
     const char* routine = argv[ argc-1 ];
