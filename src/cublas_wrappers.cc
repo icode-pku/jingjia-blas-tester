@@ -696,6 +696,80 @@ void gbmv(
         (cuDoubleComplex*) y, incy) );
 }
 
+void gemv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    float alpha, 
+    float const *dA, device_blas_int lda,
+    float const *dx, device_blas_int incx,
+    float beta,
+    float *y, device_blas_int incy,
+    blas::Queue& queue)
+{
+    blas_dev_call(
+        cublasSgemv(queue.handle(), op2cublas(trans), 
+        m, n, 
+        &alpha, dA, lda,
+        dx, incx,
+        &beta, y, incy) );
+}
+
+void gemv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    double alpha, 
+    double const *dA, device_blas_int lda,
+    double const *dx, device_blas_int incx,
+    double beta,
+    double *y, device_blas_int incy,
+    blas::Queue& queue)
+{
+    blas_dev_call(
+        cublasDgemv(queue.handle(), op2cublas(trans), 
+        m, n, 
+        &alpha, dA, lda,
+        dx, incx,
+        &beta, y, incy) );
+}
+
+
+void gemv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    std::complex<float> alpha, 
+    std::complex<float> const *dA, device_blas_int lda,
+    std::complex<float> const *dx, device_blas_int incx,
+    std::complex<float> beta,
+    std::complex<float> *y, device_blas_int incy,
+    blas::Queue& queue)
+{
+    blas_dev_call(
+        cublasCgemv(queue.handle(), op2cublas(trans), 
+        m, n,
+        (cuComplex*) &alpha, 
+        (cuComplex*) dA, lda,
+        (cuComplex*) dx, incx,
+        (cuComplex*) &beta, 
+        (cuComplex*) y, incy) );
+}
+
+
+void gemv(
+    blas::Op trans, device_blas_int m, device_blas_int n,
+    std::complex<double> alpha, 
+    std::complex<double> const *dA, device_blas_int lda,
+    std::complex<double> const *dx, device_blas_int incx,
+    std::complex<double> beta,
+    std::complex<double> *y, device_blas_int incy,
+    blas::Queue& queue)
+{
+    blas_dev_call(
+        cublasZgemv(queue.handle(), op2cublas(trans), 
+        m, n,
+        (cuDoubleComplex*) &alpha, 
+        (cuDoubleComplex*) dA, lda,
+        (cuDoubleComplex*) dx, incx,
+        (cuDoubleComplex*) &beta, 
+        (cuDoubleComplex*) y, incy) );
+}
+
 
 //==============================================================================
 // Level 3 BLAS - Device Interfaces
