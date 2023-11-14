@@ -87,6 +87,7 @@ void gemv(
                 //x2 = new scalar_t[ m ];
                 scalar_t* x_host = new scalar_t[ m ];
                 blas::device_copy_vector(m, x, std::abs(incx), x_host, std::abs(incx),queue);
+                queue.sync();
                 scalar_t* x2_host = new scalar_t[ m ];
                 x2 = blas::device_malloc<scalar_t>( m, queue );
                 int64_t ix = (incx > 0 ? 0 : (-m + 1)*incx);
@@ -97,11 +98,13 @@ void gemv(
                 }
                 incx_ = 1;
                 blas::device_copy_vector(m, x2_host, std::abs(incx), x2, std::abs(incx), queue);
+                queue.sync();
                 delete[] x_host;
                 delete[] x2_host;
 
                 scalar_t* y1_host = new scalar_t[ n ];
                 blas::device_copy_vector(n, y, std::abs(incy), y1_host, std::abs(incy),queue);
+                queue.sync();
                 int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
                 for (int64_t i = 0; i < n; ++i) {
                     //y[ iy ] = conj( y[ iy ] );
@@ -109,6 +112,7 @@ void gemv(
                     iy += incy;
                 }
                 blas::device_copy_vector(n, y1_host, std::abs(incy), y, std::abs(incy),queue);
+                queue.sync();
                 delete[] y1_host;
             }
         }
@@ -127,12 +131,14 @@ void gemv(
             // y = conj( y )
             scalar_t* y2_host = new scalar_t[ n ];
             blas::device_copy_vector(n, y, std::abs(incy), y2_host, std::abs(incy),queue);
+            queue.sync();
             int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
             for (int64_t i = 0; i < n; ++i) {
                 y2_host[ iy ] = conj( y2_host[ iy ] );
                 iy += incy;
             }
             blas::device_copy_vector(n, y2_host, std::abs(incy), y, std::abs(incy),queue);
+            queue.sync();
             //delete[] x2;
             delete[] y2_host;
             blas::device_free( x2, queue );
