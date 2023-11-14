@@ -14,7 +14,10 @@ void helper_test2()
             cublasCreate  cublasDestroy \n \
             cublasSetStream cublasGetStream\n \
             cublasSetMatrix  cublasGetMatrix\n \
-            cublasSetMatrixAsync cublasGetMatrixAsync\n");
+            cublasSetMatrixAsync cublasGetMatrixAsync\n \
+            cublasGetVersion \n \
+            cublasGetProperty(MAJOR_VERSION, MINOR_VERSION, PATCH_LEVEL)\n \
+            cublasGetStatusName cublasGetStatusString\n");
     int64_t device = 0;
     if (blas::get_device_count() == 0) {
         printf("skipping: no GPU devices or no GPU support\n");
@@ -31,8 +34,7 @@ void helper_test2()
     cudaStream_t stream = blas::stream_create(device);
     cublasHandle_t handle;
     HelperSafeCall(cublasCreate( &handle ));
-    HelperSafeCall( cublasSetStream( handle, stream ) );
-
+    HelperSafeCall(cublasSetStream( handle, stream ) );
 
     // Set the pointer mode  test cublasSetPointerMode
     // HelperSafeCall(cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST) );
@@ -45,6 +47,32 @@ void helper_test2()
     cudaStream_t test_stream;
     HelperSafeCall(cublasGetStream( handle, &test_stream));
 
+    //test cublasGetVersion()
+    int version;
+    HelperSafeCall(cublasGetVersion(handle, &version));
+    printf("cublas version is: %d\n",version);
+
+    //test cublasGetProperty
+    int value;
+    HelperSafeCall(cublasGetProperty(MAJOR_VERSION, &value));
+    printf("Test cublasGetProperty MAJOR_VERSION value is: %d\n", value);
+    HelperSafeCall(cublasGetProperty(MINOR_VERSION, &value));
+    printf("Test cublasGetProperty MINOR_VERSION value is: %d\n", value);
+    HelperSafeCall(cublasGetProperty(PATCH_LEVEL, &value));
+    printf("Test cublasGetProperty PATCH_LEVEL value is: %d\n", value);
+
+    //test cublasGetStatusName
+    printf("Test cublasGetStatusName: %s\n",cublasGetStatusName(cublasGetProperty(PATCH_LEVEL, &value)));
+    //test cublasGetStatusString
+    printf("Test cublasGetStatusString: %s\n",cublasGetStatusString(cublasGetProperty(PATCH_LEVEL, &value)));
+
+    // size_t workspace_size = 128;
+    // float *workspace;
+    // HelperSafeCall(cudaMalloc((float**)&workspace, workspace_size*sizeof(float)) );
+    // cublasStatus_t err = cublasSetWorkspace(handle, (float*)workspace, workspace_size*sizeof(float));
+    // HelperSafeCall(err);
+    // printf("Test cublasSetWorkspace: %s\n",cublasGetStatusName(err));
+    
     size_t size_A = m * k;
     size_t size_B = n * k;
     size_t size_C = m * n;
@@ -125,20 +153,7 @@ void helper_test2()
     //run cblas api
     cblas_gemm(CblasColMajor, CblasNoTrans, CblasTrans, m, n, k, 
                alpha, A, lda, B, ldb, beta, Cref, ldc);
-    // printf("cblas: \n");
-    // for(int i=0; i<m; i++){
-    //     for(int j=0; j<n; j++){
-    //         printf("%.3f ",Cref[j*m+i]);
-    //     }
-    //     printf("\n");
-    // }
-    // printf("cublas: \n");
-    // for(int i=0; i<m; i++){
-    //     for(int j=0; j<n; j++){
-    //         printf("%.3f ",C[j*m+i]);
-    //     }
-    //     printf("\n");
-    // }
+
     float error=0;
     bool okay;
     check_gemm( m, n, k, alpha, beta, Anorm, Bnorm, Cnorm,
@@ -158,8 +173,6 @@ void helper_test2()
     cudaFree(dB);
     cudaFree(dC);
     cudaFree(dAy);
-    // blas::device_free(dasync, queue);
-    // blas::device_free(dx, queue);
     //test cublasDestroy
     HelperSafeCall(cublasDestroy(handle));
     HelperSafeCall(cudaStreamDestroy(test_stream));
