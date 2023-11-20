@@ -118,6 +118,7 @@ add_executable(
     test_swap_device.cc
     test_copy_device.cc
     test_gemv_device.cc
+    test_trmv_device.cc
     test_gemm_device.cc
     test_hemm_device.cc
     test_her2k_device.cc
