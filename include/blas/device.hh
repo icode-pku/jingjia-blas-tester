@@ -376,6 +376,15 @@ inline const char* device_error_string( rocblas_status error )
                                           blas::device_error_string(e), \
                                           __func__ ); \
             } while(0)
+
+        #define HelperSafeCall( error ) \
+            do{ \
+                auto e = error; \
+                blas::internal::helper_safe_call( blas::is_device_error(e), \
+                                                blas::device_error_string(e), \
+                                                __FILE__, __LINE__, #error); \
+            }while (0)
+
     #endif
 
 #endif

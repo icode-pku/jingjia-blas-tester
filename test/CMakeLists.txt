@@ -129,6 +129,25 @@ add_executable(
     test_trsm_device.cc
 )
 
+file(GLOB HELPHH ${PROJECT_SOURCE_DIR}/test/helper* lapack_wrappers.cc)
+
+add_executable(helper ${HELPHH}) 
+
+set_target_properties( helper PROPERTIES CXX_EXTENSIONS false )
+target_link_libraries(helper 
+testsweeper 
+blaspp     
+${blaspp_cblas_libraries}
+${lapack_libraries_}
+)
+
+target_include_directories(
+    helper
+    PRIVATE
+        "${blaspp_cblas_include}"
+)
+
+
 # C++11 is inherited from blaspp, but disabling extensions is not.
 set_target_properties( ${tester} PROPERTIES CXX_EXTENSIONS false )
 
