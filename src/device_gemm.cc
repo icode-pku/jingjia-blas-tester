@@ -30,49 +30,51 @@ void gemm(
     scalar_t const* B, int64_t ldb,
     scalar_t beta,
     scalar_t*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( transA != Op::NoTrans &&
-                   transA != Op::Trans &&
-                   transA != Op::ConjTrans );
-    blas_error_if( transB != Op::NoTrans &&
-                   transB != Op::Trans &&
-                   transB != Op::ConjTrans );
-    blas_error_if( m < 0 );
-    blas_error_if( n < 0 );
-    blas_error_if( k < 0 );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( transA != Op::NoTrans &&
+                    transA != Op::Trans &&
+                    transA != Op::ConjTrans );
+        blas_error_if( transB != Op::NoTrans &&
+                    transB != Op::Trans &&
+                    transB != Op::ConjTrans );
+        blas_error_if( m < 0 );
+        blas_error_if( n < 0 );
+        blas_error_if( k < 0 );
 
-    if (layout == Layout::ColMajor) {
-        if (transA == Op::NoTrans)
-            blas_error_if( lda < m );
-        else
-            blas_error_if( lda < k );
+        if (layout == Layout::ColMajor) {
+            if (transA == Op::NoTrans)
+                blas_error_if( lda < m );
+            else
+                blas_error_if( lda < k );
 
-        if (transB == Op::NoTrans)
-            blas_error_if( ldb < k );
-        else
-            blas_error_if( ldb < n );
+            if (transB == Op::NoTrans)
+                blas_error_if( ldb < k );
+            else
+                blas_error_if( ldb < n );
 
-        blas_error_if( ldc < m );
-    }
-    else {
-        if (transA != Op::NoTrans)
-            blas_error_if( lda < m );
-        else
-            blas_error_if( lda < k );
+            blas_error_if( ldc < m );
+        }
+        else {
+            if (transA != Op::NoTrans)
+                blas_error_if( lda < m );
+            else
+                blas_error_if( lda < k );
 
-        if (transB != Op::NoTrans)
-            blas_error_if( ldb < k );
-        else
-            blas_error_if( ldb < n );
+            if (transB != Op::NoTrans)
+                blas_error_if( ldb < k );
+            else
+                blas_error_if( ldb < n );
 
-        blas_error_if( ldc < n );
+            blas_error_if( ldc < n );
+        }
     }
 
     // convert arguments
@@ -82,6 +84,7 @@ void gemm(
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int ldb_ = to_device_blas_int( ldb );
     device_blas_int ldc_ = to_device_blas_int( ldc );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
@@ -89,11 +92,11 @@ void gemm(
     if (layout == Layout::RowMajor) {
         // swap transA <=> transB, m <=> n, B <=> A
         internal::gemm( transB, transA, n_, m_, k_,
-                        alpha, B, ldb_, A, lda_, beta, C, ldc_, queue );
+                        alpha, B, ldb_, A, lda_, beta, C, ldc_, queue, testcase_, errname );
     }
     else {
         internal::gemm( transA, transB, m_, n_, k_,
-                        alpha, A, lda_, B, ldb_, beta, C, ldc_, queue );
+                        alpha, A, lda_, B, ldb_, beta, C, ldc_, queue, testcase_, errname );
     }
 #endif
 }
@@ -116,10 +119,10 @@ void gemm(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -135,10 +138,10 @@ void gemm(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -154,10 +157,10 @@ void gemm(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -173,10 +176,10 @@ void gemm(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 }  // namespace blas

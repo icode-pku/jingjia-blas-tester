@@ -12,46 +12,50 @@ namespace internal {
 
 //------------------------------------------------------------------------------
 /// @return the corresponding device trans constant
-cublasOperation_t op2cublas(blas::Op trans)
+cublasOperation_t op2cublas(blas::Op trans, device_blas_int testcase = 1)
 {
     switch (trans) {
         case Op::NoTrans:   return CUBLAS_OP_N; break;
         case Op::Trans:     return CUBLAS_OP_T; break;
         case Op::ConjTrans: return CUBLAS_OP_C; break;
-        default: throw blas::Error( "unknown op" );
+        default: if(testcase==1){throw blas::Error( "unknown op" );break;}
+                 else {return cublasOperation_t(-1); break;}
     }
 }
 
 //------------------------------------------------------------------------------
 /// @return the corresponding device diag constant
-cublasDiagType_t diag2cublas(blas::Diag diag)
+cublasDiagType_t diag2cublas(blas::Diag diag, device_blas_int testcase = 1)
 {
     switch (diag) {
         case Diag::Unit:    return CUBLAS_DIAG_UNIT;     break;
         case Diag::NonUnit: return CUBLAS_DIAG_NON_UNIT; break;
-        default: throw blas::Error( "unknown diag" );
+        default: if(testcase == 1){throw blas::Error( "unknown diag" );break;}
+                 else{ return cublasDiagType_t(-1); break;}
     }
 }
 
 //------------------------------------------------------------------------------
 /// @return the corresponding device uplo constant
-cublasFillMode_t uplo2cublas(blas::Uplo uplo)
+cublasFillMode_t uplo2cublas(blas::Uplo uplo, device_blas_int testcase = 1)
 {
     switch (uplo) {
         case Uplo::Upper: return CUBLAS_FILL_MODE_UPPER; break;
         case Uplo::Lower: return CUBLAS_FILL_MODE_LOWER; break;
-        default: throw blas::Error( "unknown uplo" );
+        default: if(testcase == 1){throw blas::Error( "unknown uplo" ); break;}
+                 else{ return cublasFillMode_t(-1); break;}
     }
 }
 
 //------------------------------------------------------------------------------
 /// @return the corresponding device side constant
-cublasSideMode_t side2cublas(blas::Side side)
+cublasSideMode_t side2cublas(blas::Side side, device_blas_int testcase = 1)
 {
     switch (side) {
         case Side::Left:  return CUBLAS_SIDE_LEFT;  break;
         case Side::Right: return CUBLAS_SIDE_RIGHT; break;
-        default: throw blas::Error( "unknown side" );
+        default: if(testcase == 1){throw blas::Error( "unknown side" ); break;}
+                 else{ return cublasSideMode_t(-1); break;}
     }
 }
 
@@ -785,16 +789,30 @@ void gemm(
     float const *dB, device_blas_int lddb,
     float beta,
     float       *dC, device_blas_int lddc,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasSgemm(
-            queue.handle(),
-            op2cublas(transA), op2cublas(transB),
-            m, n, k,
-            &alpha, dA, ldda,
-                    dB, lddb,
-            &beta,  dC, lddc ) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasSgemm(
+                queue.handle(),
+                op2cublas(transA), op2cublas(transB),
+                m, n, k,
+                &alpha, dA, ldda,
+                        dB, lddb,
+                &beta,  dC, lddc ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSgemm(
+                queue.handle(),
+                op2cublas(transA, testcase), op2cublas(transB, testcase),
+                m, n, k,
+                &alpha, dA, ldda,
+                        dB, lddb,
+                &beta,  dC, lddc ));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -806,16 +824,31 @@ void gemm(
     double const *dB, device_blas_int lddb,
     double beta,
     double       *dC, device_blas_int lddc,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDgemm(
-            queue.handle(),
-            op2cublas(transA), op2cublas(transB),
-            m, n, k,
-            &alpha, dA, ldda,
-                    dB, lddb,
-            &beta,  dC, lddc ) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDgemm(
+                queue.handle(),
+                op2cublas(transA), op2cublas(transB),
+                m, n, k,
+                &alpha, dA, ldda,
+                        dB, lddb,
+                &beta,  dC, lddc ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                cublasDgemm(
+                queue.handle(),
+                op2cublas(transA, testcase), op2cublas(transB, testcase),
+                m, n, k,
+                &alpha, dA, ldda,
+                        dB, lddb,
+                &beta,  dC, lddc ));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -827,18 +860,35 @@ void gemm(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float> beta,
     std::complex<float>       *dC, device_blas_int lddc,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasCgemm(
-            queue.handle(),
-            op2cublas(transA), op2cublas(transB),
-            m, n, k,
-            (cuComplex*) &alpha,
-            (cuComplex*) dA, ldda,
-            (cuComplex*) dB, lddb,
-            (cuComplex*) &beta,
-            (cuComplex*) dC, lddc ) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCgemm(
+                queue.handle(),
+                op2cublas(transA), op2cublas(transB),
+                m, n, k,
+                (cuComplex*) &alpha,
+                (cuComplex*) dA, ldda,
+                (cuComplex*) dB, lddb,
+                (cuComplex*) &beta,
+                (cuComplex*) dC, lddc ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                cublasCgemm(
+                queue.handle(),
+                op2cublas(transA, testcase), op2cublas(transB, testcase),
+                m, n, k,
+                (cuComplex*) &alpha,
+                (cuComplex*) dA, ldda,
+                (cuComplex*) dB, lddb,
+                (cuComplex*) &beta,
+                (cuComplex*) dC, lddc ));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -850,18 +900,35 @@ void gemm(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double> beta,
     std::complex<double>       *dC, device_blas_int lddc,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasZgemm(
-            queue.handle(),
-            op2cublas(transA), op2cublas(transB),
-            m, n, k,
-            (cuDoubleComplex*) &alpha,
-            (cuDoubleComplex*) dA, ldda,
-            (cuDoubleComplex*) dB, lddb,
-            (cuDoubleComplex*) &beta,
-            (cuDoubleComplex*) dC, lddc ) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZgemm(
+                queue.handle(),
+                op2cublas(transA), op2cublas(transB),
+                m, n, k,
+                (cuDoubleComplex*) &alpha,
+                (cuDoubleComplex*) dA, ldda,
+                (cuDoubleComplex*) dB, lddb,
+                (cuDoubleComplex*) &beta,
+                (cuDoubleComplex*) dC, lddc ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                cublasZgemm(
+                queue.handle(),
+                op2cublas(transA, testcase), op2cublas(transB, testcase),
+                m, n, k,
+                (cuDoubleComplex*) &alpha,
+                (cuDoubleComplex*) dA, ldda,
+                (cuDoubleComplex*) dB, lddb,
+                (cuDoubleComplex*) &beta,
+                (cuDoubleComplex*) dC, lddc ));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -277,6 +277,7 @@ inline const char* device_error_string( cudaError_t error )
 // see device_error.cc
 const char* device_error_string( cublasStatus_t error );
 
+const char* device_errorstatus_to_string(cublasStatus_t error);
 #endif  // HAVE_CUBLAS
 
 // -----------------------------------------------------------------------------
