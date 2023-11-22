@@ -63,6 +63,7 @@ public:
     testsweeper::ParamScientific error3;
     
     testsweeper::ParamInt    runs;//new add param by cj
+    testsweeper::ParamInt    testcase;//new add param by cj
 
     testsweeper::ParamDouble     time;
     testsweeper::ParamDouble     gflops;
@@ -142,6 +143,19 @@ double sync_get_wtime( blas::Queue& queue )
     return testsweeper::get_wtime();
 }
 
+inline 
+bool result_match(const char *device_result,  const char *except_result, int &all, int &pass, int &failed){
+    //printf("error is: %s\n",device_result);
+    all ++;
+    if(strcmp(device_result, except_result)==0){
+        pass ++;
+        return true;
+    }
+    else{
+        failed ++;
+        return false;
+    }
+}
 // -----------------------------------------------------------------------------
 // Level 1 BLAS
 void test_asum  ( Params& params, bool run );

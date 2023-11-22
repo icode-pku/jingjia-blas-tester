@@ -661,7 +661,7 @@ void gemm(
     float const *dB, device_blas_int lddb,
     float beta,
     float       *dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gemm(
     blas::Op transA, blas::Op transB,
@@ -671,7 +671,7 @@ void gemm(
     double const *dB, device_blas_int lddb,
     double beta,
     double       *dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gemm(
     blas::Op transA, blas::Op transB,
@@ -681,7 +681,7 @@ void gemm(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float> beta,
     std::complex<float>       *dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gemm(
     blas::Op transA, blas::Op transB,
@@ -691,7 +691,7 @@ void gemm(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double> beta,
     std::complex<double>       *dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void trsm(

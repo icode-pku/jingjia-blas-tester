@@ -217,7 +217,7 @@ Params::Params():
     verbose   ( "verbose", 0,    ParamType::Value,   0,   0,   10, "verbose level" ),
     cache     ( "cache",   0,    ParamType::Value,  20,   1, 1024, "total cache size, in MiB" ),
     runs    ( "runs",  4,    ParamType::Value,   10,   1, 1000, "When testing performance, how many times do you run each" ),
-
+    testcase   ( "testcase",  4,    ParamType::Value,   1,   0, 1, "1 indicates correct parameter testing, 0 indicates incorrect parameter testing" ),
     // ----- routine parameters
     //          name,      w,    type,            def,                    char2enum,         enum2char,         enum2str,         help
     datatype  ( "type",    4,    ParamType::List, DataType::Single,       char2datatype,     datatype2char,     datatype2str,     "s=single (float), d=double, c=complex-single, z=complex-double" ),
@@ -302,6 +302,7 @@ int main( int argc, char** argv )
     require( sizeof(section_names)/sizeof(*section_names) == Section::num_sections );
 
     int status = 0;
+    int all_tests = 0;
     try {
         int version = blas::blaspp_version();
         printf( "jingjia-blas-tester version %d.%02d.%02d, id %s\n",
@@ -361,7 +362,7 @@ int main( int argc, char** argv )
         // run tests
         int repeat = params.repeat();
         testsweeper::DataType last = params.datatype();
-        params.header();
+        if(params.testcase()==1) params.header();
         do {
             if (params.datatype() != last) {
                 last = params.datatype();
@@ -376,22 +377,26 @@ int main( int argc, char** argv )
                              ansi_bold, ansi_red, ex.what(), ansi_normal );
                     params.okay() = false;
                 }
-
-                params.print();
-                fflush( stdout );
-                status += ! params.okay();
-                params.reset_output();
+                if(params.testcase()==1){
+                    all_tests++;
+                    params.print();
+                    fflush( stdout );
+                    status += ! params.okay();
+                    params.reset_output();
+                }
             }
-            if (repeat > 1) {
+            if (repeat > 1 && params.testcase()==1) {
                 printf( "\n" );
             }
         } while(params.next());
-
-        if (status) {
-            printf( "%d tests FAILED for %s.\n", status, routine );
-        }
-        else {
-            printf( "All tests passed for %s.\n", routine );
+        if(params.testcase()==1){
+            // if (status) {
+            //     printf( "All test cases: %d, %d tests FAILED for %s.\n", all_tests, status, routine );
+            // }
+            // else {
+            //     printf( "All tests passed for %s.\n", routine );
+            // }
+            printf( "For routine:%s  All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n", routine, all_tests, all_tests-status, status );
         }
     }
     catch (const QuitException& ex) {
