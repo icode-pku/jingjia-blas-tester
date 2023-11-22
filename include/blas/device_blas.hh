@@ -283,6 +283,51 @@ void swap(
 // Level 2 BLAS
 
 //------------------------------------------------------------------------------
+void gbmv(
+    blas::Layout layout,
+    blas::Op trans,
+    int64_t m, int64_t n, int64_t kl, int64_t ku,
+    float alpha,
+    float const* A, int64_t lda,
+    float const* x, int64_t incx,
+    float beta,
+    float* y, int64_t incy,
+    blas::Queue& queue );
+    
+void gbmv(
+    blas::Layout layout,
+    blas::Op trans,
+    int64_t m, int64_t n, int64_t kl, int64_t ku,
+    double alpha,
+    double const* A, int64_t lda,
+    double const* x, int64_t incx,
+    double beta,
+    double* y, int64_t incy,
+    blas::Queue& queue );
+
+void gbmv(
+    blas::Layout layout,
+    blas::Op trans,
+    int64_t m, int64_t n, int64_t kl, int64_t ku,
+    std::complex<float> alpha,
+    std::complex<float>* A, int64_t lda,
+    std::complex<float>* x, int64_t incx,
+    std::complex<float> beta,
+    std::complex<float>* y, int64_t incy,
+    blas::Queue& queue );
+
+void gbmv(
+    blas::Layout layout,
+    blas::Op trans,
+    int64_t m, int64_t n, int64_t kl, int64_t ku,
+    std::complex<double> alpha,
+    std::complex<double>* A, int64_t lda,
+    std::complex<double>* x, int64_t incx,
+    std::complex<double> beta,
+    std::complex<double>* y, int64_t incy,
+    blas::Queue& queue );
+
+//------------------------------------------------------------------------------
 void gemv(
     blas::Layout layout,
     blas::Op trans,

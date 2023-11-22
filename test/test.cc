@@ -139,6 +139,7 @@ std::vector< testsweeper::routines_t > routines = {
     { "",                 nullptr,                  Section::newline },
 
     // Device Level 2 BLAS
+    { "dev-gbmv",         test_gbmv_device,         Section::device_blas2   },
     { "dev-gemv",         test_gemv_device,         Section::device_blas2   },
     { "dev-trmv",         test_trmv_device,         Section::device_blas2   },
     { "dev-trsv",         test_trsv_device,         Section::device_blas2   },
@@ -234,6 +235,8 @@ Params::Params():
 
     //          name,      w, p, type,            def,   min,     max, help
     dim       ( "dim",     6,    ParamType::List,          0,     1e9, "m by n by k dimensions" ),
+    kl        ( "kl",      4,    ParamType::List,   0,     0,     1e9, "lower bandwidth" ),
+    ku        ( "ku",      4,    ParamType::List,   0,     0,     1e9, "upper bandwidth" ),
     alpha     ( "alpha",   9, 4, ParamType::List,  pi,  -inf,     inf, "scalar alpha" ),
     beta      ( "beta",    9, 4, ParamType::List,   e,  -inf,     inf, "scalar beta" ),
     incx      ( "incx",    4,    ParamType::List,   1, -1000,    1000, "stride of x vector" ),

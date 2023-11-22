@@ -219,6 +219,7 @@ add_library(
     src/device_batch_trmm.cc
     src/device_batch_trsm.cc
     src/device_error.cc
+    src/device_gbmv.cc
     src/device_gemv.cc
     src/device_trmv.cc
     src/device_trsv.cc
