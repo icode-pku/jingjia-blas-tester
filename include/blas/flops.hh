@@ -225,7 +225,7 @@ public:
 
     // read A, x; write y
     static double gemv( double m, double n )
-        { return 1e-9 * ((m*n + m + n) * sizeof(T)); }
+        { return 1e-9 * ((m*n + 2*m + n) * sizeof(T)); }
 
     // read A triangle, x; write y
     static double hemv( double n )

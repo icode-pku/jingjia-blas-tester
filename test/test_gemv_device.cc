@@ -152,7 +152,7 @@ void test_gemv_device_work( Params& params, bool run )
                     alpha, A, lda, x, incx, beta, yref, incy );
         time = get_wtime() - time;
 
-        params.ref_time()   = time; // * 1000;  // msec
+        params.ref_time()   = time * 1000;  // msec
         params.ref_gflops() = gflop / time;
         params.ref_gbytes() = gbyte / time;
 
@@ -182,7 +182,7 @@ void test_gemv_device_work( Params& params, bool run )
         all_time += (get_wtime() - stime);
     }
     all_time/=(double)runs;
-    params.time()   = all_time;  // msec
+    params.time()   = all_time * 1000;  // msec
     params.gflops() = gflop / all_time;
     params.gbytes() = gbyte / all_time;
 
