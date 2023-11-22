@@ -48,6 +48,8 @@ public:
     testsweeper::ParamEnum< blas::Diag >        diag;
 
     testsweeper::ParamInt3   dim;
+    testsweeper::ParamInt    kl;
+    testsweeper::ParamInt    ku;
     testsweeper::ParamDouble alpha;
     testsweeper::ParamDouble beta;
     testsweeper::ParamInt    incx;
@@ -225,8 +227,10 @@ void test_copy_device  ( Params& params, bool run );
 
 // -----------------------------------------------------------------------------
 // Level 2 GPU BLAS
+void test_gbmv_device  ( Params& params, bool run );
 void test_gemv_device  ( Params& params, bool run );
-
+void test_trmv_device  ( Params& params, bool run );
+void test_trsv_device  ( Params& params, bool run );
 
 // -----------------------------------------------------------------------------
 // Level 3 GPU BLAS

@@ -774,6 +774,131 @@ void gemv(
         (cuDoubleComplex*) y, incy) );
 }
 
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    float const *dA, device_blas_int lda,
+    float       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasStrmv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, dA, lda,
+            dx, incx ) );
+}
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    double const *dA, device_blas_int lda,
+    double       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasDtrmv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, dA, lda,
+            dx, incx ) );
+}
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<float> const *dA, device_blas_int lda,
+    std::complex<float>       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasCtrmv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, 
+            (cuComplex*) dA, lda,
+            (cuComplex*) dx, incx ) );
+}
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<double> const *dA, device_blas_int lda,
+    std::complex<double>       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasZtrmv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, 
+            (cuDoubleComplex*) dA, lda,
+            (cuDoubleComplex*) dx, incx ) );
+}
+
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    float const *dA, device_blas_int lda,
+    float       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasStrsv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, dA, lda,
+            dx, incx ) );
+}
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    double const *dA, device_blas_int lda,
+    double       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasDtrsv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, dA, lda,
+            dx, incx ) );
+}
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<float> const *dA, device_blas_int lda,
+    std::complex<float>       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasCtrsv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, 
+            (cuComplex*) dA, lda,
+            (cuComplex*) dx, incx ) );
+}
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<double> const *dA, device_blas_int lda,
+    std::complex<double>       *dx, device_blas_int incx,
+    blas::Queue& queue )
+{
+    blas_dev_call(
+        cublasZtrsv(
+            queue.handle(),
+            uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            n, 
+            (cuDoubleComplex*) dA, lda,
+            (cuDoubleComplex*) dx, incx ) );
+}
+
 
 //==============================================================================
 // Level 3 BLAS - Device Interfaces

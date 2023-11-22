@@ -649,6 +649,66 @@ void gemv(
     std::complex<double> *y, device_blas_int incy,
     blas::Queue& queue);
 
+//------------------------------------------------------------------------------
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    float const *dA, device_blas_int lda,
+    float       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    double const *dA, device_blas_int lda,
+    double       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<float> const *dA, device_blas_int lda,
+    std::complex<float>       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+void trmv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<double> const *dA, device_blas_int lda,
+    std::complex<double>       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+
+//------------------------------------------------------------------------------
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    float const *dA, device_blas_int lda,
+    float       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    double const *dA, device_blas_int lda,
+    double       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<float> const *dA, device_blas_int lda,
+    std::complex<float>       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
+void trsv(
+    blas::Uplo uplo, blas::Op trans, blas::Diag diag,
+    device_blas_int n,
+    std::complex<double> const *dA, device_blas_int lda,
+    std::complex<double>       *dx, device_blas_int incx,
+    blas::Queue& queue );
+
 //==============================================================================
 // Level 3 BLAS - Device Interfaces
 

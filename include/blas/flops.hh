@@ -60,6 +60,21 @@ inline double fadds_scal( double n )
 // Level 2 BLAS
 // most formulas assume alpha=1, beta=0 or 1; otherwise add lower-order terms.
 // i.e., this is minimum flops and bandwidth that could be consumed.
+// -----------------------------------------------------------------------------
+inline double fmuls_gbmv( double m, double n, double kl, double ku )
+{
+    if (m-kl > n)
+        return (kl*n + (n+1)*n/2. - (n-ku-1)*(n-ku)/2.);
+    if (n-ku > m)
+        return (ku*m - (m-kl-1)*(m-kl)/2. + (m+1)*m/2.);
+    return (m*n - (m-kl-1)*(m-kl)/2. - (n-ku-1)*(n-ku)/2.);
+}
+
+// Assuming alpha=1, beta=1, adds are same as muls.
+inline double fadds_gbmv( double m, double n, double kl, double ku )
+{
+    return fmuls_gbmv( m, n, kl, ku );
+}
 
 // -----------------------------------------------------------------------------
 inline double fmuls_gemv( double m, double n )
@@ -200,6 +215,14 @@ public:
 
     // ----------------------------------------
     // Level 2 BLAS
+    // read A, x; write y
+    static double gbmv( blas::Layout layout, double m, double n, double kl, double ku )
+        { 
+            double a_one = (layout == Layout::RowMajor) ? n : m;
+            double a_two = (layout == Layout::RowMajor) ? m : n;
+            return 1e-9 * ((kl + ku + 1) * a_two + 2 * a_one + a_two) * sizeof(T);
+         }
+
     // read A, x; write y
     static double gemv( double m, double n )
         { return 1e-9 * ((m*n + m + n) * sizeof(T)); }
@@ -356,6 +379,10 @@ public:
 
     // ----------------------------------------
     // Level 2 BLAS
+    static double gbmv(double m, double n, double kl, double ku)
+    { return 1e-9 * (mul_ops*fmuls_gbmv(m, n, kl, ku) +
+                        add_ops*fadds_gbmv(m, n, kl, ku)); }
+
     static double gemv(double m, double n)
         { return 1e-9 * (mul_ops*fmuls_gemv(m, n) +
                          add_ops*fadds_gemv(m, n)); }
