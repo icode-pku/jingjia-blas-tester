@@ -505,43 +505,96 @@ inline void throw_if( bool cond, const char* condstr, const char* func )
     }
 }
 
-inline void helper_safe_call( bool cond, const char* condstr, const char *filename, const int fileline,  const char *func)
+inline void blas_match_call( bool cond, const char* condstr, const char *filename, const int fileline,  const char *func)
 {
     size_t id = 0;
     for(size_t i=0; i<strlen(func); i++){
         if(func[i]=='('){id=i; break;}
     }
-    if(cond){
-        printf("API: %s is failed\n", ((std::string(func)).substr(0,id)).c_str());
+    if(!cond){
+        //printf("API: %s is failed\n", ((std::string(func)).substr(0,id)).c_str());
         time_t now = time(nullptr);    
         char* curr_time = ctime(&now);
         curr_time[strlen(curr_time)-1]='\0';
-        std::ofstream file("failed_result.csv", std::ios::app);
+        std::ofstream file("blas_routine_failed_result.csv", std::ios::app);
         if (!file.is_open()) {
             printf("!!!! Unable to open file\n");
             return;
         }
         // Write your data to the file
-        file << curr_time << "," << std::string(func).substr(0, id) << "," << "failed" << "," << condstr << std::endl;
+        file << curr_time << "," << std::string(func).substr(0, id) << "," \
+        << "failed" << "," << condstr << "," << std::string(filename) <<"," \
+        << std::to_string(fileline) <<std::endl;
         file.close();
 
-        throw Error((std::string(condstr) + std::string("   filename is:  ") 
-        + std::string(filename) 
-        + std::string("  Error line is: ")
-        + std::to_string(fileline)).c_str(), func);
+        // throw Error((std::string(condstr) + std::string("   filename is:  ") 
+        // + std::string(filename) 
+        // + std::string("  Error line is: ")
+        // + std::to_string(fileline)).c_str(), func);
+    }
+    else{
+        //printf("API: %s is success\n", ((std::string(func)).substr(0,id)).c_str());
+        time_t now = time(nullptr);    
+        char* curr_time = ctime(&now);
+        curr_time[strlen(curr_time)-1]='\0';
+        std::ofstream file("blas_routine_succeed_result.csv", std::ios::app);
+        if (!file.is_open()) {
+            printf("!!!! Unable to open file\n");
+            return;
+        }
+        // Write your data to the file
+        file << curr_time << "," << std::string(func).substr(0, id) << "," \
+        << "succeed" << "," << condstr << "," << std::string(filename) <<"," \
+        << std::to_string(fileline) <<std::endl;
+        file.close();
+    }
+}
+
+inline void helper_safe_call( bool cond, const char* condstr, const char *filename, const int fileline,  const char *func, const int flag = 1)
+{
+    size_t id = 0;
+    for(size_t i=0; i<strlen(func); i++){
+        if(func[i]=='('){id=i; break;}
+    }
+    if(id==0) id = strlen(func);
+    if(cond){
+        printf("API: %s is failed\n", ((std::string(func)).substr(0,id)).c_str());
+        time_t now = time(nullptr);    
+        char* curr_time = ctime(&now);
+        curr_time[strlen(curr_time)-1]='\0';
+        std::ofstream file("helper_failed_result.csv", std::ios::app);
+        if (!file.is_open()) {
+            printf("!!!! Unable to open file\n");
+            return;
+        }
+        // Write your data to the file
+        //file << curr_time << "," << std::string(func).substr(0, id) << "," << "failed" << "," << condstr << std::endl;
+        file << curr_time << "," << std::string(func).substr(0, id) << "," \
+        << "failed" << "," << condstr << "," << std::string(filename) <<"," \
+        << std::to_string(fileline) <<std::endl;
+        file.close();
+        if(flag){
+            throw Error((std::string(condstr) + std::string("   filename is:  ") 
+            + std::string(filename) 
+            + std::string("  Error line is: ")
+            + std::to_string(fileline)).c_str(), func);
+        }
     }
     else{
         printf("API: %s is success\n", ((std::string(func)).substr(0,id)).c_str());
         time_t now = time(nullptr);    
         char* curr_time = ctime(&now);
         curr_time[strlen(curr_time)-1]='\0';
-        std::ofstream file("succeed_result.csv", std::ios::app);
+        std::ofstream file("helper_succeed_result.csv", std::ios::app);
         if (!file.is_open()) {
             printf("!!!! Unable to open file\n");
             return;
         }
         // Write your data to the file
-        file << curr_time << "," << std::string(func).substr(0, id) << "," << "success" << std::endl;
+        //file << curr_time << "," << std::string(func).substr(0, id) << "," << "success" << std::endl;
+        file << curr_time << "," << std::string(func).substr(0, id) << "," \
+        << "succeed" << "," << condstr << "," << std::string(filename) <<"," \
+        << std::to_string(fileline) <<std::endl;
         file.close();
     }
 }

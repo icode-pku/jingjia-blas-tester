@@ -129,7 +129,7 @@ add_executable(
     test_trsm_device.cc
 )
 
-file(GLOB HELPHH ${PROJECT_SOURCE_DIR}/test/helper* lapack_wrappers.cc)
+file(GLOB HELPHH ${PROJECT_SOURCE_DIR}/test/helper/helper*  helper.hh helper.cc lapack_wrappers.cc)
 
 add_executable(helper ${HELPHH}) 
 
