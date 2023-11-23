@@ -45,10 +45,20 @@ enum SectionHelp {
 };
 
 std::vector< routines_help_t > routines = {
-    {"test1", helper_test1, SectionHelp::test1},
-    {"test2", helper_test2, SectionHelp::test1},
+    {"example_test1", helper_test1, SectionHelp::test1},
+    {"example_test2", helper_test2, SectionHelp::test1},
+    {"cublassetstream", helper_cublasSetStream, SectionHelp::test1},
+    {"cublasgetstream", helper_cublasGetStream, SectionHelp::test1},
+    {"cublassetvector", helper_cublasSetVector, SectionHelp::test1},
     { "", nullptr, SectionHelp::newline},
 };
+
+void print_routine_name(std::vector< routines_help_t >& routines){
+        for (size_t i = 0; i < routines.size(); ++i) {
+            printf("%-35s",routines[i].name);
+            if((i+1)%2==0) printf("\n");
+    }
+}
 
 int main( int argc, char** argv )
 {
@@ -56,14 +66,15 @@ int main( int argc, char** argv )
         || strcmp( argv[argc-1], "-h" ) == 0
         || strcmp( argv[argc-1], "--help" ) == 0)
     {
-        printf(" please test1 or test2\n");
+        printf("Please enter the following routine: \n");
+        print_routine_name(routines);
         return 0;
     }
     const char* routine = argv[ argc-1 ];
     test_help_func_ptr test_help_routine = find_help_tester( routine, routines );
     if(test_help_routine ==nullptr){
-        printf("input routine name error!\n");
-        printf("please input test1 or testxxx\n");
+        printf("input routine name error! Please enter the following routine: \n");
+        print_routine_name(routines);
         return 0;
     }
     try{
@@ -73,7 +84,5 @@ int main( int argc, char** argv )
         fprintf( stderr, "%s%sError: %s%s\n",
                   ansi_bold, ansi_red, ex.what(), ansi_normal );
     }
-    
-
-  return 0;
+    return 0;
 }

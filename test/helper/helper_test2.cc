@@ -1,10 +1,4 @@
-#include "helper.hh"
-#include "cblas_wrappers.hh"
-#include "lapack_wrappers.hh"
-#include "blas/flops.hh"
-#include "print_matrix.hh"
-#include "check_gemm.hh"
-#include  "../src/device_internal.hh"
+#include "../helper.hh"
 
 void helper_test2()
 {
