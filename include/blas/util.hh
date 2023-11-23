@@ -507,9 +507,14 @@ inline void throw_if( bool cond, const char* condstr, const char* func )
 
 inline void blas_match_call( bool cond, const char* condstr, const char *filename, const int fileline,  const char *func)
 {
-    size_t id = 0;
+    size_t id = strlen(func);
+    size_t status_s = 0, status_e = 0;
     for(size_t i=0; i<strlen(func); i++){
-        if(func[i]=='('){id=i; break;}
+        if(func[i]=='('){id=i;}
+        if(func[i]==','){
+            if( status_s!=0 ){status_e=i;break;}
+            else{ status_s = i; }
+        }
     }
     if(!cond){
         //printf("API: %s is failed\n", ((std::string(func)).substr(0,id)).c_str());
@@ -523,7 +528,9 @@ inline void blas_match_call( bool cond, const char* condstr, const char *filenam
         }
         // Write your data to the file
         file << curr_time << "," << std::string(func).substr(0, id) << "," \
-        << "failed" << "," << condstr << "," << std::string(filename) <<"," \
+        << "failed" << "," << condstr \
+        <<","<< std::string(func).substr(status_s, status_e-status_s) << "," \
+        << std::string(filename) <<"," \
         << std::to_string(fileline) <<std::endl;
         file.close();
 
@@ -544,13 +551,16 @@ inline void blas_match_call( bool cond, const char* condstr, const char *filenam
         }
         // Write your data to the file
         file << curr_time << "," << std::string(func).substr(0, id) << "," \
-        << "succeed" << "," << condstr << "," << std::string(filename) <<"," \
+        << "succeed" << "," << condstr \
+        <<","<< std::string(func).substr(status_s, status_e-status_s) << "," \
+        << std::string(filename) <<"," \
         << std::to_string(fileline) <<std::endl;
         file.close();
     }
 }
 
-inline void helper_safe_call( bool cond, const char* condstr, const char *filename, const int fileline,  const char *func, const int flag = 1)
+inline void helper_safe_call( bool cond, const char* condstr, const char *filename, \
+const int fileline,  const char *func, const char* except_error=nullptr,  int flag = 1)
 {
     size_t id = 0;
     for(size_t i=0; i<strlen(func); i++){
@@ -558,7 +568,7 @@ inline void helper_safe_call( bool cond, const char* condstr, const char *filena
     }
     if(id==0) id = strlen(func);
     if(cond){
-        printf("API: %s is failed\n", ((std::string(func)).substr(0,id)).c_str());
+        if(!flag) printf("  API: %s is failed\n", ((std::string(func)).substr(0,id)).c_str());
         time_t now = time(nullptr);    
         char* curr_time = ctime(&now);
         curr_time[strlen(curr_time)-1]='\0';
@@ -570,7 +580,11 @@ inline void helper_safe_call( bool cond, const char* condstr, const char *filena
         // Write your data to the file
         //file << curr_time << "," << std::string(func).substr(0, id) << "," << "failed" << "," << condstr << std::endl;
         file << curr_time << "," << std::string(func).substr(0, id) << "," \
-        << "failed" << "," << condstr << "," << std::string(filename) <<"," \
+        << "failed" << "," << condstr;
+        if(except_error!=nullptr){
+            file << "," << std::string(except_error);
+        }
+        file << "," << std::string(filename) <<"," \
         << std::to_string(fileline) <<std::endl;
         file.close();
         if(flag){
@@ -581,7 +595,7 @@ inline void helper_safe_call( bool cond, const char* condstr, const char *filena
         }
     }
     else{
-        printf("API: %s is success\n", ((std::string(func)).substr(0,id)).c_str());
+        if(!flag) printf("  API: %s is passed\n", ((std::string(func)).substr(0,id)).c_str());
         time_t now = time(nullptr);    
         char* curr_time = ctime(&now);
         curr_time[strlen(curr_time)-1]='\0';
@@ -593,8 +607,13 @@ inline void helper_safe_call( bool cond, const char* condstr, const char *filena
         // Write your data to the file
         //file << curr_time << "," << std::string(func).substr(0, id) << "," << "success" << std::endl;
         file << curr_time << "," << std::string(func).substr(0, id) << "," \
-        << "succeed" << "," << condstr << "," << std::string(filename) <<"," \
+        << "succeed" << "," << condstr;
+        if(except_error!=nullptr){
+            file << "," << std::string(except_error);
+        }
+        file << "," << std::string(filename) <<"," \
         << std::to_string(fileline) <<std::endl;
+        file.close();
         file.close();
     }
 }

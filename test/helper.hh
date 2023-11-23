@@ -39,4 +39,65 @@ bool check_return_status(cublasStatus_t device_status, const char* excpet_status
     return false;
 }
 
+class TestId{
+    public:
+        int test_id;
+        int all_testcase;
+        std::string param_name;
+        std::vector<std::string> params_name;
+    public:
+        TestId(){}
+        TestId(int all_testcase_, std::string param_name_){
+            all_testcase = all_testcase_;
+            param_name = param_name_;
+            test_id = 0;
+            param_parse();
+        }
+        TestId(int all_testcase_, std::string param_name_, int id){
+            all_testcase = all_testcase_;
+            param_name = param_name_;
+            test_id = id;
+            param_parse();
+        }
+
+        void TestProblemHeader(int param_id, bool flag=false, const char* inputvalue = nullptr){
+            test_id++;
+            if(flag) printf("[%d/%d] When all parameters are legal\n",test_id, all_testcase);
+            else printf("[%d/%d] When params %d \"%s\" is \"%s\"\n",test_id, all_testcase, param_id, params_name[param_id].c_str(), inputvalue);
+        }
+
+        void TestApiHeader(){
+            int len = param_name.length();
+            int pre=0, param_id=0;
+            for(int i=0; i<len; i++)
+            {
+                if(param_name[i]=='('){
+                    printf("We will test the %s api, its parameters are:\n", (param_name.substr(pre, i-pre)).c_str());
+                    pre = i+1;break;
+                }
+                // if(params[i]==' '){ pre=i+1;}
+                // if(params[i]==','|| params[i]==')'){
+                //     printf("param %d: %s  ", param_id++, (s.substr(pre, i-pre)).c_str());
+                //     pre=i+1;
+                // }
+            }
+            printf("%s\n", param_name.c_str());
+        }
+
+        void param_parse(){
+            int len = param_name.length();
+            params_name.clear();
+            int pre=0;
+            for(int i=0; i<len; i++){
+                if(param_name[i]=='('){pre=i+1;}
+                if(param_name[i]==' '){pre=i+1;}
+                if(param_name[i]==','|| param_name[i]==')'){
+                    params_name.push_back(param_name.substr(pre, i-pre));
+                    pre=i+1;
+                }
+            }
+        }
+};
+
+
 #endif

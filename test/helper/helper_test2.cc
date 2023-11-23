@@ -60,12 +60,12 @@ void helper_test2()
     //test cublasGetStatusString
     printf("Test cublasGetStatusString: %s\n",cublasGetStatusString(cublasGetProperty(PATCH_LEVEL, &value)));
 
-    size_t workspace_size = 128;
-    float *workspace;
-    HelperSafeCall(cudaMalloc((float**)&workspace, workspace_size*sizeof(float)) );
-    cublasStatus_t err = cublasSetWorkspace(handle, (float*)workspace, workspace_size*sizeof(float));
-    HelperSafeCall(err);
-    printf("Test cublasSetWorkspace: %s\n",cublasGetStatusName(err));
+    // size_t workspace_size = 128;
+    // float *workspace;
+    // HelperSafeCall(cudaMalloc((float**)&workspace, workspace_size*sizeof(float)) );
+    // cublasStatus_t err = cublasSetWorkspace(handle, (float*)workspace, workspace_size*sizeof(float));
+    // HelperSafeCall(err);
+    // printf("Test cublasSetWorkspace: %s\n",cublasGetStatusName(err));
     
     size_t size_A = m * k;
     size_t size_B = n * k;

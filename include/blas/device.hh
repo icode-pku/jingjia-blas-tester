@@ -389,10 +389,10 @@ inline const char* device_error_string( rocblas_status error )
                                                 __FILE__, __LINE__, #error); \
             }while (0)
 
-        #define HelperTestCall( funcname, cond, error ) \
+        #define HelperTestCall( funcname, cond, error, except_error) \
                 blas::internal::helper_safe_call( !cond, \
                                                 blas::device_error_string(error), \
-                                                __FILE__, __LINE__, funcname, 0);
+                                                __FILE__, __LINE__, funcname, except_error, 0);
     #endif
 
 #endif
