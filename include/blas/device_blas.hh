@@ -421,7 +421,7 @@ void trsv(
     int64_t n,
     float const* A, int64_t lda,
     float*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -431,7 +431,7 @@ void trsv(
     int64_t n,
     double const* A, int64_t lda,
     double*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -441,7 +441,7 @@ void trsv(
     int64_t n,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -451,7 +451,7 @@ void trsv(
     int64_t n,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 
 //==============================================================================

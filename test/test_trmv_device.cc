@@ -113,7 +113,7 @@ void test_trmv_device_work( Params& params, bool run )
         blas::trmv( Layout::ColMajor, uplo, Op::NoTrans, diag, n, dA, n-1, dx, incx, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
     
-        //case 9: Test the return value when incx is an illegal value
+        //case 8: Test the return value when incx is an illegal value
         blas::trmv( layout, uplo, trans, diag, n, dA, lda, dx, 0, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
         queue.sync();

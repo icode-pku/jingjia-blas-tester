@@ -686,28 +686,28 @@ void trsv(
     device_blas_int n,
     float const *dA, device_blas_int lda,
     float       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     double const *dA, device_blas_int lda,
     double       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<float> const *dA, device_blas_int lda,
     std::complex<float>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<double> const *dA, device_blas_int lda,
     std::complex<double>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //==============================================================================
 // Level 3 BLAS - Device Interfaces
