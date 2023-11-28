@@ -97,17 +97,6 @@ void test_gbmv_device_work( Params& params, bool run )
     real_t Ynorm = cblas_nrm2( Ym, y, std::abs(incy) );
 
     // test error exits
-    assert_throw( blas::gbmv( Layout(0), trans,  m,  n, kl, ku, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gbmv( layout,    Op(0),  m,  n, kl, ku, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gbmv( layout,    trans, -1,  n, kl, ku, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gbmv( layout,    trans,  m, -1, kl, ku, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gbmv( layout,    trans,  m,  n, -1, ku, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gbmv( layout,    trans,  m,  n, kl, -1, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-
-    assert_throw( blas::gbmv( layout, trans,  m,  n, kl, ku, alpha, dA, kl + ku, dx, incx, beta, dy, incy, queue ), blas::Error );
-
-    assert_throw( blas::gbmv( layout,    trans,  m,  n, kl, ku, alpha, dA, lda, dx, 0,    beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gbmv( layout,    trans,  m,  n, kl, ku, alpha, dA, lda, dx, incx, beta, dy, 0,  queue   ), blas::Error );
     if(testcase == 0){
         char *error_name = (char *)malloc(sizeof(char)*35);
         int all_testcase = 0;
@@ -136,17 +125,17 @@ void test_gbmv_device_work( Params& params, bool run )
         //case 7: Test the return value when lda is an illegal value and transA is Trans
         blas::gbmv( Layout::ColMajor, Op::Trans,  m,  n, kl, ku, alpha, dA, kl + ku, dx, incx, beta, dy, incy, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
-        //case 8: Test the return value when lda is an illegal value and tansA is ConjTrans
+        //case 8: Test the return value when lda is an illegal value and transA is ConjTrans
         blas::gbmv( Layout::ColMajor, Op::ConjTrans,  m,  n, kl, ku, alpha, dA, kl + ku, dx, incx, beta, dy, incy, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-        //case 9: Test the return value when row-major order, tansA=NoTrans, and lda is an illegal value
+        //case 9: Test the return value when row-major order, transA=NoTrans, and lda is an illegal value
         blas::gbmv( Layout::RowMajor, Op::NoTrans,  m,  n, kl, ku, alpha, dA, kl + ku, dx, incx, beta, dy, incy, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
-        //case 10: Test the return value when row-major order, tansA=Trans, and lda is an illegal value
+        //case 10: Test the return value when row-major order, transA=Trans, and lda is an illegal value
         blas::gbmv( Layout::RowMajor, Op::Trans,  m,  n, kl, ku, alpha, dA, kl + ku, dx, incx, beta, dy, incy, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
-        //case 11: Test the return value when row-major order, tansA=ConjTrans, and lda is an illegal value
+        //case 11: Test the return value when row-major order, transA=ConjTrans, and lda is an illegal value
         blas::gbmv( Layout::RowMajor, Op::ConjTrans,  m,  n, kl, ku, alpha, dA, kl + ku, dx, incx, beta, dy, incy, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
