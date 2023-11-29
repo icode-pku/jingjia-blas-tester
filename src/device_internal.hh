@@ -26,6 +26,7 @@ inline device_blas_int to_device_blas_int_( int64_t x, const char* x_str )
 
 inline device_blas_int* to_device_blas_intp_( int64_t* x, const char* x_str )
 {
+    if(x==nullptr) return nullptr;
     if (sizeof(int64_t) > sizeof(device_blas_int)) {
         blas_error_if_msg( std::abs( *x ) > std::numeric_limits<device_blas_int>::max(),
                            "%s", x_str );
@@ -313,25 +314,25 @@ void amax(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //----------------------------------------------------------
 
 

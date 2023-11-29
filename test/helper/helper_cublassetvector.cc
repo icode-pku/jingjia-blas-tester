@@ -57,7 +57,7 @@ void helper_cublasSetVector()
     }
 
     //test case 2: Testing for illegal parameter elemSize
-    CaseId.TestProblemHeader(1,false, "-1");
+    CaseId.TestProblemHeader(1, false, "-1");
     stat = cublasSetVector(size_x, -1, x, incx, dx, incx);
     HelperTestCall("cublasSetVector", check_return_status(stat , "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
 

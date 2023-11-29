@@ -68,44 +68,80 @@ void amax(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasIsamax(queue.handle(), n, dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIsamax(queue.handle(), n, dx, incdx, result)
+        );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                    cublasIsamax(queue.handle(), n, dx, incdx, result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasIdamax(queue.handle(), n, dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIdamax(queue.handle(), n, dx, incdx, result)
+        );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                    cublasIdamax(queue.handle(), n, dx, incdx, result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasIcamax(queue.handle(), n, (const cuComplex*)dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIcamax(queue.handle(), n, (const cuComplex*)dx, incdx, result)
+        );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                    cublasIcamax(queue.handle(), n, (const cuComplex*)dx, incdx, result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasIzamax(queue.handle(), n, (const cuDoubleComplex*)dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIzamax(queue.handle(), n, (const cuDoubleComplex*)dx, incdx, result)
+        );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(
+                    cublasIzamax(queue.handle(), n, (const cuDoubleComplex*)dx, incdx, result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //----------------------------------------------------------
 

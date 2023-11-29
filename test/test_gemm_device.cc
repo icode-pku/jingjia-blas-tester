@@ -110,7 +110,7 @@ void test_gemm_device_work( Params& params, bool run )
         //case 1: Test transA is an illegal value
         blas::gemm( layout,    Op(0),  transB,  m,  n,  k, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
-        //case 2: Test transA is an illegal value
+        //case 2: Test transB is an illegal value
         blas::gemm( layout,    transA, Op(0),   m,  n,  k, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
         //case 3: Test the return value when m is an illegal value

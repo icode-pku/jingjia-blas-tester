@@ -16,7 +16,7 @@ void test_amax_device_work( Params& params, bool run )
     int64_t incx    = params.incx();
     int64_t verbose = params.verbose();
     int64_t device  = params.device();
-
+    int64_t testcase    = params.testcase();
     // mark non-standard output values
     params.gflops();
     params.gbytes();
@@ -53,71 +53,80 @@ void test_amax_device_work( Params& params, bool run )
     queue.sync();
 
     // test error exits
-    assert_throw( blas::amax( -1, dx, incx, &result, queue), blas::Error );
-    assert_throw( blas::amax(  n, dx,    0, &result, queue), blas::Error );
+    if(testcase==0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        blas::amax( n, dx, incx, nullptr, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    if (verbose >= 1) {
-        printf( "\n"
-                "x n=%5lld, inc=%5lld, size=%10lld\n",
-                llong( n ), llong( incx ), llong( size_x ) );
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        free(error_name);
     }
-    if (verbose >= 2) {
-        printf( "x = " ); print_vector( n, x, incx );
-    }
-
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    blas::amax( n, dx, incx, &result, queue);
-    queue.sync();
-    // blas::device_copy_vector(1, &result, 1, &result_host, 1, queue);
-    // queue.sync();
-
-    double gflop = blas::Gflop< T >::iamax( n );
-    double gbyte = blas::Gbyte< T >::iamax( n );
-
-    if (verbose >= 1) {
-        printf( "result = %5lld\n", llong( result ) );
-    }
-    double time;
-    if (params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        int64_t ref = cblas_iamax( n, x, incx );
-        time = get_wtime() - time;
-        ref += 1;
-        //printf( "result_dev = %5lld cblas= %5lld\n", llong( result ),llong(ref) );
-        params.ref_time()   = time * 1000;  // msec
-        params.ref_gflops() = gflop / time;
-        params.ref_gbytes() = gbyte / time;
-
+    else{
         if (verbose >= 1) {
-            printf( "ref    = %5lld\n", llong( ref ) );
+            printf( "\n"
+                    "x n=%5lld, inc=%5lld, size=%10lld\n",
+                    llong( n ), llong( incx ), llong( size_x ) );
+        }
+        if (verbose >= 2) {
+            printf( "x = " ); print_vector( n, x, incx );
         }
 
-        // error = |ref - result|
-        real_t error = std::abs( ref - result );
-        params.error() = error;
-
-        // iamax must be exact!
-        params.okay() = (error == 0);
-    }
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
         blas::amax( n, dx, incx, &result, queue);
         queue.sync();
-        all_time += (get_wtime() - stime);
+        // blas::device_copy_vector(1, &result, 1, &result_host, 1, queue);
+        // queue.sync();
+
+        double gflop = blas::Gflop< T >::iamax( n );
+        double gbyte = blas::Gbyte< T >::iamax( n );
+
+        if (verbose >= 1) {
+            printf( "result = %5lld\n", llong( result ) );
+        }
+        double time;
+        if (params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            int64_t ref = cblas_iamax( n, x, incx );
+            time = get_wtime() - time;
+            ref += 1;
+            //printf( "result_dev = %5lld cblas= %5lld\n", llong( result ),llong(ref) );
+            params.ref_time()   = time * 1000;  // msec
+            params.ref_gflops() = gflop / time;
+            params.ref_gbytes() = gbyte / time;
+
+            if (verbose >= 1) {
+                printf( "ref    = %5lld\n", llong( ref ) );
+            }
+
+            // error = |ref - result|
+            real_t error = std::abs( ref - result );
+            params.error() = error;
+
+            // iamax must be exact!
+            params.okay() = (error == 0);
+        }
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::amax( n, dx, incx, &result, queue);
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time * 1000;  // msec
+        params.gflops() = gflop / all_time;
+        params.gbytes() = gbyte / all_time;
+
     }
-    all_time/=(double)runs;
-    params.time()   = all_time * 1000;  // msec
-    params.gflops() = gflop / all_time;
-    params.gbytes() = gbyte / all_time;
-
-
     delete[] x;
     blas::device_free(dx, queue);
 }

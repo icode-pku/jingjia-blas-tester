@@ -17,25 +17,25 @@ void amax(
     int64_t n,
     float const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //---------------------------------------------------------
 void amax(    
     int64_t n,
     double const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     int64_t n,
     std::complex<float> const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     int64_t n,
     std::complex<double> const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 
 //---------------------------------------------------------
 //amin
