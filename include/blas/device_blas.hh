@@ -292,7 +292,8 @@ void gbmv(
     float const* x, int64_t incx,
     float beta,
     float* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
+
     
 void gbmv(
     blas::Layout layout,
@@ -303,7 +304,8 @@ void gbmv(
     double const* x, int64_t incx,
     double beta,
     double* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
+
 
 void gbmv(
     blas::Layout layout,
@@ -314,7 +316,7 @@ void gbmv(
     std::complex<float>* x, int64_t incx,
     std::complex<float> beta,
     std::complex<float>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void gbmv(
     blas::Layout layout,
@@ -325,7 +327,7 @@ void gbmv(
     std::complex<double>* x, int64_t incx,
     std::complex<double> beta,
     std::complex<double>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 //------------------------------------------------------------------------------
 void gemv(
@@ -381,7 +383,7 @@ void trmv(
     int64_t n,
     float const* A, int64_t lda,
     float*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trmv(
     blas::Layout layout,
@@ -391,7 +393,7 @@ void trmv(
     int64_t n,
     double const* A, int64_t lda,
     double*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trmv(
     blas::Layout layout,
@@ -401,7 +403,7 @@ void trmv(
     int64_t n,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trmv(
     blas::Layout layout,
@@ -411,7 +413,7 @@ void trmv(
     int64_t n,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -421,7 +423,7 @@ void trsv(
     int64_t n,
     float const* A, int64_t lda,
     float*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -431,7 +433,7 @@ void trsv(
     int64_t n,
     double const* A, int64_t lda,
     double*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -441,7 +443,7 @@ void trsv(
     int64_t n,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -451,7 +453,7 @@ void trsv(
     int64_t n,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 
 //==============================================================================

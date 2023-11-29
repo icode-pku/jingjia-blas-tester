@@ -578,7 +578,7 @@ void gbmv(
     float const *dx, device_blas_int incx,
     float beta,
     float *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gbmv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -588,7 +588,7 @@ void gbmv(
     double const *dx, device_blas_int incx,
     double beta,
     double *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 void gbmv(
@@ -599,7 +599,7 @@ void gbmv(
     std::complex<float> const *dx, device_blas_int incx,
     std::complex<float> beta,
     std::complex<float> *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 void gbmv(
@@ -610,7 +610,7 @@ void gbmv(
     std::complex<double> const *dx, device_blas_int incx,
     std::complex<double> beta,
     std::complex<double> *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void gemv(
@@ -656,28 +656,28 @@ void trmv(
     device_blas_int n,
     float const *dA, device_blas_int lda,
     float       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     double const *dA, device_blas_int lda,
     double       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<float> const *dA, device_blas_int lda,
     std::complex<float>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<double> const *dA, device_blas_int lda,
     std::complex<double>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 //------------------------------------------------------------------------------
@@ -686,28 +686,28 @@ void trsv(
     device_blas_int n,
     float const *dA, device_blas_int lda,
     float       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     double const *dA, device_blas_int lda,
     double       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<float> const *dA, device_blas_int lda,
     std::complex<float>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<double> const *dA, device_blas_int lda,
     std::complex<double>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //==============================================================================
 // Level 3 BLAS - Device Interfaces
