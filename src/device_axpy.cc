@@ -25,25 +25,28 @@ void axpy(
     scalar_t alpha,
     scalar_t const* x, int64_t incx,
     scalar_t*       y, int64_t incy,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
-    // check arguments
-    blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
-    blas_error_if( incx == 0 );  // standard BLAS doesn't detect inc[xy] == 0
-    blas_error_if( incy == 0 );
+    if(testcase == 1){
+        // check arguments
+        blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
+        blas_error_if( incx == 0 );  // standard BLAS doesn't detect inc[xy] == 0
+        blas_error_if( incy == 0 );
+    }
 
     // convert arguments
     device_blas_int n_    = to_device_blas_int( n );
     device_blas_int incx_ = to_device_blas_int( incx );
     device_blas_int incy_ = to_device_blas_int( incy );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
     // call low-level wrapper
-    internal::axpy( n_, alpha, x, incx_, y, incy_, queue );
+    internal::axpy( n_, alpha, x, incx_, y, incy_, queue, testcase_, errname );
 #endif
 }
 
@@ -60,9 +63,9 @@ void axpy(
     float alpha,
     float const* x, int64_t incx,
     float*       y, int64_t incy,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::axpy( n, alpha, x, incx, y, incy, queue );
+    impl::axpy( n, alpha, x, incx, y, incy, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -73,9 +76,9 @@ void axpy(
     double alpha,
     double const* x, int64_t incx,
     double*       y, int64_t incy,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::axpy( n, alpha, x, incx, y, incy, queue );
+    impl::axpy( n, alpha, x, incx, y, incy, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -86,9 +89,9 @@ void axpy(
     std::complex<float> alpha,
     std::complex<float> const* x, int64_t incx,
     std::complex<float>*       y, int64_t incy,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::axpy( n, alpha, x, incx, y, incy, queue );
+    impl::axpy( n, alpha, x, incx, y, incy, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -99,9 +102,9 @@ void axpy(
     std::complex<double> alpha,
     std::complex<double> const* x, int64_t incx,
     std::complex<double>*       y, int64_t incy,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::axpy( n, alpha, x, incx, y, incy, queue );
+    impl::axpy( n, alpha, x, incx, y, incy, queue, testcase, errname );
 }
 
 }  // namespace blas

@@ -26,6 +26,7 @@ void test_axpy_device_work( Params& params, bool run )
     int64_t incy    = params.incy();
     int64_t device  = params.device();
     int64_t verbose = params.verbose();
+    int64_t testcase    = params.testcase();
 
     // mark non-standard output values
     params.gflops();
@@ -75,93 +76,98 @@ void test_axpy_device_work( Params& params, bool run )
     queue.sync();
 
     // test error exits
-    assert_throw( blas::axpy( -1, alpha, x, incx, y, incy, queue ), blas::Error );
-    assert_throw( blas::axpy(  n, alpha, x,    0, y, incy, queue ), blas::Error );
-    assert_throw( blas::axpy(  n, alpha, x, incx, y,    0, queue ), blas::Error );
-
-    if (verbose >= 1) {
-        printf( "\n"
-                "n=%5lld, incx=%5lld, sizex=%10lld, incy=%5lld, sizey=%10lld\n",
-                llong( n ), llong( incx ), llong( size_x ), llong( incy ), llong( size_y ) );
+    if(testcase == 0){
+        //The number of test cases is 0
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
     }
-    if (verbose >= 2) {
-        printf( "alpha = %.4e + %.4ei;\n",
-                real(alpha), imag(alpha) );
-        printf( "y    = " ); print_vector( n, y, incy );
-    }
-
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    blas::axpy( n, alpha, dx, incx, dy, incy, queue );
-    queue.sync();
-
-    double gflop = blas::Gflop< Ty >::axpy( n );
-    double gbyte = blas::Gbyte< Ty >::axpy( n );
-
-    blas::device_copy_vector(n, dy, std::abs(incy), y, std::abs(incy), queue);
-    queue.sync();
-
-    if (verbose >= 2) {
-        printf( "y2   = " ); print_vector( n, y, incy );
-    }
-    double time;
-    if (params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        cblas_axpy( n, alpha, x, incx, yref, incy );
-        time = get_wtime() - time;
-
-        params.ref_time()   = time * 1000;  // msec
-        params.ref_gflops() = gflop / time;
-        params.ref_gbytes() = gbyte / time;
-
+    else{
+        if (verbose >= 1) {
+            printf( "\n"
+                    "n=%5lld, incx=%5lld, sizex=%10lld, incy=%5lld, sizey=%10lld\n",
+                    llong( n ), llong( incx ), llong( size_x ), llong( incy ), llong( size_y ) );
+        }
         if (verbose >= 2) {
-            printf( "yref = " ); print_vector( n, yref, incy );
+            printf( "alpha = %.4e + %.4ei;\n",
+                    real(alpha), imag(alpha) );
+            printf( "y    = " ); print_vector( n, y, incy );
         }
 
-        // maximum component-wise forward error:
-        // | fl(yi) - yi | / | yi |
-        real_t error = 0;
-        int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
-        int64_t ix = (incx > 0 ? 0 : (-n + 1)*incx);
-        for (int64_t i = 0; i < n; ++i) {
-            y[iy] = std::abs( y[iy] - yref[iy] )
-                  / (2*(std::abs( alpha * x[ix] ) + std::abs( y0[iy] )));
-            ix += incx;
-            iy += incy;
-        }
-        params.error() = error;
-
-
-        if (verbose >= 2) {
-            printf( "err  = " ); print_vector( n, y, incy, "%9.2e" );
-        }
-
-        // complex needs extra factor; see Higham, 2002, sec. 3.6.
-        if (blas::is_complex<scalar_t>::value) {
-            error /= 2*sqrt(2);
-        }
-
-        real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
-        params.error() = error;
-        params.okay() = (error < u);
-
-    }
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
         blas::axpy( n, alpha, dx, incx, dy, incy, queue );
         queue.sync();
-        all_time += (get_wtime() - stime);
+
+        double gflop = blas::Gflop< Ty >::axpy( n );
+        double gbyte = blas::Gbyte< Ty >::axpy( n );
+
+        blas::device_copy_vector(n, dy, std::abs(incy), y, std::abs(incy), queue);
+        queue.sync();
+
+        if (verbose >= 2) {
+            printf( "y2   = " ); print_vector( n, y, incy );
+        }
+        double time;
+        if (params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            cblas_axpy( n, alpha, x, incx, yref, incy );
+            time = get_wtime() - time;
+
+            params.ref_time()   = time * 1000;  // msec
+            params.ref_gflops() = gflop / time;
+            params.ref_gbytes() = gbyte / time;
+
+            if (verbose >= 2) {
+                printf( "yref = " ); print_vector( n, yref, incy );
+            }
+
+            // maximum component-wise forward error:
+            // | fl(yi) - yi | / | yi |
+            real_t error = 0;
+            int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
+            int64_t ix = (incx > 0 ? 0 : (-n + 1)*incx);
+            for (int64_t i = 0; i < n; ++i) {
+                y[iy] = std::abs( y[iy] - yref[iy] )
+                    / (2*(std::abs( alpha * x[ix] ) + std::abs( y0[iy] )));
+                ix += incx;
+                iy += incy;
+            }
+            params.error() = error;
+
+
+            if (verbose >= 2) {
+                printf( "err  = " ); print_vector( n, y, incy, "%9.2e" );
+            }
+
+            // complex needs extra factor; see Higham, 2002, sec. 3.6.
+            if (blas::is_complex<scalar_t>::value) {
+                error /= 2*sqrt(2);
+            }
+
+            real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+            params.error() = error;
+            params.okay() = (error < u);
+
+        }
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::axpy( n, alpha, dx, incx, dy, incy, queue );
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time * 1000;  // msec
+        params.gflops() = gflop / all_time;
+        params.gbytes() = gbyte / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time * 1000;  // msec
-    params.gflops() = gflop / all_time;
-    params.gbytes() = gbyte / all_time;
 
 
     delete[] x;

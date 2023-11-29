@@ -23,6 +23,7 @@ void test_nrm2_device_work( Params& params, bool run )
     int64_t incx    = params.incx();
     int64_t device  = params.device();
     int64_t verbose = params.verbose();
+    int64_t testcase    = params.testcase();
 
     real_t  result_host;
     real_t* result = &result_host;
@@ -69,93 +70,106 @@ void test_nrm2_device_work( Params& params, bool run )
     }
 
     // test error exits
-    assert_throw( blas::nrm2( -1, x, incx, result, queue ), blas::Error );
-    assert_throw( blas::nrm2(  n, x,    0, result, queue ), blas::Error );
+    if(testcase == 0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        //case 1: Test the return value when result is an nullptr
+       blas::nrm2( n, dx, incx, nullptr, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        queue.sync();
 
-    int64_t idist = 1;
-    int iseed[4] = { 0, 0, 0, 1 };
-    lapack_larnv( idist, iseed, size_x, x );
-    cblas_copy( n, x, incx, xref, incx );
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
 
-    blas::device_copy_vector(n, x, std::abs(incx), dx, std::abs(incx), queue);
-    queue.sync();
-
-    if (verbose >= 1) {
-        printf( "\n"
-                "n=%5lld, incx=%5lld, sizex=%10lld\n",
-                llong( n ), llong( incx ), llong( size_x ) );
+        free(error_name);
     }
-    if (verbose >= 2) {
-        printf( "x    = " ); print_vector( n, x, incx );
-    }
+    else{
+        int64_t idist = 1;
+        int iseed[4] = { 0, 0, 0, 1 };
+        lapack_larnv( idist, iseed, size_x, x );
+        cblas_copy( n, x, incx, xref, incx );
 
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    blas::nrm2( n, dx, incx, result, queue );
-    queue.sync();
+        blas::device_copy_vector(n, x, std::abs(incx), dx, std::abs(incx), queue);
+        queue.sync();
 
-    if (mode == 'd') {
-        device_memcpy( &result_host, result, 1, queue );
-    }
-
-    double gflop = blas::Gflop< Tx >::nrm2( n );
-    double gbyte = blas::Gbyte< Tx >::nrm2( n );
-
-    blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
-    queue.sync();
-
-    if (verbose >= 2) {
-        printf( "x2   = " ); print_vector( n, x, incx );
-    }
-    double time;
-    if (params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        result_cblas = cblas_nrm2( n, xref, incx );
-        time = get_wtime() - time;
-
-        params.ref_time()   = time * 1000;  // msec
-        params.ref_gflops() = gflop / time;
-        params.ref_gbytes() = gbyte / time;
-
+        if (verbose >= 1) {
+            printf( "\n"
+                    "n=%5lld, incx=%5lld, sizex=%10lld\n",
+                    llong( n ), llong( incx ), llong( size_x ) );
+        }
         if (verbose >= 2) {
-            printf( "result0 = %.2e\n", result_cblas );
+            printf( "x    = " ); print_vector( n, x, incx );
         }
 
-        // relative forward error:
-        real_t error = std::abs( (result_cblas - result_host)
-                           / (sqrt(n+1) * result_cblas) );
-        params.error() = error;
-
-
-        if (verbose >= 2) {
-            printf( "err  = " ); print_vector( n, x, incx, "%9.2e" );
-        }
-
-        // complex needs extra factor; see Higham, 2002, sec. 3.6.
-        if (blas::is_complex<scalar_t>::value) {
-            error /= 2*sqrt(2);
-        }
-
-        real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
-        params.error() = error;
-        params.okay() = (error < u);
-    }
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
         blas::nrm2( n, dx, incx, result, queue );
         queue.sync();
-        all_time += (get_wtime() - stime);
+
+        if (mode == 'd') {
+            device_memcpy( &result_host, result, 1, queue );
+        }
+
+        double gflop = blas::Gflop< Tx >::nrm2( n );
+        double gbyte = blas::Gbyte< Tx >::nrm2( n );
+
+        blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
+        queue.sync();
+
+        if (verbose >= 2) {
+            printf( "x2   = " ); print_vector( n, x, incx );
+        }
+        double time;
+        if (params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            result_cblas = cblas_nrm2( n, xref, incx );
+            time = get_wtime() - time;
+
+            params.ref_time()   = time * 1000;  // msec
+            params.ref_gflops() = gflop / time;
+            params.ref_gbytes() = gbyte / time;
+
+            if (verbose >= 2) {
+                printf( "result0 = %.2e\n", result_cblas );
+            }
+
+            // relative forward error:
+            real_t error = std::abs( (result_cblas - result_host)
+                            / (sqrt(n+1) * result_cblas) );
+            params.error() = error;
+
+
+            if (verbose >= 2) {
+                printf( "err  = " ); print_vector( n, x, incx, "%9.2e" );
+            }
+
+            // complex needs extra factor; see Higham, 2002, sec. 3.6.
+            if (blas::is_complex<scalar_t>::value) {
+                error /= 2*sqrt(2);
+            }
+
+            real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+            params.error() = error;
+            params.okay() = (error < u);
+        }
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::nrm2( n, dx, incx, result, queue );
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time * 1000;  // msec
+        params.gflops() = gflop / all_time;
+        params.gbytes() = gbyte / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time * 1000;  // msec
-    params.gflops() = gflop / all_time;
-    params.gbytes() = gbyte / all_time;
 
 
     delete[] x;

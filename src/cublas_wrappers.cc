@@ -117,44 +117,96 @@ void amin(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasIsamin(queue.handle(), n, dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIsamin(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasIsamin(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void amin(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasIdamin(queue.handle(), n, dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIdamin(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasIdamin(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void amin(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasIcamin(queue.handle(), n, (const cuComplex*)dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIcamin(
+                queue.handle(), 
+                n, (const cuComplex*)dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasIcamin(
+                queue.handle(), 
+                n, (const cuComplex*)dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void amin(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasIzamin(queue.handle(), n, (const cuDoubleComplex*)dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasIzamin(
+                queue.handle(), 
+                n, (const cuDoubleComplex*)dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasIzamin(
+                queue.handle(), 
+                n, (const cuDoubleComplex*)dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //----------------------------------------------------------
 
@@ -165,44 +217,96 @@ void asum(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     float *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasSasum(queue.handle(), n, dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasSasum(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSasum(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void asum(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     double *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDasum(queue.handle(), n, dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDasum(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDasum(
+                queue.handle(), 
+                n, dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void asum(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     float *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasScasum(queue.handle(), n, (const cuComplex*)dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasScasum(
+                queue.handle(), 
+                n, (const cuComplex*)dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasScasum(
+                queue.handle(), 
+                n, (const cuComplex*)dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 //---------------------------------------------------------
 void asum(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     double *result, 
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDzasum(queue.handle(), n, (const cuDoubleComplex*)dx, incdx, result)
-    );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDzasum(
+                queue.handle(), 
+                n, (const cuDoubleComplex*)dx, incdx, 
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDzasum(
+                queue.handle(), 
+                n, (const cuDoubleComplex*)dx, incdx, 
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 
@@ -215,14 +319,26 @@ void axpy(
     float alpha,
     float const* dx, device_blas_int incdx,
     float *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasSaxpy(
-            queue.handle(),
-            n, &alpha,
-            dx, incdx,
-            dy, incdy));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasSaxpy(
+                queue.handle(),
+                n, &alpha,
+                dx, incdx,
+                dy, incdy));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSaxpy(
+                queue.handle(),
+                n, &alpha,
+                dx, incdx,
+                dy, incdy));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -231,14 +347,26 @@ void axpy(
     double alpha,
     double const* dx, device_blas_int incdx,
     double *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDaxpy(
-            queue.handle(),
-            n, &alpha,
-            dx, incdx,
-            dy, incdy));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDaxpy(
+                queue.handle(),
+                n, &alpha,
+                dx, incdx,
+                dy, incdy));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDaxpy(
+                queue.handle(),
+                n, &alpha,
+                dx, incdx,
+                dy, incdy));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -247,14 +375,26 @@ void axpy(
     std::complex<float> alpha,
     std::complex<float> const* dx, device_blas_int incdx,
     std::complex<float> *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasCaxpy(
-            queue.handle(),
-            n, (const cuComplex*) &alpha,
-            (const cuComplex*) dx, incdx,
-            (cuComplex*) dy, incdy));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCaxpy(
+                queue.handle(),
+                n, (const cuComplex*) &alpha,
+                (const cuComplex*) dx, incdx,
+                (cuComplex*) dy, incdy));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCaxpy(
+                queue.handle(),
+                n, (const cuComplex*) &alpha,
+                (const cuComplex*) dx, incdx,
+                (cuComplex*) dy, incdy));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -263,14 +403,26 @@ void axpy(
     std::complex<double> alpha,
     std::complex<double> const* dx, device_blas_int incdx,
     std::complex<double> *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasZaxpy(
-            queue.handle(),
-            n, (const cuDoubleComplex*) &alpha,
-            (const cuDoubleComplex*) dx, incdx,
-            (cuDoubleComplex*) dy, incdy));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZaxpy(
+                queue.handle(),
+                n, (const cuDoubleComplex*) &alpha,
+                (const cuDoubleComplex*) dx, incdx,
+                (cuDoubleComplex*) dy, incdy));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasZaxpy(
+                queue.handle(),
+                n, (const cuDoubleComplex*) &alpha,
+                (const cuDoubleComplex*) dx, incdx,
+                (cuDoubleComplex*) dy, incdy));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -281,15 +433,28 @@ void dot(
     float const *dx, device_blas_int incdx,
     float const *dy, device_blas_int incdy,
     float *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasSdot(
-            queue.handle(),
-            n,
-            dx, incdx,
-            dy, incdy,
-            result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasSdot(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy,
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSdot(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy,
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -298,15 +463,28 @@ void dot(
     double const *dx, device_blas_int incdx,
     double const *dy, device_blas_int incdy,
     double *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDdot(
-            queue.handle(),
-            n,
-            dx, incdx,
-            dy, incdy,
-            result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDdot(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy,
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDdot(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy,
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -315,15 +493,28 @@ void dot(
     std::complex<float> const *dx, device_blas_int incdx,
     std::complex<float> const *dy, device_blas_int incdy,
     std::complex<float> *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasCdotc(
-            queue.handle(),
-            n,
-            (const cuComplex*) dx, incdx,
-            (const cuComplex*) dy, incdy,
-            (cuComplex*) result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCdotc(
+                queue.handle(),
+                n,
+                (const cuComplex*) dx, incdx,
+                (const cuComplex*) dy, incdy,
+                (cuComplex*) result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCdotc(
+                queue.handle(),
+                n,
+                (const cuComplex*) dx, incdx,
+                (const cuComplex*) dy, incdy,
+                (cuComplex*) result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -332,16 +523,30 @@ void dot(
     std::complex<double> const *dx, device_blas_int incdx,
     std::complex<double> const *dy, device_blas_int incdy,
     std::complex<double> *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasZdotc(
-            queue.handle(),
-            n,
-            (const cuDoubleComplex*) dx, incdx,
-            (const cuDoubleComplex*) dy, incdy,
-            (cuDoubleComplex*) result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZdotc(
+                queue.handle(),
+                n,
+                (const cuDoubleComplex*) dx, incdx,
+                (const cuDoubleComplex*) dy, incdy,
+                (cuDoubleComplex*) result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasZdotc(
+                queue.handle(),
+                n,
+                (const cuDoubleComplex*) dx, incdx,
+                (const cuDoubleComplex*) dy, incdy,
+                (cuDoubleComplex*) result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
+
 
 //------------------------------------------------------------------------------
 void dotu(
@@ -349,15 +554,28 @@ void dotu(
     std::complex<float> const *dx, device_blas_int incdx,
     std::complex<float> const *dy, device_blas_int incdy,
     std::complex<float> *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasCdotu(
-            queue.handle(),
-            n,
-            (const cuComplex*) dx, incdx,
-            (const cuComplex*) dy, incdy,
-            (cuComplex*) result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCdotu(
+                queue.handle(),
+                n,
+                (const cuComplex*) dx, incdx,
+                (const cuComplex*) dy, incdy,
+                (cuComplex*) result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCdotu(
+                queue.handle(),
+                n,
+                (const cuComplex*) dx, incdx,
+                (const cuComplex*) dy, incdy,
+                (cuComplex*) result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -366,15 +584,28 @@ void dotu(
     std::complex<double> const *dx, device_blas_int incdx,
     std::complex<double> const *dy, device_blas_int incdy,
     std::complex<double> *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasZdotu(
-            queue.handle(),
-            n,
-            (const cuDoubleComplex*) dx, incdx,
-            (const cuDoubleComplex*) dy, incdy,
-            (cuDoubleComplex*) result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZdotu(
+                queue.handle(),
+                n,
+                (const cuDoubleComplex*) dx, incdx,
+                (const cuDoubleComplex*) dy, incdy,
+                (cuDoubleComplex*) result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasZdotu(
+                queue.handle(),
+                n,
+                (const cuDoubleComplex*) dx, incdx,
+                (const cuDoubleComplex*) dy, incdy,
+                (cuDoubleComplex*) result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -384,13 +615,24 @@ void nrm2(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     float *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasSnrm2(
-            queue.handle(),
-            n, dx, incdx,
-            result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasSnrm2(
+                queue.handle(),
+                n, dx, incdx,
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSnrm2(
+                queue.handle(),
+                n, dx, incdx,
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -398,13 +640,24 @@ void nrm2(
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     double *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDnrm2(
-            queue.handle(),
-            n, dx, incdx,
-            result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDnrm2(
+                queue.handle(),
+                n, dx, incdx,
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDnrm2(
+                queue.handle(),
+                n, dx, incdx,
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -412,13 +665,24 @@ void nrm2(
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     float *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasScnrm2(
-            queue.handle(),
-            n, (const cuComplex*) dx, incdx,
-            result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasScnrm2(
+                queue.handle(),
+                n, (const cuComplex*) dx, incdx,
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasScnrm2(
+                queue.handle(),
+                n, (const cuComplex*) dx, incdx,
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -426,13 +690,24 @@ void nrm2(
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     double *result,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDznrm2(
-            queue.handle(),
-            n, (const cuDoubleComplex*) dx, incdx,
-            result));
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDznrm2(
+                queue.handle(),
+                n, (const cuDoubleComplex*) dx, incdx,
+                result));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDznrm2(
+                queue.handle(),
+                n, (const cuDoubleComplex*) dx, incdx,
+                result));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -562,14 +837,26 @@ void copy(
     device_blas_int n,
     float const *dx, device_blas_int incdx,
     float *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasScopy(
-            queue.handle(),
-            n,
-            dx, incdx,
-            dy, incdy) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasScopy(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasScopy(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -577,14 +864,26 @@ void copy(
     device_blas_int n,
     double const *dx, device_blas_int incdx,
     double *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasDcopy(
-            queue.handle(),
-            n,
-            dx, incdx,
-            dy, incdy) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDcopy(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDcopy(
+                queue.handle(),
+                n,
+                dx, incdx,
+                dy, incdy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -592,14 +891,26 @@ void copy(
     device_blas_int n,
     std::complex<float> const *dx, device_blas_int incdx,
     std::complex<float> *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasCcopy(
-            queue.handle(),
-            n,
-            (cuComplex*) dx, incdx,
-            (cuComplex*) dy, incdy) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCcopy(
+                queue.handle(),
+                n,
+                (cuComplex*) dx, incdx,
+                (cuComplex*) dy, incdy) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCcopy(
+                queue.handle(),
+                n,
+                (cuComplex*) dx, incdx,
+                (cuComplex*) dy, incdy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -607,14 +918,26 @@ void copy(
     device_blas_int n,
     std::complex<double> const *dx, device_blas_int incdx,
     std::complex<double> *dy, device_blas_int incdy,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
 {
-    blas_dev_call(
-        cublasZcopy(
-            queue.handle(),
-            n,
-            (cuDoubleComplex*) dx, incdx,
-            (cuDoubleComplex*) dy, incdy) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZcopy(
+                queue.handle(),
+                n,
+                (cuDoubleComplex*) dx, incdx,
+                (cuDoubleComplex*) dy, incdy) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasZcopy(
+                queue.handle(),
+                n,
+                (cuDoubleComplex*) dx, incdx,
+                (cuDoubleComplex*) dy, incdy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //==============================================================================
