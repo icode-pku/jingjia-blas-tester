@@ -58,6 +58,7 @@ void test_amax_device_work( Params& params, bool run )
         int all_testcase = 0;
         int passed_testcase = 0;
         int failed_testcase = 0;
+        //Test case 1: Test result is an nullptr
         blas::amax( n, dx, incx, nullptr, queue, testcase, error_name);
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
