@@ -662,7 +662,7 @@ void symm(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void symm(
     blas::Layout layout,
@@ -674,7 +674,7 @@ void symm(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void symm(
     blas::Layout layout,
@@ -686,7 +686,7 @@ void symm(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void symm(
     blas::Layout layout,
@@ -698,7 +698,7 @@ void symm(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void syr2k(
@@ -711,7 +711,7 @@ void syr2k(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syr2k(
     blas::Layout layout,
@@ -723,7 +723,7 @@ void syr2k(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syr2k(
     blas::Layout layout,
@@ -735,7 +735,7 @@ void syr2k(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syr2k(
     blas::Layout layout,
@@ -747,7 +747,7 @@ void syr2k(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void syrk(
@@ -759,7 +759,7 @@ void syrk(
     float const* A, int64_t lda,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syrk(
     blas::Layout layout,
@@ -770,7 +770,7 @@ void syrk(
     double const* A, int64_t lda,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syrk(
     blas::Layout layout,
@@ -781,7 +781,7 @@ void syrk(
     std::complex<float> const* A, int64_t lda,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syrk(
     blas::Layout layout,
@@ -792,7 +792,7 @@ void syrk(
     std::complex<double> const* A, int64_t lda,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void trmm(

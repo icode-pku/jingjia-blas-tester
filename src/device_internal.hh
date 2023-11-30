@@ -850,7 +850,7 @@ void symm(
     float const *dB, device_blas_int lddb,
     float  beta,
     float* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void symm(
     blas::Side side, blas::Uplo uplo,
@@ -860,7 +860,7 @@ void symm(
     double const *dB, device_blas_int lddb,
     double  beta,
     double* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void symm(
     blas::Side side, blas::Uplo uplo,
@@ -870,7 +870,7 @@ void symm(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void symm(
     blas::Side side, blas::Uplo uplo,
@@ -880,7 +880,7 @@ void symm(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void herk(
@@ -909,7 +909,7 @@ void syrk(
     float const *dA, device_blas_int ldda,
     float  beta,
     float* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syrk(
     blas::Uplo uplo, blas::Op trans,
@@ -918,7 +918,7 @@ void syrk(
     double const *dA, device_blas_int ldda,
     double  beta,
     double* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syrk(
     blas::Uplo uplo, blas::Op trans,
@@ -927,7 +927,7 @@ void syrk(
     std::complex<float> const *dA, device_blas_int ldda,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syrk(
     blas::Uplo uplo, blas::Op trans,
@@ -936,7 +936,7 @@ void syrk(
     std::complex<double> const *dA, device_blas_int ldda,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void her2k(
@@ -968,7 +968,7 @@ void syr2k(
     float const *dB, device_blas_int lddb,
     float  beta,
     float* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syr2k(
     blas::Uplo uplo, blas::Op trans,
@@ -978,7 +978,7 @@ void syr2k(
     double const *dB, device_blas_int lddb,
     double  beta,
     double* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syr2k(
     blas::Uplo uplo, blas::Op trans,
@@ -988,7 +988,7 @@ void syr2k(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syr2k(
     blas::Uplo uplo, blas::Op trans,
@@ -998,7 +998,7 @@ void syr2k(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 // batch gemm

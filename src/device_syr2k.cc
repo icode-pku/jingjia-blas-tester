@@ -30,39 +30,42 @@ void syr2k(
     scalar_t const* B, int64_t ldb,
     scalar_t beta,
     scalar_t*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( uplo != Uplo::Lower &&
-                   uplo != Uplo::Upper );
-    if constexpr (is_complex<scalar_t>::value) {
-        // [cz]syr2k do not allow ConjTrans
-        blas_error_if( trans != Op::NoTrans &&
-                       trans != Op::Trans );
-    }
-    else {
-        blas_error_if( trans != Op::NoTrans &&
-                       trans != Op::Trans &&
-                       trans != Op::ConjTrans );
-    }
-    blas_error_if( n < 0 );
-    blas_error_if( k < 0 );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( uplo != Uplo::Lower &&
+                    uplo != Uplo::Upper );
+        if constexpr (is_complex<scalar_t>::value) {
+            // [cz]syr2k do not allow ConjTrans
+            blas_error_if( trans != Op::NoTrans &&
+                        trans != Op::Trans );
+        }
+        else {
+            blas_error_if( trans != Op::NoTrans &&
+                        trans != Op::Trans &&
+                        trans != Op::ConjTrans );
+        }
+        blas_error_if( n < 0 );
+        blas_error_if( k < 0 );
 
-    if ((trans == Op::NoTrans) ^ (layout == Layout::RowMajor)) {
-        blas_error_if( lda < n );
-        blas_error_if( ldb < n );
-    }
-    else {
-        blas_error_if( lda < k );
-        blas_error_if( ldb < k );
+        if ((trans == Op::NoTrans) ^ (layout == Layout::RowMajor)) {
+            blas_error_if( lda < n );
+            blas_error_if( ldb < n );
+        }
+        else {
+            blas_error_if( lda < k );
+            blas_error_if( ldb < k );
+        }
+
+        blas_error_if( ldc < n );
     }
 
-    blas_error_if( ldc < n );
 
     // convert arguments
     device_blas_int n_   = to_device_blas_int( n );
@@ -70,6 +73,7 @@ void syr2k(
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int ldb_ = to_device_blas_int( ldb );
     device_blas_int ldc_ = to_device_blas_int( ldc );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     if (layout == Layout::RowMajor) {
         // swap lower <=> upper
@@ -82,7 +86,7 @@ void syr2k(
 
     // call low-level wrapper
     internal::syr2k( uplo, trans, n_, k_,
-                     alpha, A, lda_, B, ldb_, beta, C, ldc_, queue );
+                     alpha, A, lda_, B, ldb_, beta, C, ldc_, queue, testcase_, errname );
 #endif
 }
 
@@ -104,10 +108,10 @@ void syr2k(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::syr2k( layout, uplo, trans, n, k,
-                 alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                 alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -123,10 +127,10 @@ void syr2k(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::syr2k( layout, uplo, trans, n, k,
-                 alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                 alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -142,10 +146,10 @@ void syr2k(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::syr2k( layout, uplo, trans, n, k,
-                 alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                 alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -161,10 +165,10 @@ void syr2k(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::syr2k( layout, uplo, trans, n, k,
-                 alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                 alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 }  // namespace blas
