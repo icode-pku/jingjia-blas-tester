@@ -26,20 +26,23 @@ void dot(
     scalar_t const* x, int64_t incx,
     scalar_t const* y, int64_t incy,
     scalar_t* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
-    // check arguments
-    blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
-    blas_error_if( incx == 0 );  // standard BLAS doesn't detect inc[xy] == 0
-    blas_error_if( incy == 0 );
+    if(testcase == 1){
+        // check arguments
+        blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
+        blas_error_if( incx == 0 );  // standard BLAS doesn't detect inc[xy] == 0
+        blas_error_if( incy == 0 );
+    }
 
     // convert arguments
     device_blas_int n_    = to_device_blas_int( n );
     device_blas_int incx_ = to_device_blas_int( incx );
     device_blas_int incy_ = to_device_blas_int( incy );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
@@ -53,14 +56,14 @@ void dot(
             // use preallocated device workspace (resizing if needed)
             queue.work_ensure_size< char >( sizeof(scalar_t) );  // syncs if needed
             scalar_t* dev_work = (scalar_t*)queue.work();
-            internal::dot( n_, x, incx_, y, incy_, dev_work, queue );
+            internal::dot( n_, x, incx_, y, incy_, dev_work, queue, testcase_, errname );
             blas::device_memcpy( result, dev_work, 1, queue );
         }
         else {
-            internal::dot( n_, x, incx_, y, incy_, result, queue );
+            internal::dot( n_, x, incx_, y, incy_, result, queue, testcase_, errname );
         }
     #else // other devices (CUDA/HIP)
-        internal::dot( n_, x, incx_, y, incy_, result, queue );
+        internal::dot( n_, x, incx_, y, incy_, result, queue, testcase_, errname );
     #endif
 #endif
 }
@@ -77,7 +80,7 @@ void dotu(
     scalar_t const* x, int64_t incx,
     scalar_t const* y, int64_t incy,
     scalar_t* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
@@ -131,9 +134,9 @@ void dot(
     float const* x, int64_t incx,
     float const* y, int64_t incy,
     float* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::dot( n, x, incx, y, incy, result, queue );
+    impl::dot( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -144,9 +147,9 @@ void dot(
     double const* x, int64_t incx,
     double const* y, int64_t incy,
     double* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::dot( n, x, incx, y, incy, result, queue );
+    impl::dot( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -157,9 +160,9 @@ void dot(
     std::complex<float> const* x, int64_t incx,
     std::complex<float> const* y, int64_t incy,
     std::complex<float>* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::dot( n, x, incx, y, incy, result, queue );
+    impl::dot( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -170,9 +173,9 @@ void dot(
     std::complex<double> const* x, int64_t incx,
     std::complex<double> const* y, int64_t incy,
     std::complex<double>* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::dot( n, x, incx, y, incy, result, queue );
+    impl::dot( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 //==============================================================================
@@ -186,9 +189,9 @@ void dotu(
     float const* x, int64_t incx,
     float const* y, int64_t incy,
     float* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    dot( n, x, incx, y, incy, result, queue );
+    dot( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 // -----------------------------------------------------------------------------
@@ -199,9 +202,9 @@ void dotu(
     double const* x, int64_t incx,
     double const* y, int64_t incy,
     double* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    dot( n, x, incx, y, incy, result, queue );
+    dot( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -212,9 +215,9 @@ void dotu(
     std::complex<float> const* x, int64_t incx,
     std::complex<float> const* y, int64_t incy,
     std::complex<float>* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::dotu( n, x, incx, y, incy, result, queue );
+    impl::dotu( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -225,9 +228,9 @@ void dotu(
     std::complex<double> const* x, int64_t incx,
     std::complex<double> const* y, int64_t incy,
     std::complex<double>* result,
-    blas::Queue& queue)
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::dotu( n, x, incx, y, incy, result, queue );
+    impl::dotu( n, x, incx, y, incy, result, queue, testcase, errname );
 }
 
 } // namespace blas

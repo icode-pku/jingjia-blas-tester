@@ -15,6 +15,7 @@ void test_asum_device_work( Params& params, bool run )
     int64_t incx    = params.incx();
     int64_t verbose = params.verbose();
     int64_t device  = params.device();
+    int64_t testcase    = params.testcase();
 
     // mark non-standard output values
     params.gflops();
@@ -58,78 +59,92 @@ void test_asum_device_work( Params& params, bool run )
     queue.sync();
 
     // test error exits
-    assert_throw( blas::asum( -1, dx, incx , &result_device, queue), blas::Error );
-    assert_throw( blas::asum(  n, dx,    0 , &result_device, queue), blas::Error );
-    if (verbose >= 1) {
-        printf( "\n"
-                "x n=%5lld, inc=%5lld, size=%10lld\n",
-                llong( n ), llong( incx ), llong( size_x ) );
-    }
-    if (verbose >= 2) {
-        printf( "x = " ); print_vector( n, x, incx );
-    }
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    //double time = get_wtime();
-    blas::asum( n, dx, incx, &result_device, queue);
-    queue.sync();
-    //time = get_wtime() - time;
-    //copy data from gpu to cpu
-    blas::device_copy_vector(1, &result_device, 1, &result_host, 1, queue);
-    queue.sync();
-    double gflop = blas::Gflop< T >::asum( n );
-    double gbyte = blas::Gbyte< T >::asum( n );
-    // params.time()   = time * 1000;  // msec
-    // params.gflops() = gflop / time;
-    // params.gbytes() = gbyte / time;
+    if(testcase == 0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        //case 1: Test the return value when result is a nullptr
+        blas::asum( n, dx, incx, nullptr, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        queue.sync();
 
-    if (verbose >= 1) {
-        printf( "result = %.4e\n", result_host );
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+
+        free(error_name);
     }
-    double time;
-    if (params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        real_t ref = cblas_asum( n, x, incx );
-        time = get_wtime() - time;
-
-        params.ref_time()   = time * 1000;  // msec
-        params.ref_gflops() = gflop / time;
-        params.ref_gbytes() = gbyte / time;
-
+    else{
         if (verbose >= 1) {
-            printf( "ref    = %.4e\n", ref );
+            printf( "\n"
+                    "x n=%5lld, inc=%5lld, size=%10lld\n",
+                    llong( n ), llong( incx ), llong( size_x ) );
         }
-
-        // relative forward error
-        // note: using sqrt(n) here gives failures
-        real_t error = std::abs( (ref - result_host) / (n * ref) );
-
-        // complex needs extra factor; see Higham, 2002, sec. 3.6.
-        if (blas::is_complex<T>::value) {
-            error /= 2*sqrt(2);
+        if (verbose >= 2) {
+            printf( "x = " ); print_vector( n, x, incx );
         }
-
-        real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
-        params.error() = error;
-        params.okay() = (error < u);
-    }
-
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
+        //double time = get_wtime();
         blas::asum( n, dx, incx, &result_device, queue);
         queue.sync();
-        all_time += (get_wtime() - stime);
+        //time = get_wtime() - time;
+        //copy data from gpu to cpu
+        blas::device_copy_vector(1, &result_device, 1, &result_host, 1, queue);
+        queue.sync();
+        double gflop = blas::Gflop< T >::asum( n );
+        double gbyte = blas::Gbyte< T >::asum( n );
+        // params.time()   = time * 1000;  // msec
+        // params.gflops() = gflop / time;
+        // params.gbytes() = gbyte / time;
+
+        if (verbose >= 1) {
+            printf( "result = %.4e\n", result_host );
+        }
+        double time;
+        if (params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            real_t ref = cblas_asum( n, x, incx );
+            time = get_wtime() - time;
+
+            params.ref_time()   = time * 1000;  // msec
+            params.ref_gflops() = gflop / time;
+            params.ref_gbytes() = gbyte / time;
+
+            if (verbose >= 1) {
+                printf( "ref    = %.4e\n", ref );
+            }
+
+            // relative forward error
+            // note: using sqrt(n) here gives failures
+            real_t error = std::abs( (ref - result_host) / (n * ref) );
+
+            // complex needs extra factor; see Higham, 2002, sec. 3.6.
+            if (blas::is_complex<T>::value) {
+                error /= 2*sqrt(2);
+            }
+
+            real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+            params.error() = error;
+            params.okay() = (error < u);
+        }
+
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::asum( n, dx, incx, &result_device, queue);
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time * 1000;  // msec
+        params.gflops() = gflop / all_time;
+        params.gbytes() = gbyte / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time * 1000;  // msec
-    params.gflops() = gflop / all_time;
-    params.gbytes() = gbyte / all_time;
 
     delete[] x;
     blas::device_free(dx, queue);
