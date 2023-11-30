@@ -829,7 +829,7 @@ void hemm(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void hemm(
     blas::Side side, blas::Uplo uplo,
@@ -839,7 +839,7 @@ void hemm(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void symm(
@@ -890,7 +890,7 @@ void herk(
     std::complex<float> const *dA, device_blas_int ldda,
     float  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void herk(
     blas::Uplo uplo, blas::Op trans,
@@ -899,7 +899,7 @@ void herk(
     std::complex<double> const *dA, device_blas_int ldda,
     double  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void syrk(
@@ -947,7 +947,7 @@ void her2k(
     std::complex<float> const *dB, device_blas_int lddb,
     float  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void her2k(
     blas::Uplo uplo, blas::Op trans,
@@ -957,7 +957,7 @@ void her2k(
     std::complex<double> const *dB, device_blas_int lddb,
     double  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void syr2k(

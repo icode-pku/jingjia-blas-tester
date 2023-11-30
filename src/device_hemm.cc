@@ -30,35 +30,37 @@ void hemm(
     scalar_t const* B, int64_t ldb,
     scalar_t beta,
     scalar_t*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( side != Side::Left &&
-                   side != Side::Right );
-    blas_error_if( uplo != Uplo::Lower &&
-                   uplo != Uplo::Upper );
-    blas_error_if( m < 0 );
-    blas_error_if( n < 0 );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( side != Side::Left &&
+                    side != Side::Right );
+        blas_error_if( uplo != Uplo::Lower &&
+                    uplo != Uplo::Upper );
+        blas_error_if( m < 0 );
+        blas_error_if( n < 0 );
 
-    if (side == Side::Left)
-        blas_error_if_msg( lda < m, "lda %lld < m %lld",
-                           llong( lda ), llong( m ) );
-    else
-        blas_error_if_msg( lda < n, "lda %lld < n %lld",
-                           llong( lda ), llong( n ) );
+        if (side == Side::Left)
+            blas_error_if_msg( lda < m, "lda %lld < m %lld",
+                            llong( lda ), llong( m ) );
+        else
+            blas_error_if_msg( lda < n, "lda %lld < n %lld",
+                            llong( lda ), llong( n ) );
 
-    if (layout == Layout::ColMajor) {
-        blas_error_if( ldb < m );
-        blas_error_if( ldc < m );
-    }
-    else {
-        blas_error_if( ldb < n );
-        blas_error_if( ldc < n );
+        if (layout == Layout::ColMajor) {
+            blas_error_if( ldb < m );
+            blas_error_if( ldc < m );
+        }
+        else {
+            blas_error_if( ldb < n );
+            blas_error_if( ldc < n );
+        }
     }
 
     // convert arguments
@@ -67,6 +69,7 @@ void hemm(
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int ldb_ = to_device_blas_int( ldb );
     device_blas_int ldc_ = to_device_blas_int( ldc );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     if (layout == Layout::RowMajor) {
         // swap left <=> right, lower <=> upper, m <=> n
@@ -79,7 +82,7 @@ void hemm(
 
     // call low-level wrapper
     internal::hemm( side, uplo, m_, n_,
-                    alpha, A, lda_, B, ldb_, beta, C, ldc_, queue );
+                    alpha, A, lda_, B, ldb_, beta, C, ldc_, queue, testcase_, errname );
 #endif
 }
 
@@ -102,10 +105,10 @@ void hemm(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     blas::symm( layout, side, uplo, m, n,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -122,10 +125,10 @@ void hemm(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     blas::symm( layout, side, uplo, m, n,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -141,10 +144,10 @@ void hemm(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::hemm( layout, side, uplo, m, n,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -160,10 +163,10 @@ void hemm(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::hemm( layout, side, uplo, m, n,
-                alpha, A, lda, B, ldb, beta, C, ldc, queue );
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
 
 }  // namespace blas

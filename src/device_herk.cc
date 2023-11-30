@@ -28,33 +28,36 @@ void herk(
     scalar_t const* A, int64_t lda,
     real_type<scalar_t> beta,   // note: real
     scalar_t*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( uplo != Uplo::Lower &&
-                   uplo != Uplo::Upper );
-    blas_error_if( trans != Op::NoTrans &&
-                   trans != Op::ConjTrans );
-    blas_error_if( n < 0 );
-    blas_error_if( k < 0 );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( uplo != Uplo::Lower &&
+                    uplo != Uplo::Upper );
+        blas_error_if( trans != Op::NoTrans &&
+                    trans != Op::ConjTrans );
+        blas_error_if( n < 0 );
+        blas_error_if( k < 0 );
 
-    if ((trans == Op::NoTrans) ^ (layout == Layout::RowMajor))
-        blas_error_if( lda < n );
-    else
-        blas_error_if( lda < k );
+        if ((trans == Op::NoTrans) ^ (layout == Layout::RowMajor))
+            blas_error_if( lda < n );
+        else
+            blas_error_if( lda < k );
 
-    blas_error_if( ldc < n );
+        blas_error_if( ldc < n );
+    }
 
     // convert arguments
     device_blas_int n_   = to_device_blas_int( n );
     device_blas_int k_   = to_device_blas_int( k );
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int ldc_ = to_device_blas_int( ldc );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     if (layout == Layout::RowMajor) {
         // swap lower <=> upper
@@ -67,7 +70,7 @@ void herk(
 
     // call low-level wrapper
     internal::herk( uplo, trans, n_, k_,
-                    alpha, A, lda_, beta, C, ldc_, queue );
+                    alpha, A, lda_, beta, C, ldc_, queue, testcase_, errname );
 #endif
 }
 
@@ -88,10 +91,10 @@ void herk(
     float const* A, int64_t lda,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     blas::syrk( layout, uplo, trans, n, k,
-                alpha, A, lda, beta, C, ldc, queue );
+                alpha, A, lda, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -106,10 +109,10 @@ void herk(
     double const* A, int64_t lda,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     blas::syrk( layout, uplo, trans, n, k,
-                alpha, A, lda, beta, C, ldc, queue );
+                alpha, A, lda, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -124,10 +127,10 @@ void herk(
     std::complex<float> const* A, int64_t lda,
     float beta,   // note: real
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::herk( layout, uplo, trans, n, k,
-                alpha, A, lda, beta, C, ldc, queue );
+                alpha, A, lda, beta, C, ldc, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -142,10 +145,10 @@ void herk(
     std::complex<double> const* A, int64_t lda,
     double beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::herk( layout, uplo, trans, n, k,
-                alpha, A, lda, beta, C, ldc, queue );
+                alpha, A, lda, beta, C, ldc, queue, testcase, errname );
 }
 
 }  // namespace blas
