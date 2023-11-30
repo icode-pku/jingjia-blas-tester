@@ -234,50 +234,50 @@ void scal(
     int64_t n,
     float alpha,
     float* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void scal(
     int64_t n,
     double alpha,
     double* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void scal(
     int64_t n,
     std::complex<float> alpha,
     std::complex<float>* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void scal(
     int64_t n,
     std::complex<double> alpha,
     std::complex<double>* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void swap(
     int64_t n,
     float* x, int64_t incx,
     float* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void swap(
     int64_t n,
     double* x, int64_t incx,
     double* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void swap(
     int64_t n,
     std::complex<float>* x, int64_t incx,
     std::complex<float>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void swap(
     int64_t n,
     std::complex<double>* x, int64_t incx,
     std::complex<double>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //==============================================================================
 // Level 2 BLAS

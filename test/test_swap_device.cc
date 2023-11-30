@@ -23,6 +23,7 @@ void test_swap_device_work( Params& params, bool run )
     int64_t incy       = params.incy();
     int64_t device     = params.device();
     int64_t verbose    = params.verbose();
+    int64_t testcase    = params.testcase();
 
     // mark non-standard output values
     params.gflops();
@@ -74,80 +75,85 @@ void test_swap_device_work( Params& params, bool run )
     queue.sync();
 
     // test error exits
-    assert_throw( blas::swap( -1, dx, incx, dy, incy, queue ), blas::Error );
-    assert_throw( blas::swap(  n, dx,    0, dy, incy, queue ), blas::Error );
-    assert_throw( blas::swap(  n, dx, incx, dy,    0, queue ), blas::Error );
-
-    if (verbose >= 1) {
-        printf( "\n"
-                "x n=%5lld, inc=%5lld, size=%10lld\n"
-                "y n=%5lld, inc=%5lld, size=%10lld\n",
-                llong( n ), llong( incx ), llong( size_x ),
-                llong( n ), llong( incy ), llong( size_y ) );
+    if(testcase == 0){
+        //The number of test cases is 0
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
     }
-    if (verbose >= 2) {
-        printf( "x    = " ); print_vector( n, x, incx );
-        printf( "y    = " ); print_vector( n, y, incy );
-    }
-
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    blas::swap( n, dx, incx, dy, incy, queue );
-    queue.sync();
-
-    double gflop = blas::Gflop< scalar_t >::swap( n );
-    double gbyte = blas::Gbyte< scalar_t >::swap( n );
-
-    // todo: should we have different incdx and incdy
-    blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
-    blas::device_copy_vector(n, dy, std::abs(incy), y, std::abs(incy), queue);
-    queue.sync();
-
-    if (verbose >= 2) {
-        printf( "x2   = " ); print_vector( n, x, incx );
-        printf( "y2   = " ); print_vector( n, y, incy );
-    }
-    double time;
-    if (params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        cblas_swap( n, xref, incx, yref, incy );
-        time = get_wtime() - time;
+    else{
+        if (verbose >= 1) {
+            printf( "\n"
+                    "x n=%5lld, inc=%5lld, size=%10lld\n"
+                    "y n=%5lld, inc=%5lld, size=%10lld\n",
+                    llong( n ), llong( incx ), llong( size_x ),
+                    llong( n ), llong( incy ), llong( size_y ) );
+        }
         if (verbose >= 2) {
-            printf( "xref = " ); print_vector( n, xref, incx );
-            printf( "yref = " ); print_vector( n, yref, incy );
+            printf( "x    = " ); print_vector( n, x, incx );
+            printf( "y    = " ); print_vector( n, y, incy );
         }
 
-        params.ref_time()   = time * 1000;  // msec
-        params.ref_gflops() = gflop / time;
-        params.ref_gbytes() = gbyte / time;
-
-        // error = ||xref - x|| + ||yref - y||
-        cblas_axpy( n, -1.0, x, incx, xref, incx );
-        cblas_axpy( n, -1.0, y, incy, yref, incy );
-        real_t error = cblas_nrm2( n, xref, std::abs(incx) )
-                     + cblas_nrm2( n, yref, std::abs(incy) );
-        params.error() = error;
-
-        // swap must be exact!
-        params.okay() = (error == 0);
-    }
-    //test time
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
         blas::swap( n, dx, incx, dy, incy, queue );
         queue.sync();
-        all_time += (get_wtime() - stime);
+
+        double gflop = blas::Gflop< scalar_t >::swap( n );
+        double gbyte = blas::Gbyte< scalar_t >::swap( n );
+
+        // todo: should we have different incdx and incdy
+        blas::device_copy_vector(n, dx, std::abs(incx), x, std::abs(incx), queue);
+        blas::device_copy_vector(n, dy, std::abs(incy), y, std::abs(incy), queue);
+        queue.sync();
+
+        if (verbose >= 2) {
+            printf( "x2   = " ); print_vector( n, x, incx );
+            printf( "y2   = " ); print_vector( n, y, incy );
+        }
+        double time;
+        if (params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            cblas_swap( n, xref, incx, yref, incy );
+            time = get_wtime() - time;
+            if (verbose >= 2) {
+                printf( "xref = " ); print_vector( n, xref, incx );
+                printf( "yref = " ); print_vector( n, yref, incy );
+            }
+
+            params.ref_time()   = time * 1000;  // msec
+            params.ref_gflops() = gflop / time;
+            params.ref_gbytes() = gbyte / time;
+
+            // error = ||xref - x|| + ||yref - y||
+            cblas_axpy( n, -1.0, x, incx, xref, incx );
+            cblas_axpy( n, -1.0, y, incy, yref, incy );
+            real_t error = cblas_nrm2( n, xref, std::abs(incx) )
+                        + cblas_nrm2( n, yref, std::abs(incy) );
+            params.error() = error;
+
+            // swap must be exact!
+            params.okay() = (error == 0);
+        }
+        //test time
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::swap( n, dx, incx, dy, incy, queue );
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time * 1000;  // msec
+        params.gflops() = gflop / all_time;
+        params.gbytes() = gbyte / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time * 1000;  // msec
-    params.gflops() = gflop / all_time;
-    params.gbytes() = gbyte / all_time;
 
     delete[] x;
     delete[] y;

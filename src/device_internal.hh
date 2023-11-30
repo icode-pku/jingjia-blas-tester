@@ -496,50 +496,50 @@ void scal(
     device_blas_int n,
     float alpha,
     float *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void scal(
     device_blas_int n,
     double alpha,
     double *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void scal(
     device_blas_int n,
     std::complex<float> alpha,
     std::complex<float> *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void scal(
     device_blas_int n,
     std::complex<double> alpha,
     std::complex<double> *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void swap(
     device_blas_int n,
     float *dx, device_blas_int incdx,
     float *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void swap(
     device_blas_int n,
     double *dx, device_blas_int incdx,
     double *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void swap(
     device_blas_int n,
     std::complex<float> *dx, device_blas_int incdx,
     std::complex<float> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void swap(
     device_blas_int n,
     std::complex<double> *dx, device_blas_int incdx,
     std::complex<double> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void copy(
