@@ -806,7 +806,7 @@ void trmm(
     float alpha,
     float const* A, int64_t lda,
     float*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trmm(
     blas::Layout layout,
@@ -819,7 +819,7 @@ void trmm(
     double alpha,
     double const* A, int64_t lda,
     double*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trmm(
     blas::Layout layout,
@@ -832,7 +832,7 @@ void trmm(
     std::complex<float> alpha,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trmm(
     blas::Layout layout,
@@ -845,7 +845,7 @@ void trmm(
     std::complex<double> alpha,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void trsm(
@@ -859,7 +859,7 @@ void trsm(
     float alpha,
     float const* A, int64_t lda,
     float*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -872,7 +872,7 @@ void trsm(
     double alpha,
     double const* A, int64_t lda,
     double*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -885,7 +885,7 @@ void trsm(
     std::complex<float> alpha,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -898,7 +898,7 @@ void trsm(
     std::complex<double> alpha,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //==============================================================================
 //                     Batch BLAS APIs (device)

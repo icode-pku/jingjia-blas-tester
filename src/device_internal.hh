@@ -761,7 +761,7 @@ void trsm(
     float alpha,
     float const *dA, device_blas_int ldda,
     float       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -769,7 +769,7 @@ void trsm(
     double alpha,
     double const *dA, device_blas_int ldda,
     double       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -777,7 +777,7 @@ void trsm(
     std::complex<float>  alpha,
     std::complex<float> const *dA, device_blas_int ldda,
     std::complex<float>       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -785,7 +785,7 @@ void trsm(
     std::complex<double>  alpha,
     std::complex<double> const *dA, device_blas_int ldda,
     std::complex<double>       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void trmm(
@@ -794,7 +794,7 @@ void trmm(
     float alpha,
     float const *dA, device_blas_int ldda,
     float       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -802,7 +802,7 @@ void trmm(
     double alpha,
     double const *dA, device_blas_int ldda,
     double       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -810,7 +810,7 @@ void trmm(
     std::complex<float>  alpha,
     std::complex<float> const *dA, device_blas_int ldda,
     std::complex<float>       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -818,7 +818,7 @@ void trmm(
     std::complex<double>  alpha,
     std::complex<double> const *dA, device_blas_int ldda,
     std::complex<double>       *dB, device_blas_int lddb,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void hemm(
