@@ -32,6 +32,7 @@ void test_herk_device_work( Params& params, bool run )
     int64_t device      = params.device();
     int64_t align       = params.align();
     int64_t verbose     = params.verbose();
+    int64_t testcase    = params.testcase();
 
     // mark non-standard output values
     params.gflops();
@@ -84,93 +85,126 @@ void test_herk_device_work( Params& params, bool run )
     real_t Cnorm = lapack_lansy( "f", uplo2str(uplo), n, C, ldc, work );
 
     // test error exits
-    assert_throw( blas::herk( Layout(0), uplo,    trans,  n,  k, alpha, dA, lda, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( layout,    Uplo(0), trans,  n,  k, alpha, dA, lda, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( layout,    uplo,    Op(0),  n,  k, alpha, dA, lda, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( layout,    uplo,    trans, -1,  k, alpha, dA, lda, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( layout,    uplo,    trans,  n, -1, alpha, dA, lda, beta, dC, ldc, queue ), blas::Error );
+    if(testcase == 0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        //case 1: Test the return value when uplo is an illegal value
+        blas::herk( layout,    Uplo(0), trans,  n,  k, alpha, dA, lda, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 2: Test the return value when trans is an illegal value
+        blas::herk( layout,    uplo,    Op(0),  n,  k, alpha, dA, lda, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 3: Test the return value when n is an illegal value
+        blas::herk( layout,    uplo,    trans, -1,  k, alpha, dA, lda, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 4: Test the return value when k is an illegal value
+        blas::herk( layout,    uplo,    trans,  n, -1, alpha, dA, lda, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::herk( Layout::ColMajor, uplo, Op::NoTrans,   n, k, alpha, dA, n-1, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( Layout::ColMajor, uplo, Op::Trans,     n, k, alpha, dA, k-1, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( Layout::ColMajor, uplo, Op::ConjTrans, n, k, alpha, dA, k-1, beta, dC, ldc, queue ), blas::Error );
+        //case 5: Test the return value when Layout::ColMajor and Op::NoTrans and lda is an illegal value
+        blas::herk( Layout::ColMajor, uplo, Op::NoTrans,   n, k, alpha, dA, n-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 6: Test the return value when Layout::ColMajor and Op::Trans and lda is an illegal value
+        blas::herk( Layout::ColMajor, uplo, Op::Trans,     n, k, alpha, dA, k-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 7: Test the return value when Layout::ColMajor and Op::ConjTrans and lda is an illegal value
+        blas::herk( Layout::ColMajor, uplo, Op::ConjTrans, n, k, alpha, dA, k-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::herk( Layout::RowMajor, uplo, Op::NoTrans,   n, k, alpha, dA, k-1, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( Layout::RowMajor, uplo, Op::Trans,     n, k, alpha, dA, n-1, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::herk( Layout::RowMajor, uplo, Op::ConjTrans, n, k, alpha, dA, n-1, beta, dC, ldc, queue ), blas::Error );
+        //case 8: Test the return value when Layout::RowMajor and Op::NoTrans and lda is an illegal value
+        blas::herk( Layout::RowMajor, uplo, Op::NoTrans,   n, k, alpha, dA, k-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 9: Test the return value when Layout::RowMajor and Op::Trans and lda is an illegal value
+        blas::herk( Layout::RowMajor, uplo, Op::Trans,     n, k, alpha, dA, n-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 10: Test the return value when Layout::RowMajor and Op::ConjTrans and lda is an illegal value
+        blas::herk( Layout::RowMajor, uplo, Op::ConjTrans, n, k, alpha, dA, n-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::herk( layout,    uplo,    trans,  n,  k, alpha, dA, lda, beta, dC, n-1, queue ), blas::Error );
+        //case 11: Test the return value when ldc is an illegal value
+        blas::herk( layout,    uplo,    trans,  n,  k, alpha, dA, lda, beta, dC, n-1, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    if (verbose >= 1) {
-        printf( "\n"
-                "uplo %c, trans %c\n"
-                "A An=%5lld, An=%5lld, lda=%5lld, size=%10lld, norm %.2e\n"
-                "C  n=%5lld,  n=%5lld, ldc=%5lld, size=%10lld, norm %.2e\n",
-                uplo2char(uplo), op2char(trans),
-                llong( Am ), llong( An ), llong( lda ), llong( size_A ), Anorm,
-                llong( n ), llong( n ), llong( ldc ), llong( size_C ), Cnorm );
+        queue.sync();
+
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+
+        free(error_name);
     }
-    if (verbose >= 2) {
-        printf( "alpha = %.4e; beta = %.4e;  %% real\n", alpha, beta );
-        printf( "A = "    ); print_matrix( Am, An, A, lda );
-        printf( "C = "    ); print_matrix(  n,  n, C, ldc );
-    }
-
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    blas::herk( layout, uplo, trans, n, k,
-                alpha, dA, lda, beta, dC, ldc, queue );
-    queue.sync();
-    double gflop = blas::Gflop< scalar_t >::herk( n, k );
-    blas::device_copy_matrix(n, n, dC, ldc, C, ldc, queue);
-    queue.sync();
-
-    if (verbose >= 2) {
-        printf( "C2 = " ); print_matrix( n, n, C, ldc );
-    }
-    double time;
-    if (params.ref() == 'y' || params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        cblas_herk( cblas_layout_const(layout),
-                    cblas_uplo_const(uplo),
-                    cblas_trans_const(trans),
-                    n, k, alpha, A, lda, beta, Cref, ldc );
-        time = get_wtime() - time;
-
-        params.ref_time()   = time;
-        params.ref_gflops() = gflop / time;
-
+    else{
+        if (verbose >= 1) {
+            printf( "\n"
+                    "uplo %c, trans %c\n"
+                    "A An=%5lld, An=%5lld, lda=%5lld, size=%10lld, norm %.2e\n"
+                    "C  n=%5lld,  n=%5lld, ldc=%5lld, size=%10lld, norm %.2e\n",
+                    uplo2char(uplo), op2char(trans),
+                    llong( Am ), llong( An ), llong( lda ), llong( size_A ), Anorm,
+                    llong( n ), llong( n ), llong( ldc ), llong( size_C ), Cnorm );
+        }
         if (verbose >= 2) {
-            printf( "Cref = " ); print_matrix( n, n, Cref, ldc );
+            printf( "alpha = %.4e; beta = %.4e;  %% real\n", alpha, beta );
+            printf( "A = "    ); print_matrix( Am, An, A, lda );
+            printf( "C = "    ); print_matrix(  n,  n, C, ldc );
         }
 
-        // check error compared to reference
-        real_t error;
-        bool okay;
-        check_herk( uplo, n, k, alpha, beta, Anorm, Anorm, Cnorm,
-                    Cref, ldc, C, ldc, verbose, &error, &okay );
-        params.error() = error;
-        params.okay() = okay;
-    }
-
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    alpha = 0.01 * params.alpha();
-    beta = 0.01 * params.beta();
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
         blas::herk( layout, uplo, trans, n, k,
-                alpha, dA, lda, beta, dC, ldc, queue );
+                    alpha, dA, lda, beta, dC, ldc, queue );
         queue.sync();
-        all_time += (get_wtime() - stime);
-    }
-    all_time/=(double)runs;
-    params.time()   = all_time;  // s
-    params.gflops() = gflop / all_time;
+        double gflop = blas::Gflop< scalar_t >::herk( n, k );
+        blas::device_copy_matrix(n, n, dC, ldc, C, ldc, queue);
+        queue.sync();
 
+        if (verbose >= 2) {
+            printf( "C2 = " ); print_matrix( n, n, C, ldc );
+        }
+        double time;
+        if (params.ref() == 'y' || params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            cblas_herk( cblas_layout_const(layout),
+                        cblas_uplo_const(uplo),
+                        cblas_trans_const(trans),
+                        n, k, alpha, A, lda, beta, Cref, ldc );
+            time = get_wtime() - time;
+
+            params.ref_time()   = time;
+            params.ref_gflops() = gflop / time;
+
+            if (verbose >= 2) {
+                printf( "Cref = " ); print_matrix( n, n, Cref, ldc );
+            }
+
+            // check error compared to reference
+            real_t error;
+            bool okay;
+            check_herk( uplo, n, k, alpha, beta, Anorm, Anorm, Cnorm,
+                        Cref, ldc, C, ldc, verbose, &error, &okay );
+            params.error() = error;
+            params.okay() = okay;
+        }
+
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        alpha = 0.01 * params.alpha();
+        beta = 0.01 * params.beta();
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::herk( layout, uplo, trans, n, k,
+                    alpha, dA, lda, beta, dC, ldc, queue );
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time;  // s
+        params.gflops() = gflop / all_time;
+    }
 
     delete[] A;
     delete[] C;

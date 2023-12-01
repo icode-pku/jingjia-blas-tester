@@ -34,6 +34,7 @@ void test_hemm_device_work( Params& params, bool run )
     int64_t device      = params.device();
     int64_t align       = params.align();
     int64_t verbose     = params.verbose();
+    int64_t testcase    = params.testcase();
 
     // mark non-standard output values
     params.gflops();
@@ -95,97 +96,129 @@ void test_hemm_device_work( Params& params, bool run )
     real_t Cnorm = lapack_lange( "f", Cm, Cn, C, ldc, work );
 
     // test error exits
-    assert_throw( blas::hemm( Layout(0), side,     uplo,     m,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::hemm( layout,    Side(0),  uplo,     m,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::hemm( layout,    side,     Uplo(0),  m,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::hemm( layout,    side,     uplo,    -1,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::hemm( layout,    side,     uplo,     m, -1, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue ), blas::Error );
+    if(testcase == 0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        //case 1: Test the return value when side is an illegal value
+        blas::hemm( layout,    Side(0),  uplo,     m,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 2: Test the return value when uplo is an illegal value
+        blas::hemm( layout,    side,     Uplo(0),  m,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 3: Test the return value when m is an illegal value
+        blas::hemm( layout,    side,     uplo,    -1,  n, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 4: Test the return value when n is an illegal value
+        blas::hemm( layout,    side,     uplo,     m, -1, alpha, dA, lda, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::hemm( layout, Side::Left,  uplo,     m,  n, alpha, dA, m-1, dB, ldb, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::hemm( layout, Side::Right, uplo,     m,  n, alpha, dA, n-1, dB, ldb, beta, dC, ldc, queue ), blas::Error );
+        //case 5: Test the return value when Side::Left and lda is an illegal value
+        blas::hemm( layout, Side::Left,  uplo,     m,  n, alpha, dA, m-1, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 6: Test the return value when Side::Right and lda is an illegal value
+        blas::hemm( layout, Side::Right, uplo,     m,  n, alpha, dA, n-1, dB, ldb, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::hemm( Layout::ColMajor, side, uplo,  m,  n, alpha, dA, lda, dB, m-1, beta, dC, ldc, queue ), blas::Error );
-    assert_throw( blas::hemm( Layout::RowMajor, side, uplo,  m,  n, alpha, dA, lda, dB, n-1, beta, dC, ldc, queue ), blas::Error );
+        //case 7: Test the return value when Layout::ColMajor and ldb is an illegal value
+        blas::hemm( Layout::ColMajor, side, uplo,  m,  n, alpha, dA, lda, dB, m-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 8: Test the return value when Layout::RowMajor and ldb is an illegal value
+        blas::hemm( Layout::RowMajor, side, uplo,  m,  n, alpha, dA, lda, dB, n-1, beta, dC, ldc, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::hemm( Layout::ColMajor, side, uplo,  m,  n, alpha, dA, lda, dB, ldb, beta, dC, m-1, queue ), blas::Error );
-    assert_throw( blas::hemm( Layout::RowMajor, side, uplo,  m,  n, alpha, dA, lda, dB, ldb, beta, dC, n-1, queue ), blas::Error );
+        //case 9: Test the return value when Layout::ColMajor and ldc is an illegal value
+        blas::hemm( Layout::ColMajor, side, uplo,  m,  n, alpha, dA, lda, dB, ldb, beta, dC, m-1, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 10: Test the return value when Layout::RowMajor and ldc is an illegal value
+        blas::hemm( Layout::RowMajor, side, uplo,  m,  n, alpha, dA, lda, dB, ldb, beta, dC, n-1, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    if (verbose >= 1) {
-        printf( "\n"
-                "side %c, uplo %c\n"
-                "A An=%5lld, An=%5lld, lda=%5lld, size=%10lld, norm %.2e\n"
-                "B  m=%5lld,  n=%5lld, ldb=%5lld, size=%10lld, norm %.2e\n"
-                "C  m=%5lld,  n=%5lld, ldc=%5lld, size=%10lld, norm %.2e\n",
-                side2char(side), uplo2char(uplo),
-                llong( An ), llong( An ), llong( lda ), llong( size_A ), Anorm,
-                llong( m ), llong( n ), llong( ldb ), llong( size_B ), Bnorm,
-                llong( m ), llong( n ), llong( ldc ), llong( size_C ), Cnorm );
+        queue.sync();
+
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+
+        free(error_name);
     }
-    if (verbose >= 2) {
-        printf( "alpha = %.4e + %.4ei; beta = %.4e + %.4ei;\n",
-                real(alpha), imag(alpha),
-                real(beta),  imag(beta) );
-        printf( "A = "    ); print_matrix( An, An, A, lda );
-        printf( "B = "    ); print_matrix( Cm, Cn, B, ldb );
-        printf( "C = "    ); print_matrix( Cm, Cn, C, ldc );
-    }
-
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    blas::hemm( layout, side, uplo, m, n,
-                alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
-    queue.sync();
-
-    double gflop = blas::Gflop< scalar_t >::hemm( side, m, n );
-    blas::device_copy_matrix(Cm, Cn, dC, ldc, C, ldc, queue);
-    queue.sync();
-
-    if (verbose >= 2) {
-        printf( "C2 = " ); print_matrix( Cm, Cn, C, ldc );
-    }
-    double time;
-    if (params.ref() == 'y' || params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        cblas_hemm( cblas_layout_const(layout),
-                    cblas_side_const(side),
-                    cblas_uplo_const(uplo),
-                    m, n, alpha, A, lda, B, ldb, beta, Cref, ldc );
-        time = get_wtime() - time;
-
-        params.ref_time()   = time;
-        params.ref_gflops() = gflop / time;
-
+    else{
+        if (verbose >= 1) {
+            printf( "\n"
+                    "side %c, uplo %c\n"
+                    "A An=%5lld, An=%5lld, lda=%5lld, size=%10lld, norm %.2e\n"
+                    "B  m=%5lld,  n=%5lld, ldb=%5lld, size=%10lld, norm %.2e\n"
+                    "C  m=%5lld,  n=%5lld, ldc=%5lld, size=%10lld, norm %.2e\n",
+                    side2char(side), uplo2char(uplo),
+                    llong( An ), llong( An ), llong( lda ), llong( size_A ), Anorm,
+                    llong( m ), llong( n ), llong( ldb ), llong( size_B ), Bnorm,
+                    llong( m ), llong( n ), llong( ldc ), llong( size_C ), Cnorm );
+        }
         if (verbose >= 2) {
-            printf( "Cref = " ); print_matrix( Cm, Cn, Cref, ldc );
+            printf( "alpha = %.4e + %.4ei; beta = %.4e + %.4ei;\n",
+                    real(alpha), imag(alpha),
+                    real(beta),  imag(beta) );
+            printf( "A = "    ); print_matrix( An, An, A, lda );
+            printf( "B = "    ); print_matrix( Cm, Cn, B, ldb );
+            printf( "C = "    ); print_matrix( Cm, Cn, C, ldc );
         }
 
-        // check error compared to reference
-        real_t error;
-        bool okay;
-        check_gemm( Cm, Cn, An, alpha, beta, Anorm, Bnorm, Cnorm,
-                    Cref, ldc, C, ldc, verbose, &error, &okay );
-        params.error() = error;
-        params.okay() = okay;
-    }
-
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    alpha = 0.01 * params.alpha();
-    beta = 0.01 * params.beta();
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
         blas::hemm( layout, side, uplo, m, n,
-                alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
+                    alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
         queue.sync();
-        all_time += (get_wtime() - stime);
+
+        double gflop = blas::Gflop< scalar_t >::hemm( side, m, n );
+        blas::device_copy_matrix(Cm, Cn, dC, ldc, C, ldc, queue);
+        queue.sync();
+
+        if (verbose >= 2) {
+            printf( "C2 = " ); print_matrix( Cm, Cn, C, ldc );
+        }
+        double time;
+        if (params.ref() == 'y' || params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            cblas_hemm( cblas_layout_const(layout),
+                        cblas_side_const(side),
+                        cblas_uplo_const(uplo),
+                        m, n, alpha, A, lda, B, ldb, beta, Cref, ldc );
+            time = get_wtime() - time;
+
+            params.ref_time()   = time;
+            params.ref_gflops() = gflop / time;
+
+            if (verbose >= 2) {
+                printf( "Cref = " ); print_matrix( Cm, Cn, Cref, ldc );
+            }
+
+            // check error compared to reference
+            real_t error;
+            bool okay;
+            check_gemm( Cm, Cn, An, alpha, beta, Anorm, Bnorm, Cnorm,
+                        Cref, ldc, C, ldc, verbose, &error, &okay );
+            params.error() = error;
+            params.okay() = okay;
+        }
+
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        alpha = 0.01 * params.alpha();
+        beta = 0.01 * params.beta();
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::hemm( layout, side, uplo, m, n,
+                    alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time;  // s
+        params.gflops() = gflop / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time;  // s
-    params.gflops() = gflop / all_time;
 
     delete[] A;
     delete[] B;
