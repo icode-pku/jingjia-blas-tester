@@ -519,7 +519,7 @@ void hemm(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void hemm(
     blas::Layout layout,
@@ -531,7 +531,7 @@ void hemm(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void hemm(
     blas::Layout layout,
@@ -543,7 +543,7 @@ void hemm(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void hemm(
     blas::Layout layout,
@@ -555,7 +555,7 @@ void hemm(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void her2k(
@@ -568,7 +568,7 @@ void her2k(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void her2k(
     blas::Layout layout,
@@ -580,7 +580,7 @@ void her2k(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void her2k(
     blas::Layout layout,
@@ -592,7 +592,7 @@ void her2k(
     std::complex<float> const* B, int64_t ldb,
     float beta,   // note: real
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void her2k(
     blas::Layout layout,
@@ -604,7 +604,7 @@ void her2k(
     std::complex<double> const* B, int64_t ldb,
     double beta,  // note: real
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void herk(
@@ -616,7 +616,7 @@ void herk(
     float const* A, int64_t lda,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void herk(
     blas::Layout layout,
@@ -627,7 +627,7 @@ void herk(
     double const* A, int64_t lda,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void herk(
     blas::Layout layout,
@@ -638,7 +638,7 @@ void herk(
     std::complex<float> const* A, int64_t lda,
     float beta,   // note: real
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void herk(
     blas::Layout layout,
@@ -649,7 +649,7 @@ void herk(
     std::complex<double> const* A, int64_t lda,
     double beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void symm(
@@ -806,7 +806,7 @@ void trmm(
     float alpha,
     float const* A, int64_t lda,
     float*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trmm(
     blas::Layout layout,
@@ -819,7 +819,7 @@ void trmm(
     double alpha,
     double const* A, int64_t lda,
     double*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trmm(
     blas::Layout layout,
@@ -832,7 +832,7 @@ void trmm(
     std::complex<float> alpha,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trmm(
     blas::Layout layout,
@@ -845,7 +845,7 @@ void trmm(
     std::complex<double> alpha,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void trsm(
@@ -859,7 +859,7 @@ void trsm(
     float alpha,
     float const* A, int64_t lda,
     float*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -872,7 +872,7 @@ void trsm(
     double alpha,
     double const* A, int64_t lda,
     double*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -885,7 +885,7 @@ void trsm(
     std::complex<float> alpha,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -898,7 +898,7 @@ void trsm(
     std::complex<double> alpha,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       B, int64_t ldb,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //==============================================================================
 //                     Batch BLAS APIs (device)

@@ -30,41 +30,44 @@ void trmm(
     scalar_t alpha,
     scalar_t const* A, int64_t lda,
     scalar_t*       B, int64_t ldb,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( side != Side::Left &&
-                   side != Side::Right );
-    blas_error_if( uplo != Uplo::Lower &&
-                   uplo != Uplo::Upper );
-    blas_error_if( trans != Op::NoTrans &&
-                   trans != Op::Trans &&
-                   trans != Op::ConjTrans );
-    blas_error_if( diag != Diag::NonUnit &&
-                   diag != Diag::Unit );
-    blas_error_if( m < 0 );
-    blas_error_if( n < 0 );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( side != Side::Left &&
+                    side != Side::Right );
+        blas_error_if( uplo != Uplo::Lower &&
+                    uplo != Uplo::Upper );
+        blas_error_if( trans != Op::NoTrans &&
+                    trans != Op::Trans &&
+                    trans != Op::ConjTrans );
+        blas_error_if( diag != Diag::NonUnit &&
+                    diag != Diag::Unit );
+        blas_error_if( m < 0 );
+        blas_error_if( n < 0 );
 
-    if (side == Side::Left)
-        blas_error_if( lda < m );
-    else
-        blas_error_if( lda < n );
+        if (side == Side::Left)
+            blas_error_if( lda < m );
+        else
+            blas_error_if( lda < n );
 
-    if (layout == Layout::ColMajor)
-        blas_error_if( ldb < m );
-    else
-        blas_error_if( ldb < n );
+        if (layout == Layout::ColMajor)
+            blas_error_if( ldb < m );
+        else
+            blas_error_if( ldb < n );
+    }
 
     // convert arguments
     device_blas_int m_   = to_device_blas_int( m );
     device_blas_int n_   = to_device_blas_int( n );
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int ldb_ = to_device_blas_int( ldb );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     if (layout == Layout::RowMajor) {
         // swap lower <=> upper, left <=> right, m <=> n
@@ -77,7 +80,7 @@ void trmm(
 
     // call low-level wrapper
     internal::trmm( side, uplo, trans, diag, m_, n_,
-                    alpha, A, lda_, B, ldb_, queue );
+                    alpha, A, lda_, B, ldb_, queue, testcase_, errname );
 #endif
 }
 
@@ -99,10 +102,10 @@ void trmm(
     float alpha,
     float const* A, int64_t lda,
     float*       B, int64_t ldb,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmm( layout, side, uplo, trans, diag, m, n,
-                alpha, A, lda, B, ldb, queue );
+                alpha, A, lda, B, ldb, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -118,10 +121,10 @@ void trmm(
     double alpha,
     double const* A, int64_t lda,
     double*       B, int64_t ldb,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmm( layout, side, uplo, trans, diag, m, n,
-                alpha, A, lda, B, ldb, queue );
+                alpha, A, lda, B, ldb, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -137,10 +140,10 @@ void trmm(
     std::complex<float> alpha,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       B, int64_t ldb,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmm( layout, side, uplo, trans, diag, m, n,
-                alpha, A, lda, B, ldb, queue );
+                alpha, A, lda, B, ldb, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -156,10 +159,10 @@ void trmm(
     std::complex<double> alpha,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       B, int64_t ldb,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmm( layout, side, uplo, trans, diag, m, n,
-                alpha, A, lda, B, ldb, queue );
+                alpha, A, lda, B, ldb, queue, testcase, errname );
 }
 
 }  // namespace blas
