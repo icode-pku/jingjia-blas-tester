@@ -23,29 +23,32 @@ void trmv(
     int64_t n,
     scalar_t const* A, int64_t lda,
     scalar_t*       x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( uplo != Uplo::Lower &&
-                   uplo != Uplo::Upper );
-    blas_error_if( trans != Op::NoTrans &&
-                   trans != Op::Trans &&
-                   trans != Op::ConjTrans );
-    blas_error_if( diag != Diag::NonUnit &&
-                   diag != Diag::Unit );
-    blas_error_if( n < 0 );
-    blas_error_if( incx == 0 );
-    blas_error_if( lda < n );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( uplo != Uplo::Lower &&
+                    uplo != Uplo::Upper );
+        blas_error_if( trans != Op::NoTrans &&
+                    trans != Op::Trans &&
+                    trans != Op::ConjTrans );
+        blas_error_if( diag != Diag::NonUnit &&
+                    diag != Diag::Unit );
+        blas_error_if( n < 0 );
+        blas_error_if( incx == 0 );
+        blas_error_if( lda < n );
+    }
 
     // convert arguments
     device_blas_int n_   = to_device_blas_int( n );
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int incx_ = to_device_blas_int( incx );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::Op trans2 = trans;
     if (layout == Layout::RowMajor) {
@@ -81,7 +84,7 @@ void trmv(
     
     // call low-level wrapper
     internal::trmv( uplo, trans2, diag, n_,
-                    A, lda_, x, incx_, queue );
+                    A, lda_, x, incx_, queue, testcase_, errname );
 
     if constexpr (is_complex<scalar_t>::value) {
     if (layout == Layout::RowMajor && trans == Op::ConjTrans) {
@@ -117,10 +120,10 @@ void trmv(
     int64_t n,
     float const* A, int64_t lda,
     float*       x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmv( layout, uplo, trans, diag, n,
-                A, lda, x, incx, queue );
+                A, lda, x, incx, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -134,10 +137,10 @@ void trmv(
     int64_t n,
     double const* A, int64_t lda,
     double*       x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmv( layout, uplo, trans, diag, n,
-                A, lda, x, incx, queue );
+                A, lda, x, incx, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -151,10 +154,10 @@ void trmv(
     int64_t n,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmv( layout, uplo, trans, diag, n,
-                A, lda, x, incx, queue );
+                A, lda, x, incx, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -168,10 +171,10 @@ void trmv(
     int64_t n,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trmv( layout, uplo, trans, diag, n,
-                A, lda, x, incx, queue );
+                A, lda, x, incx, queue, testcase, errname );
 }
 
 }  // namespace blas

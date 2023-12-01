@@ -24,23 +24,26 @@ void scal(
     int64_t n,
     scalar_t alpha,
     scalar_t* x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
-    // check arguments
-    blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
-    blas_error_if( incx <= 0 );  // standard BLAS returns, doesn't fail
+    if(testcase == 1){
+        // check arguments
+        blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
+        blas_error_if( incx <= 0 );  // standard BLAS returns, doesn't fail
+    }
 
     // convert arguments
     device_blas_int n_    = to_device_blas_int( n );
     device_blas_int incx_ = to_device_blas_int( incx );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
     // call low-level wrapper
-    internal::scal( n_, alpha, x, incx_, queue );
+    internal::scal( n_, alpha, x, incx_, queue, testcase_, errname );
 #endif
 }
 
@@ -56,9 +59,9 @@ void scal(
     int64_t n,
     float alpha,
     float* x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::scal( n, alpha, x, incx, queue );
+    impl::scal( n, alpha, x, incx, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -68,9 +71,9 @@ void scal(
     int64_t n,
     double alpha,
     double* x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::scal( n, alpha, x, incx, queue );
+    impl::scal( n, alpha, x, incx, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -80,9 +83,9 @@ void scal(
     int64_t n,
     std::complex<float> alpha,
     std::complex<float>* x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::scal( n, alpha, x, incx, queue );
+    impl::scal( n, alpha, x, incx, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -92,9 +95,9 @@ void scal(
     int64_t n,
     std::complex<double> alpha,
     std::complex<double>* x, int64_t incx,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::scal( n, alpha, x, incx, queue );
+    impl::scal( n, alpha, x, incx, queue, testcase, errname );
 }
 
 }  // namespace blas

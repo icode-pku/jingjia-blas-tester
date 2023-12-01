@@ -22,24 +22,26 @@ void gbmv(
     scalar_t const* x, int64_t incx,
     scalar_t beta,
     scalar_t* y, int64_t incy,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
     // check arguments
-    blas_error_if( layout != Layout::ColMajor &&
-                   layout != Layout::RowMajor );
-    blas_error_if( trans != Op::NoTrans &&
-                   trans != Op::Trans &&
-                   trans != Op::ConjTrans );
-    blas_error_if( m < 0 );
-    blas_error_if( n < 0 );
-    blas_error_if( kl < 0 );
-    blas_error_if( ku < 0 );   
-    blas_error_if( lda < kl + ku + 1 );
-    blas_error_if( incx == 0 );
-    blas_error_if( incy == 0 );
+    if(testcase == 1){
+        blas_error_if( layout != Layout::ColMajor &&
+                    layout != Layout::RowMajor );
+        blas_error_if( trans != Op::NoTrans &&
+                    trans != Op::Trans &&
+                    trans != Op::ConjTrans );
+        blas_error_if( m < 0 );
+        blas_error_if( n < 0 );
+        blas_error_if( kl < 0 );
+        blas_error_if( ku < 0 );   
+        blas_error_if( lda < kl + ku + 1 );
+        blas_error_if( incx == 0 );
+        blas_error_if( incy == 0 );
+    }
 
     // convert arguments
     device_blas_int m_   = to_device_blas_int( m );
@@ -49,6 +51,7 @@ void gbmv(
     device_blas_int lda_ = to_device_blas_int( lda );
     device_blas_int incx_ = to_device_blas_int( incx );
     device_blas_int incy_ = to_device_blas_int( incy );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
@@ -102,7 +105,7 @@ void gbmv(
 
     //call low-level wrapper
     internal::gbmv( trans2, m_, n_, kl_, ku_,
-                    alpha, A, lda_, x2, incx_, beta, y, incy_, queue );
+                    alpha, A, lda_, x2, incx_, beta, y, incy_, queue, testcase_, errname );
 
     if constexpr (is_complex<scalar_t>::value) {
         if (x2 != x) {  // RowMajor ConjTrans
@@ -141,10 +144,10 @@ void gbmv(
     float const* x, int64_t incx,
     float beta,
     float* y, int64_t incy,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gbmv( layout, trans, m, n, kl, ku, alpha, A, lda,
-                x, incx, beta, y, incy, queue );
+                x, incx, beta, y, incy, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -159,10 +162,10 @@ void gbmv(
     double const* x, int64_t incx,
     double beta,
     double* y, int64_t incy,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gbmv( layout, trans, m, n, kl, ku, alpha, A, lda,
-                x, incx, beta, y, incy, queue );
+                x, incx, beta, y, incy, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -177,10 +180,10 @@ void gbmv(
     std::complex<float>* x, int64_t incx,
     std::complex<float> beta,
     std::complex<float>* y, int64_t incy,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gbmv( layout, trans, m, n, kl, ku, alpha, A, lda,
-                x, incx, beta, y, incy, queue );
+                x, incx, beta, y, incy, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -195,10 +198,10 @@ void gbmv(
     std::complex<double>* x, int64_t incx,
     std::complex<double> beta,
     std::complex<double>* y, int64_t incy,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gbmv( layout, trans, m, n, kl, ku, alpha, A, lda,
-                x, incx, beta, y, incy, queue );
+                x, incx, beta, y, incy, queue, testcase, errname );
 }
 
 }  // namespace blas

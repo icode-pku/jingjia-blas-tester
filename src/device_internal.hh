@@ -343,25 +343,25 @@ void amin(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amin(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amin(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amin(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //----------------------------------------------------------
 
 
@@ -372,25 +372,25 @@ void asum(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     float *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void asum(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     double *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void asum(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     float *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void asum(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     double *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 
@@ -400,28 +400,28 @@ void axpy(
     float alpha,
     float const* dx, device_blas_int incdx,
     float *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void axpy(
     device_blas_int n,
     double alpha,
     double const* dx, device_blas_int incdx,
     double *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void axpy(
     device_blas_int n,
     std::complex<float> alpha,
     std::complex<float> const* dx, device_blas_int incdx,
     std::complex<float> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void axpy(
     device_blas_int n,
     std::complex<double> alpha,
     std::complex<double> const* dx, device_blas_int incdx,
     std::complex<double> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void dot(
@@ -429,142 +429,142 @@ void dot(
     float const *dx, device_blas_int incdx,
     float const *dy, device_blas_int incdy,
     float *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void dot(
     device_blas_int n,
     double const *dx, device_blas_int incdx,
     double const *dy, device_blas_int incdy,
     double *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void dot(
     device_blas_int n,
     std::complex<float> const *dx, device_blas_int incdx,
     std::complex<float> const *dy, device_blas_int incdy,
     std::complex<float> *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void dot(
     device_blas_int n,
     std::complex<double> const *dx, device_blas_int incdx,
     std::complex<double> const *dy, device_blas_int incdy,
     std::complex<double> *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void dotu(
     device_blas_int n,
     std::complex<float> const *dx, device_blas_int incdx,
     std::complex<float> const *dy, device_blas_int incdy,
     std::complex<float> *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void dotu(
     device_blas_int n,
     std::complex<double> const *dx, device_blas_int incdx,
     std::complex<double> const *dy, device_blas_int incdy,
     std::complex<double> *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void nrm2(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     float *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void nrm2(
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     double *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void nrm2(
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     float *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void nrm2(
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     double *result,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void scal(
     device_blas_int n,
     float alpha,
     float *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void scal(
     device_blas_int n,
     double alpha,
     double *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void scal(
     device_blas_int n,
     std::complex<float> alpha,
     std::complex<float> *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void scal(
     device_blas_int n,
     std::complex<double> alpha,
     std::complex<double> *dx, device_blas_int incdx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void swap(
     device_blas_int n,
     float *dx, device_blas_int incdx,
     float *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void swap(
     device_blas_int n,
     double *dx, device_blas_int incdx,
     double *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void swap(
     device_blas_int n,
     std::complex<float> *dx, device_blas_int incdx,
     std::complex<float> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void swap(
     device_blas_int n,
     std::complex<double> *dx, device_blas_int incdx,
     std::complex<double> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void copy(
     device_blas_int n,
     float const *dx, device_blas_int incdx,
     float *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void copy(
     device_blas_int n,
     double const *dx, device_blas_int incdx,
     double *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void copy(
     device_blas_int n,
     std::complex<float> const *dx, device_blas_int incdx,
     std::complex<float> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void copy(
     device_blas_int n,
     std::complex<double> const *dx, device_blas_int incdx,
     std::complex<double> *dy, device_blas_int incdy,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 //==============================================================================
@@ -579,7 +579,7 @@ void gbmv(
     float const *dx, device_blas_int incx,
     float beta,
     float *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gbmv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -589,7 +589,7 @@ void gbmv(
     double const *dx, device_blas_int incx,
     double beta,
     double *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 void gbmv(
@@ -600,7 +600,7 @@ void gbmv(
     std::complex<float> const *dx, device_blas_int incx,
     std::complex<float> beta,
     std::complex<float> *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 void gbmv(
@@ -611,7 +611,7 @@ void gbmv(
     std::complex<double> const *dx, device_blas_int incx,
     std::complex<double> beta,
     std::complex<double> *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void gemv(
@@ -657,28 +657,28 @@ void trmv(
     device_blas_int n,
     float const *dA, device_blas_int lda,
     float       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     double const *dA, device_blas_int lda,
     double       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<float> const *dA, device_blas_int lda,
     std::complex<float>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<double> const *dA, device_blas_int lda,
     std::complex<double>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 
 //------------------------------------------------------------------------------
@@ -687,28 +687,28 @@ void trsv(
     device_blas_int n,
     float const *dA, device_blas_int lda,
     float       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     double const *dA, device_blas_int lda,
     double       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<float> const *dA, device_blas_int lda,
     std::complex<float>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void trsv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,
     device_blas_int n,
     std::complex<double> const *dA, device_blas_int lda,
     std::complex<double>       *dx, device_blas_int incx,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //==============================================================================
 // Level 3 BLAS - Device Interfaces
@@ -850,7 +850,7 @@ void symm(
     float const *dB, device_blas_int lddb,
     float  beta,
     float* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void symm(
     blas::Side side, blas::Uplo uplo,
@@ -860,7 +860,7 @@ void symm(
     double const *dB, device_blas_int lddb,
     double  beta,
     double* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void symm(
     blas::Side side, blas::Uplo uplo,
@@ -870,7 +870,7 @@ void symm(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void symm(
     blas::Side side, blas::Uplo uplo,
@@ -880,7 +880,7 @@ void symm(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void herk(
@@ -909,7 +909,7 @@ void syrk(
     float const *dA, device_blas_int ldda,
     float  beta,
     float* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syrk(
     blas::Uplo uplo, blas::Op trans,
@@ -918,7 +918,7 @@ void syrk(
     double const *dA, device_blas_int ldda,
     double  beta,
     double* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syrk(
     blas::Uplo uplo, blas::Op trans,
@@ -927,7 +927,7 @@ void syrk(
     std::complex<float> const *dA, device_blas_int ldda,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syrk(
     blas::Uplo uplo, blas::Op trans,
@@ -936,7 +936,7 @@ void syrk(
     std::complex<double> const *dA, device_blas_int ldda,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 void her2k(
@@ -968,7 +968,7 @@ void syr2k(
     float const *dB, device_blas_int lddb,
     float  beta,
     float* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syr2k(
     blas::Uplo uplo, blas::Op trans,
@@ -978,7 +978,7 @@ void syr2k(
     double const *dB, device_blas_int lddb,
     double  beta,
     double* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syr2k(
     blas::Uplo uplo, blas::Op trans,
@@ -988,7 +988,7 @@ void syr2k(
     std::complex<float> const *dB, device_blas_int lddb,
     std::complex<float>  beta,
     std::complex<float>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void syr2k(
     blas::Uplo uplo, blas::Op trans,
@@ -998,7 +998,7 @@ void syr2k(
     std::complex<double> const *dB, device_blas_int lddb,
     std::complex<double>  beta,
     std::complex<double>* dC, device_blas_int lddc,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 // batch gemm

@@ -44,25 +44,25 @@ void amin(
     int64_t n,
     float const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //---------------------------------------------------------
 void amin(    
     int64_t n,
     double const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //---------------------------------------------------------
 void amin(    
     int64_t n,
     std::complex<float> const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //---------------------------------------------------------
 void amin(    
     int64_t n,
     std::complex<double> const* dx, int64_t incdx,
     int64_t *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //---------------------------------------------------------
 //asum
@@ -71,25 +71,25 @@ void asum(
     int64_t n,
     float const *x, int64_t incdx,
     float *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void asum(    
     int64_t n,
     double const *x, int64_t incdx,
     double * result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //---------------------------------------------------------
 void asum(    
     int64_t n,
     std::complex<float> const *x, int64_t incdx,
     float *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //---------------------------------------------------------
 void asum(    
     int64_t n,
     std::complex<double> const *x, int64_t incdx,
     double *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //-----------axpy--------
 //------------------------------------------------------------------------------
@@ -98,53 +98,53 @@ void axpy(
     float alpha,
     float const* x, int64_t incx,
     float*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void axpy(
     int64_t n,
     double alpha,
     double const* x, int64_t incx,
     double*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void axpy(
     int64_t n,
     std::complex<float> alpha,
     std::complex<float> const* x, int64_t incx,
     std::complex<float>*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void axpy(
     int64_t n,
     std::complex<double> alpha,
     std::complex<double> const* x, int64_t incx,
     std::complex<double>*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void copy(
     int64_t n,
     float const* x, int64_t incx,
     float*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void copy(
     int64_t n,
     double const* x, int64_t incx,
     double*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void copy(
     int64_t n,
     std::complex<float> const* x, int64_t incx,
     std::complex<float>*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void copy(
     int64_t n,
     std::complex<double> const* x, int64_t incx,
     std::complex<double>*       y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void dot(
@@ -152,28 +152,28 @@ void dot(
     float const* x, int64_t incx,
     float const* y, int64_t incy,
     float* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void dot(
     int64_t n,
     double const* x, int64_t incx,
     double const* y, int64_t incy,
     double* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void dot(
     int64_t n,
     std::complex<float> const* x, int64_t incx,
     std::complex<float> const* y, int64_t incy,
     std::complex<float>* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void dot(
     int64_t n,
     std::complex<double> const* x, int64_t incx,
     std::complex<double> const* y, int64_t incy,
     std::complex<double>* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void dotu(
@@ -181,103 +181,103 @@ void dotu(
     float const* x, int64_t incx,
     float const* y, int64_t incy,
     float* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void dotu(
     int64_t n,
     double const* x, int64_t incx,
     double const* y, int64_t incy,
     double* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void dotu(
     int64_t n,
     std::complex<float> const* x, int64_t incx,
     std::complex<float> const* y, int64_t incy,
     std::complex<float>* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void dotu(
     int64_t n,
     std::complex<double> const* x, int64_t incx,
     std::complex<double> const* y, int64_t incy,
     std::complex<double>* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void nrm2(
     int64_t n,
     float const* x, int64_t incx,
     float* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void nrm2(
     int64_t n,
     double const* x, int64_t incx,
     double* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void nrm2(
     int64_t n,
     std::complex<float> const* x, int64_t incx,
     float* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void nrm2(
     int64_t n,
     std::complex<double> const* x, int64_t incx,
     double* result,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void scal(
     int64_t n,
     float alpha,
     float* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void scal(
     int64_t n,
     double alpha,
     double* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void scal(
     int64_t n,
     std::complex<float> alpha,
     std::complex<float>* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void scal(
     int64_t n,
     std::complex<double> alpha,
     std::complex<double>* x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //------------------------------------------------------------------------------
 void swap(
     int64_t n,
     float* x, int64_t incx,
     float* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void swap(
     int64_t n,
     double* x, int64_t incx,
     double* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void swap(
     int64_t n,
     std::complex<float>* x, int64_t incx,
     std::complex<float>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 void swap(
     int64_t n,
     std::complex<double>* x, int64_t incx,
     std::complex<double>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
 //==============================================================================
 // Level 2 BLAS
@@ -292,7 +292,8 @@ void gbmv(
     float const* x, int64_t incx,
     float beta,
     float* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
+
     
 void gbmv(
     blas::Layout layout,
@@ -303,7 +304,8 @@ void gbmv(
     double const* x, int64_t incx,
     double beta,
     double* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
+
 
 void gbmv(
     blas::Layout layout,
@@ -314,7 +316,7 @@ void gbmv(
     std::complex<float>* x, int64_t incx,
     std::complex<float> beta,
     std::complex<float>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void gbmv(
     blas::Layout layout,
@@ -325,7 +327,7 @@ void gbmv(
     std::complex<double>* x, int64_t incx,
     std::complex<double> beta,
     std::complex<double>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 //------------------------------------------------------------------------------
 void gemv(
@@ -381,7 +383,7 @@ void trmv(
     int64_t n,
     float const* A, int64_t lda,
     float*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trmv(
     blas::Layout layout,
@@ -391,7 +393,7 @@ void trmv(
     int64_t n,
     double const* A, int64_t lda,
     double*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trmv(
     blas::Layout layout,
@@ -401,7 +403,7 @@ void trmv(
     int64_t n,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trmv(
     blas::Layout layout,
@@ -411,7 +413,7 @@ void trmv(
     int64_t n,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -421,7 +423,7 @@ void trsv(
     int64_t n,
     float const* A, int64_t lda,
     float*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -431,7 +433,7 @@ void trsv(
     int64_t n,
     double const* A, int64_t lda,
     double*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -441,7 +443,7 @@ void trsv(
     int64_t n,
     std::complex<float> const* A, int64_t lda,
     std::complex<float>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void trsv(
     blas::Layout layout,
@@ -451,7 +453,7 @@ void trsv(
     int64_t n,
     std::complex<double> const* A, int64_t lda,
     std::complex<double>*       x, int64_t incx,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 
 //==============================================================================
@@ -660,7 +662,7 @@ void symm(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void symm(
     blas::Layout layout,
@@ -672,7 +674,7 @@ void symm(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void symm(
     blas::Layout layout,
@@ -684,7 +686,7 @@ void symm(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void symm(
     blas::Layout layout,
@@ -696,7 +698,7 @@ void symm(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void syr2k(
@@ -709,7 +711,7 @@ void syr2k(
     float const* B, int64_t ldb,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syr2k(
     blas::Layout layout,
@@ -721,7 +723,7 @@ void syr2k(
     double const* B, int64_t ldb,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syr2k(
     blas::Layout layout,
@@ -733,7 +735,7 @@ void syr2k(
     std::complex<float> const* B, int64_t ldb,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syr2k(
     blas::Layout layout,
@@ -745,7 +747,7 @@ void syr2k(
     std::complex<double> const* B, int64_t ldb,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void syrk(
@@ -757,7 +759,7 @@ void syrk(
     float const* A, int64_t lda,
     float beta,
     float*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syrk(
     blas::Layout layout,
@@ -768,7 +770,7 @@ void syrk(
     double const* A, int64_t lda,
     double beta,
     double*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syrk(
     blas::Layout layout,
@@ -779,7 +781,7 @@ void syrk(
     std::complex<float> const* A, int64_t lda,
     std::complex<float> beta,
     std::complex<float>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 void syrk(
     blas::Layout layout,
@@ -790,7 +792,7 @@ void syrk(
     std::complex<double> const* A, int64_t lda,
     std::complex<double> beta,
     std::complex<double>*       C, int64_t ldc,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr );
 
 //------------------------------------------------------------------------------
 void trmm(

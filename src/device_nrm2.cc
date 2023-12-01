@@ -24,18 +24,21 @@ void nrm2(
     int64_t n,
     scalar_t const* x, int64_t incx,
     real_type<scalar_t>* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
-    // check arguments
-    blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
-    blas_error_if( incx <= 0 );  // standard BLAS returns, doesn't fail
+    if(testcase == 1){
+        // check arguments
+        blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
+        blas_error_if( incx <= 0 );  // standard BLAS returns, doesn't fail
+    }
 
     // convert arguments
     device_blas_int n_    = to_device_blas_int( n );
     device_blas_int incx_ = to_device_blas_int( incx );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
@@ -49,14 +52,14 @@ void nrm2(
             // use preallocated device workspace (resizing if needed)
             queue.work_ensure_size< char >( sizeof(scalar_t) );  // syncs if needed
             real_type<scalar_t>* dev_work = (real_type<scalar_t>*)queue.work();
-            internal::nrm2( n_, x, incx_, dev_work, queue );
+            internal::nrm2( n_, x, incx_, dev_work, queue, testcase_, errname );
             blas::device_memcpy( result, dev_work, 1, queue );
         }
         else {
-            internal::nrm2( n_, x, incx_, result, queue );
+            internal::nrm2( n_, x, incx_, result, queue, testcase_, errname );
         }
     #else // other devices (CUDA/HIP)
-        internal::nrm2( n_, x, incx_, result, queue );
+        internal::nrm2( n_, x, incx_, result, queue, testcase_, errname );
     #endif
 #endif
 }
@@ -75,9 +78,9 @@ void nrm2(
     int64_t n,
     float const* x, int64_t incx,
     float* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::nrm2( n, x, incx, result, queue );
+    impl::nrm2( n, x, incx, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -87,9 +90,9 @@ void nrm2(
     int64_t n,
     double const* x, int64_t incx,
     double* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::nrm2( n, x, incx, result, queue );
+    impl::nrm2( n, x, incx, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -99,9 +102,9 @@ void nrm2(
     int64_t n,
     std::complex<float> const* x, int64_t incx,
     float* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::nrm2( n, x, incx, result, queue );
+    impl::nrm2( n, x, incx, result, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -111,9 +114,9 @@ void nrm2(
     int64_t n,
     std::complex<double> const* x, int64_t incx,
     double* result,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
-    impl::nrm2( n, x, incx, result, queue );
+    impl::nrm2( n, x, incx, result, queue, testcase, errname );
 }
 
 }  // namespace blas
