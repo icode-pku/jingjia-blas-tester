@@ -40,13 +40,14 @@ void helper_cublasGetVectorAsync()
     float *dx;
     HelperSafeCall(cudaMalloc((float**)&dx, size_x*sizeof(float)));
 
+    HelperSafeCall(cudaMemcpy(dx, x, size_x*sizeof(float),cudaMemcpyHostToDevice));
+
     //test case 1: legal parameters
     CaseId.TestProblemHeader(0, true);
-    stat = cublasGetVectorAsync(size_x, sizeof(float), x, incx, dx, incx, stream);
+    stat = cublasGetVectorAsync(size_x, sizeof(float), dx, incx, xcopy, incx, stream);
     HelperTestCall("cublasGetVectorAsync", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
     HelperSafeCall(cudaStreamSynchronize(stream));
 
-    HelperSafeCall(cudaMemcpy(xcopy, dx, size_x*sizeof(float),cudaMemcpyDeviceToHost));
     for(int i=0; i<n; i++){
         if(x[i*incx]!=xcopy[i*incx]){
             printf("cublasGetVectorAsync error!\n");
@@ -58,19 +59,19 @@ void helper_cublasGetVectorAsync()
 
     //test case 2: Testing for illegal parameter elemSize
     CaseId.TestProblemHeader(1,false, "-1");
-    stat = cublasGetVectorAsync(size_x, -1, x, incx, dx, incx, stream);
+    stat = cublasGetVectorAsync(size_x, -1, dx, incx, xcopy, incx, stream);
     HelperTestCall("cublasGetVectorAsync", check_return_status(stat , "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
     HelperSafeCall(cudaStreamSynchronize(stream));
 
     //test case 3: Testing for illegal parameter incx
     CaseId.TestProblemHeader(3, false, "-1");
-    stat = cublasGetVectorAsync(size_x, sizeof(float), x, -1, dx, incx, stream);
+    stat = cublasGetVectorAsync(size_x, sizeof(float), dx, -1, xcopy, incx, stream);
     HelperTestCall("cublasGetVectorAsync", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
     HelperSafeCall(cudaStreamSynchronize(stream));
 
     //test case 4: Testing for illegal parameter incy
     CaseId.TestProblemHeader(5, false, "-1");
-    stat = cublasGetVectorAsync(size_x, sizeof(float), x, incx, dx, -1, stream);
+    stat = cublasGetVectorAsync(size_x, sizeof(float), dx, incx, xcopy, -1, stream);
     HelperTestCall("cublasGetVectorAsync", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
     HelperSafeCall(cudaStreamSynchronize(stream));
 
