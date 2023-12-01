@@ -50,6 +50,11 @@ std::vector< routines_help_t > routines = {
     {"cublassetstream", helper_cublasSetStream, SectionHelp::test1},
     {"cublasgetstream", helper_cublasGetStream, SectionHelp::test1},
     {"cublassetvector", helper_cublasSetVector, SectionHelp::test1},
+    {"cublasgetvector", helper_cublasGetVector, SectionHelp::test1},
+    {"cublassetvectorasync", helper_cublasSetVectorAsync, SectionHelp::test1},
+    {"cublasgetvectorasync", helper_cublasGetVectorAsync, SectionHelp::test1},
+    {"cublassetpointermode", helper_cublasSetPointerMode, SectionHelp::test1},
+    {"cublasgetpointermode", helper_cublasGetPointerMode, SectionHelp::test1},
     { "", nullptr, SectionHelp::newline},
 };
 
