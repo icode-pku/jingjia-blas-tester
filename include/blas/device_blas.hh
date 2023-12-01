@@ -930,7 +930,7 @@ void gemm(
     std::vector<float*>     const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase=1, char *errname=nullptr );
 
 void gemm(
     blas::Layout layout,
@@ -946,7 +946,7 @@ void gemm(
     std::vector<double*>    const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase=1, char *errname=nullptr );
 
 void gemm(
     blas::Layout layout,
@@ -962,7 +962,7 @@ void gemm(
     std::vector< std::complex<float>* > const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase=1, char *errname=nullptr );
 
 void gemm(
     blas::Layout layout,
@@ -978,7 +978,7 @@ void gemm(
     std::vector< std::complex<double>* > const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase=1, char *errname=nullptr );
 
 //------------------------------------------------------------------------------
 // batch gemm, group API

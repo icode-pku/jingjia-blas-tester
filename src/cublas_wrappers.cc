@@ -2438,8 +2438,9 @@ void batch_gemm(
     float beta,
     float** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
+    if(testcase ==1){
     blas_dev_call(
         cublasSgemmBatched(
             queue.handle(),
@@ -2451,6 +2452,22 @@ void batch_gemm(
             &beta,
             dCarray, lddc,
             batch_size ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSgemmBatched(
+            queue.handle(),
+            op2cublas(transA, testcase), op2cublas(transB, testcase),
+            m, n, k,
+            &alpha,
+            (float const**) dAarray, ldda,
+            (float const**) dBarray, lddb,
+            &beta,
+            dCarray, lddc,
+            batch_size ) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -2463,8 +2480,9 @@ void batch_gemm(
     double beta,
     double** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
+    if(testcase == 1){
     blas_dev_call(
         cublasDgemmBatched(
             queue.handle(),
@@ -2476,6 +2494,22 @@ void batch_gemm(
             &beta,
             dCarray, lddc,
             batch_size ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDgemmBatched(
+            queue.handle(),
+            op2cublas(transA, testcase), op2cublas(transB, testcase),
+            m, n, k,
+            &alpha,
+            (double const**) dAarray, ldda,
+            (double const**) dBarray, lddb,
+            &beta,
+            dCarray, lddc,
+            batch_size ) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -2488,8 +2522,9 @@ void batch_gemm(
     std::complex<float> beta,
     std::complex<float>** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
+    if(testcase==1){
     blas_dev_call(
         cublasCgemmBatched(
             queue.handle(),
@@ -2501,6 +2536,22 @@ void batch_gemm(
             (cuComplex*)        &beta,
             (cuComplex**)       dCarray, lddc,
             batch_size ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCgemmBatched(
+            queue.handle(),
+            op2cublas(transA, testcase), op2cublas(transB, testcase),
+            m, n, k,
+            (cuComplex*)        &alpha,
+            (cuComplex const**) dAarray, ldda,
+            (cuComplex const**) dBarray, lddb,
+            (cuComplex*)        &beta,
+            (cuComplex**)       dCarray, lddc,
+            batch_size ) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -2513,8 +2564,9 @@ void batch_gemm(
     std::complex<double> beta,
     std::complex<double>** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue )
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
+    if(testcase==1){
     blas_dev_call(
         cublasZgemmBatched(
             queue.handle(),
@@ -2526,6 +2578,22 @@ void batch_gemm(
             (cuDoubleComplex*)        &beta,
             (cuDoubleComplex**)       dCarray, lddc,
             batch_size ) );
+    }    
+    else{
+        const char* s = device_errorstatus_to_string(cublasZgemmBatched(
+            queue.handle(),
+            op2cublas(transA, testcase), op2cublas(transB, testcase),
+            m, n, k,
+            (cuDoubleComplex*)        &alpha,
+            (cuDoubleComplex const**) dAarray, ldda,
+            (cuDoubleComplex const**) dBarray, lddb,
+            (cuDoubleComplex*)        &beta,
+            (cuDoubleComplex**)       dCarray, lddc,
+            batch_size ) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
 
 //------------------------------------------------------------------------------
