@@ -37,7 +37,7 @@ void test_device_batch_trsm_work( Params& params, bool run )
     int64_t device      = params.device();
     int64_t align       = params.align();
     int64_t verbose     = params.verbose();
-
+    int64_t testcase    = params.testcase();
     // mark non-standard output values
     params.gflops();
     params.ref_time();
@@ -158,7 +158,63 @@ void test_device_batch_trsm_work( Params& params, bool run )
         Anorm[ s ] = lapack_lantr( "f", uplo2str(uplo_), diag2str(diag_), Am, Am, Aarray[s], lda_, work );
         Bnorm[ s ] = lapack_lange( "f", Bm, Bn, Barray[s], ldb_, work );
     }
+    // test error exits
+    if(testcase == 0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        //blas::batch::trsm( layout, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
 
+        //case 1: Test the return value when side is an illegal value
+        blas::batch::trsm( layout, std::vector<Side>{Side(0)}, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout,    Side(0), uplo,    trans, diag,     m,  n, alpha, dA, lda, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 2: Test the return value when uplo is an illegal value
+        blas::batch::trsm( layout, side, std::vector<Uplo>{Uplo(0)}, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout,    side,    Uplo(0), trans, diag,     m,  n, alpha, dA, lda, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 3: Test the return value when trans is an illegal value
+        blas::batch::trsm( layout, side, uplo, std::vector<Op>{Op(0)}, diag, m, n, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout,    side,    uplo,    Op(0), diag,     m,  n, alpha, dA, lda, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 4: Test the return value when diag is an illegal value
+        blas::batch::trsm( layout, side, uplo, trans, std::vector<Diag>{Diag(0)}, m, n, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout,    side,    uplo,    trans, Diag(0),  m,  n, alpha, dA, lda, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 5: Test the return value when m is an illegal value
+        blas::batch::trsm( layout, side, uplo, trans, diag, std::vector<int64_t>{-1}, n, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout,    side,    uplo,    trans, diag,    -1,  n, alpha, dA, lda, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 6: Test the return value when n is an illegal value
+        blas::batch::trsm( layout, side, uplo, trans, diag, m, std::vector<int64_t>{-1}, alpha, dAarray, ldda, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout,    side,    uplo,    trans, diag,     m, -1, alpha, dA, lda, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+
+        //case 7: Test the return value when Side::Left and lda is an illegal value
+        blas::batch::trsm( layout, std::vector<Side>{Side::Left}, uplo, trans, diag, m, n, alpha, dAarray, std::vector<int64_t>{m_-1}, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout, Side::Left,  uplo,   trans, diag,     m,  n, alpha, dA, m-1, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 8: Test the return value when Side::Right and lda is an illegal value
+        blas::batch::trsm( layout, std::vector<Side>{Side::Right}, uplo, trans, diag, m, n, alpha, dAarray, std::vector<int64_t>{n_-1}, dBarray, lddb, batch, info, queue, testcase, error_name );
+        //blas::trsm( layout, Side::Right, uplo,   trans, diag,     m,  n, alpha, dA, n-1, dB, ldb, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+
+        //case 9: Test the return value when Layout::ColMajor and ldb is an illegal value
+        blas::batch::trsm( Layout::ColMajor, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, std::vector<int64_t>{m_-1}, batch, info, queue, testcase, error_name );
+        // blas::trsm( Layout::ColMajor, side, uplo, trans, diag,    m,  n, alpha, dA, lda, dB, m-1, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 10: Test the return value when Layout::RowMajor and ldb is an illegal value
+        blas::batch::trsm( Layout::RowMajor, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, std::vector<int64_t>{n_-1}, batch, info, queue, testcase, error_name );
+        //blas::trsm( Layout::RowMajor, side, uplo, trans, diag,    m,  n, alpha, dA, lda, dB, n-1, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+
+        queue.sync();
+
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        free(error_name);
+    }
+    else{
     // decide error checking mode
     info.resize( 0 );
 
@@ -209,6 +265,7 @@ void test_device_batch_trsm_work( Params& params, bool run )
     double stime;
     double all_time=0.0f;
     for(int i = 0; i < runs; i++){
+        info.resize( 0 );
         testsweeper::flush_cache( params.cache() );
         stime = get_wtime();
         blas::batch::trsm( layout, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb,
@@ -219,6 +276,7 @@ void test_device_batch_trsm_work( Params& params, bool run )
     all_time/=(double)runs;
     params.time()   = all_time;  // s
     params.gflops() = gflop / all_time;
+    }
 
     delete[] A;
     delete[] B;

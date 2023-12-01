@@ -1487,7 +1487,7 @@ void trsm(
     std::vector<float*>     const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -1502,7 +1502,7 @@ void trsm(
     std::vector<double*>    const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -1517,7 +1517,7 @@ void trsm(
     std::vector< std::complex<float>* > const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 
 void trsm(
     blas::Layout layout,
@@ -1532,7 +1532,7 @@ void trsm(
     std::vector< std::complex<double>* > const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 
 }  // namespace batch
 }  // namespace blas
