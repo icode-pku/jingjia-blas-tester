@@ -1,8 +1,8 @@
 #include "../helper.hh"
 
-void helper_cublasGetMatrix()
+void helper_cublasGetMatrixAsync()
 {
-    TestId CaseId(6, std::string("cublasGetMatrix(int rows, int cols, int elemSize, const void *A, int lda, void *B, int ldb)"));
+    TestId CaseId(6, std::string("cublasGetMatrixAsync(int rows, int cols, int elemSize, const void *A, int lda, void *B, int ldb, cudaStream_t stream)"));
     CaseId.TestApiHeader();
     int All_tests = 0;
     int Passed_tests = 0;
@@ -23,7 +23,7 @@ void helper_cublasGetMatrix()
     HelperSafeCall(cublasCreate( &handle ));
     
     HelperSafeCall(cublasSetStream( handle, stream));
-    
+
     int64_t rows = 100;
     int64_t cols = 100;
     int64_t elemSize = sizeof(float);
@@ -45,12 +45,14 @@ void helper_cublasGetMatrix()
 
     //test case 1: legal parameters
     CaseId.TestProblemHeader(0, true);
-    stat = cublasGetMatrix(rows, cols, elemSize, dA, lda, Acopy, ldb);
-    HelperTestCall("cublasGetMatrix", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
+    stat = cublasGetMatrixAsync(rows, cols, elemSize, dA, lda, Acopy, ldb, stream);
+    HelperTestCall("cublasGetMatrixAsync", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
+    HelperSafeCall(cudaStreamSynchronize(stream));
+
     for(int i=0; i<rows; i++){
         for(int j=0; j<cols; j++){
             if(A[i*lda+j]!=Acopy[i*ldb+j]){
-                printf("cublasGetMatrix error!\n");
+                printf("cublasGetMatrixAsync error!\n");
                 Passed_tests--;
                 Failed_tests++;
                 break;
@@ -60,28 +62,33 @@ void helper_cublasGetMatrix()
 
     //test case 2: Testing for illegal parameter rows
     CaseId.TestProblemHeader(0, false, "-1");
-    stat = cublasGetMatrix(-1, cols, elemSize, dA, lda, Acopy, ldb);
-    HelperTestCall("cublasGetMatrix", check_return_status(stat , "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    stat = cublasGetMatrixAsync(-1, cols, elemSize, dA, lda, Acopy, ldb, stream);
+    HelperTestCall("cublasGetMatrixAsync", check_return_status(stat , "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    HelperSafeCall(cudaStreamSynchronize(stream));
 
     //test case 3: Testing for illegal parameter cols
     CaseId.TestProblemHeader(1, false, "-1");
-    stat = cublasGetMatrix(rows, -1, elemSize, dA, lda, Acopy, ldb);
-    HelperTestCall("cublasGetMatrix", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    stat = cublasGetMatrixAsync(rows, -1, elemSize, dA, lda, Acopy, ldb, stream);
+    HelperTestCall("cublasGetMatrixAsync", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    HelperSafeCall(cudaStreamSynchronize(stream));
 
     //test case 4: Testing for illegal parameter elemSize
     CaseId.TestProblemHeader(2, false, "-1");
-    stat = cublasGetMatrix(rows, cols, -1, dA, lda, Acopy, ldb);
-    HelperTestCall("cublasGetMatrix", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    stat = cublasGetMatrixAsync(rows, cols, -1, dA, lda, Acopy, ldb, stream);
+    HelperTestCall("cublasGetMatrixAsync", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    HelperSafeCall(cudaStreamSynchronize(stream));
 
     //test case 5: Testing for illegal parameter lda
     CaseId.TestProblemHeader(4, false, "-1");
-    stat = cublasGetMatrix(rows, cols, elemSize, dA, -1, Acopy, ldb);
-    HelperTestCall("cublasGetMatrix", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    stat = cublasGetMatrixAsync(rows, cols, elemSize, dA, -1, Acopy, ldb, stream);
+    HelperTestCall("cublasGetMatrixAsync", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    HelperSafeCall(cudaStreamSynchronize(stream));
 
     //test case 6: Testing for illegal parameter ldb
     CaseId.TestProblemHeader(6, false, "-1");
-    stat = cublasGetMatrix(rows, cols, elemSize, dA, lda, Acopy, -1);
-    HelperTestCall("cublasGetMatrix", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    stat = cublasGetMatrixAsync(rows, cols, elemSize, dA, lda, Acopy, -1, stream);
+    HelperTestCall("cublasGetMatrixAsync", check_return_status(stat, "CUBLAS_STATUS_INVALID_VALUE", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_INVALID_VALUE");
+    HelperSafeCall(cudaStreamSynchronize(stream));
 
     printf("All test cases: %d Passed test cases: %d Failed test cases: %d\n", All_tests, Passed_tests, Failed_tests);
 
