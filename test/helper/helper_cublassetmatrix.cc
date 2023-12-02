@@ -29,34 +29,34 @@ void helper_cublasSetMatrix()
     int64_t elemSize = sizeof(float);
     int64_t lda = rows;
     int64_t ldb = rows;
+    size_t size_A = rows * cols;
 
     float *A, *Acopy;
-    A = new float[rows * cols];
-    Acopy = new float[rows * cols];
+    A = new float[size_A];
+    Acopy = new float[size_A];
     int64_t idist = 1;
     int iseed[4] = { 0, 0, 0, 1 };
     //init data
-    lapack_larnv( idist, iseed, rows * cols, A );
+    lapack_larnv( idist, iseed, size_A, A );
 
     float *dA;
-    HelperSafeCall(cudaMalloc((float**)&dA, rows * cols * sizeof(float)));
+    HelperSafeCall(cudaMalloc((float**)&dA, size_A * sizeof(float)));
 
     //test case 1: legal parameters
     CaseId.TestProblemHeader(0, true);
     stat = cublasSetMatrix(rows, cols, elemSize, A, lda, dA, ldb);
     HelperTestCall("cublasSetMatrix", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
 
-    HelperSafeCall(cudaMemcpy(Acopy, dA, rows * cols * sizeof(float), cudaMemcpyDeviceToHost));
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (A[i * cols + j] != Acopy[i * cols + j]) {
+    HelperSafeCall(cudaMemcpy(Acopy, dA, size_A * sizeof(float), cudaMemcpyDeviceToHost));
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows; j++) {
+            if (A[i * lda + j] != Acopy[i * ldb + j]) {
                 printf("cublasSetMatrix error\n");
                 Passed_tests--;
                 Failed_tests++;
                 break;
             }
         }
-        if (Failed_tests > 0) break;
     }
 
     //test case 2: Testing for illegal parameter rows
