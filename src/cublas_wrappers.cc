@@ -1226,15 +1226,29 @@ void gemv(
     float const *dx, device_blas_int incx,
     float beta,
     float *y, device_blas_int incy,
-    blas::Queue& queue)
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasSgemv(queue.handle(), op2cublas(trans), 
-        m, n, 
-        &alpha, dA, lda,
-        dx, incx,
-        &beta, y, incy) );
-}
+    if(testcase == 1){
+        blas_dev_call(
+            cublasSgemv(
+                queue.handle(), op2cublas(trans), 
+                m, n, 
+                &alpha, dA, lda,
+                dx, incx,
+                &beta, y, incy) );
+        }
+    else{
+        const char* s = device_errorstatus_to_string(cublasSgemv(
+                queue.handle(), op2cublas(trans, testcase), 
+                m, n, 
+                &alpha, dA, lda,
+                dx, incx,
+                &beta, y, incy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
+}   
 
 void gemv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -1243,15 +1257,29 @@ void gemv(
     double const *dx, device_blas_int incx,
     double beta,
     double *y, device_blas_int incy,
-    blas::Queue& queue)
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasDgemv(queue.handle(), op2cublas(trans), 
-        m, n, 
-        &alpha, dA, lda,
-        dx, incx,
-        &beta, y, incy) );
-}
+    if(testcase == 1){
+        blas_dev_call(
+            cublasDgemv(
+                queue.handle(), op2cublas(trans), 
+                m, n, 
+                &alpha, dA, lda,
+                dx, incx,
+                &beta, y, incy) );
+        }
+    else{
+        const char* s = device_errorstatus_to_string(cublasDgemv(
+                queue.handle(), op2cublas(trans, testcase), 
+                m, n, 
+                &alpha, dA, lda,
+                dx, incx,
+                &beta, y, incy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
+}   
 
 
 void gemv(
@@ -1261,18 +1289,33 @@ void gemv(
     std::complex<float> const *dx, device_blas_int incx,
     std::complex<float> beta,
     std::complex<float> *y, device_blas_int incy,
-    blas::Queue& queue)
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasCgemv(queue.handle(), op2cublas(trans), 
-        m, n,
-        (cuComplex*) &alpha, 
-        (cuComplex*) dA, lda,
-        (cuComplex*) dx, incx,
-        (cuComplex*) &beta, 
-        (cuComplex*) y, incy) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCgemv(
+                queue.handle(), op2cublas(trans), 
+                m, n, 
+                (cuComplex*) &alpha, 
+                (cuComplex*) dA, lda,
+                (cuComplex*) dx, incx,
+                (cuComplex*) &beta, 
+                (cuComplex*) y, incy) );
+        }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCgemv(
+                queue.handle(), op2cublas(trans, testcase), 
+                m, n, 
+                (cuComplex*) &alpha, 
+                (cuComplex*) dA, lda,
+                (cuComplex*) dx, incx,
+                (cuComplex*) &beta, 
+                (cuComplex*) y, incy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
-
 
 void gemv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -1281,17 +1324,34 @@ void gemv(
     std::complex<double> const *dx, device_blas_int incx,
     std::complex<double> beta,
     std::complex<double> *y, device_blas_int incy,
-    blas::Queue& queue)
+    blas::Queue& queue, device_blas_int testcase, char *errname )
 {
-    blas_dev_call(
-        cublasZgemv(queue.handle(), op2cublas(trans), 
-        m, n,
-        (cuDoubleComplex*) &alpha, 
-        (cuDoubleComplex*) dA, lda,
-        (cuDoubleComplex*) dx, incx,
-        (cuDoubleComplex*) &beta, 
-        (cuDoubleComplex*) y, incy) );
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZgemv(
+                queue.handle(), op2cublas(trans), 
+                m, n,
+                (cuDoubleComplex*) &alpha, 
+                (cuDoubleComplex*) dA, lda,
+                (cuDoubleComplex*) dx, incx,
+                (cuDoubleComplex*) &beta, 
+                (cuDoubleComplex*) y, incy) );
+        }
+    else{
+        const char* s = device_errorstatus_to_string(cublasZgemv(
+                queue.handle(), op2cublas(trans, testcase), 
+                m, n,
+                (cuDoubleComplex*) &alpha, 
+                (cuDoubleComplex*) dA, lda,
+                (cuDoubleComplex*) dx, incx,
+                (cuDoubleComplex*) &beta, 
+                (cuDoubleComplex*) y, incy) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
 }
+
 
 void trmv(
     blas::Uplo uplo, blas::Op trans, blas::Diag diag,

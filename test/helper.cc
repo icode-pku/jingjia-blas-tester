@@ -51,10 +51,17 @@ std::vector< routines_help_t > routines = {
     {"cublasgetstream", helper_cublasGetStream, SectionHelp::test1},
     {"cublassetvector", helper_cublasSetVector, SectionHelp::test1},
     {"cublasgetvector", helper_cublasGetVector, SectionHelp::test1},
+    {"cublassetmatrix", helper_cublasSetMatrix, SectionHelp::test1},
+    {"cublasgetmatrix", helper_cublasGetMatrix, SectionHelp::test1},
     {"cublassetvectorasync", helper_cublasSetVectorAsync, SectionHelp::test1},
     {"cublasgetvectorasync", helper_cublasGetVectorAsync, SectionHelp::test1},
+    {"cublassetmatrixasync", helper_cublasSetMatrixAsync, SectionHelp::test1},
+    {"cublasgetmatrixasync", helper_cublasGetMatrixAsync, SectionHelp::test1},
     {"cublassetpointermode", helper_cublasSetPointerMode, SectionHelp::test1},
     {"cublasgetpointermode", helper_cublasGetPointerMode, SectionHelp::test1},
+    {"cublasloggerconfigure", helper_cublasLoggerConfigure, SectionHelp::test1},
+    {"cublasgetloggercallback", helper_cublasGetLoggerCallback, SectionHelp::test1},
+    {"cublassetloggercallback", helper_cublasSetLoggerCallback, SectionHelp::test1},
     { "", nullptr, SectionHelp::newline},
 };
 
