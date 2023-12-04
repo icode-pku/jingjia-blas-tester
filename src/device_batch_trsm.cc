@@ -33,24 +33,26 @@ void trsm(
     std::vector<scalar_t*>  const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
-    blas_error_if( layout != Layout::ColMajor && layout != Layout::RowMajor );
-    blas_error_if( batch_size < 0 );
-    blas_error_if( info.size() != 0
-                   && info.size() != 1
-                   && info.size() != batch_size );
-    if (info.size() > 0) {
-        // perform error checking
-        blas::batch::trsm_check(
-            layout, side, uplo, trans, diag, m, n,
-            alpha, Aarray, lda, Barray, ldb,
-            batch_size, info );
+    if(testcase==1){
+        blas_error_if( layout != Layout::ColMajor && layout != Layout::RowMajor );
+        blas_error_if( batch_size < 0 );
+        blas_error_if( info.size() != 0
+                    && info.size() != 1
+                    && info.size() != batch_size );
+        if (info.size() > 0) {
+            // perform error checking
+            blas::batch::trsm_check(
+                layout, side, uplo, trans, diag, m, n,
+                alpha, Aarray, lda, Barray, ldb,
+                batch_size, info );
+        }
     }
-
+    device_blas_int testcase_ = to_device_blas_int(testcase);
     bool fixed_size = (
            side.size()   == 1
         && uplo.size()   == 1
@@ -104,7 +106,7 @@ void trsm(
             internal::batch_trsm(
                 side_, uplo_, trans_, diag_, m_, n_,
                 alpha[0], dAarray, lda_, dBarray, ldb_, ibatch_size,
-                queue );
+                queue, testcase_, errname );
         }
     }
     else {
@@ -123,7 +125,7 @@ void trsm(
             scalar_t*  B_      = blas::batch::extract( Barray, i );
             blas::trsm( layout, side_, uplo_, trans_, diag_, m_, n_,
                         alpha_, A_, lda_, B_, ldb_,
-                        queue );
+                        queue, testcase_, errname );
             queue.revolve();
         }
         queue.join();
@@ -153,11 +155,11 @@ void trsm(
     std::vector<float*>     const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trsm( layout, side, uplo, trans, diag, m, n,
                 alpha, Aarray, lda, Barray, ldb,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -176,11 +178,11 @@ void trsm(
     std::vector<double*>    const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trsm( layout, side, uplo, trans, diag, m, n,
                 alpha, Aarray, lda, Barray, ldb,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -199,11 +201,11 @@ void trsm(
     std::vector< std::complex<float>* > const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trsm( layout, side, uplo, trans, diag, m, n,
                 alpha, Aarray, lda, Barray, ldb,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -222,11 +224,11 @@ void trsm(
     std::vector< std::complex<double>* > const& Barray, std::vector<int64_t> const& ldb,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::trsm( layout, side, uplo, trans, diag, m, n,
                 alpha, Aarray, lda, Barray, ldb,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 }  // namespace batch
