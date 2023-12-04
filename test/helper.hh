@@ -19,8 +19,12 @@ void helper_cublasSetStream();
 void helper_cublasGetStream();
 void helper_cublasSetVector();
 void helper_cublasGetVector();
+void helper_cublasSetMatrix();
+void helper_cublasGetMatrix();
 void helper_cublasSetVectorAsync();
 void helper_cublasGetVectorAsync();
+void helper_cublasSetMatrixAsync();
+void helper_cublasGetMatrixAsync();
 void helper_cublasSetPointerMode();
 void helper_cublasGetPointerMode();
 
