@@ -339,7 +339,7 @@ void gemv(
     float const* x, int64_t incx,
     float beta,
     float* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
     
 void gemv(
     blas::Layout layout,
@@ -350,7 +350,7 @@ void gemv(
     double const* x, int64_t incx,
     double beta,
     double* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void gemv(
     blas::Layout layout,
@@ -361,7 +361,7 @@ void gemv(
     std::complex<float>* x, int64_t incx,
     std::complex<float> beta,
     std::complex<float>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 void gemv(
     blas::Layout layout,
@@ -372,7 +372,7 @@ void gemv(
     std::complex<double>* x, int64_t incx,
     std::complex<double> beta,
     std::complex<double>* y, int64_t incy,
-    blas::Queue& queue );
+    blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
 //------------------------------------------------------------------------------
 void trmv(

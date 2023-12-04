@@ -621,7 +621,7 @@ void gemv(
     float const *dx, device_blas_int incx,
     float beta,
     float *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gemv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -630,7 +630,7 @@ void gemv(
     double const *dx, device_blas_int incx,
     double beta,
     double *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gemv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -639,7 +639,7 @@ void gemv(
     std::complex<float> const *dx, device_blas_int incx,
     std::complex<float> beta,
     std::complex<float> *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void gemv(
     blas::Op trans, device_blas_int m, device_blas_int n,
@@ -648,7 +648,7 @@ void gemv(
     std::complex<double> const *dx, device_blas_int incx,
     std::complex<double> beta,
     std::complex<double> *y, device_blas_int incy,
-    blas::Queue& queue);
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 
