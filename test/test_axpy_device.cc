@@ -77,10 +77,32 @@ void test_axpy_device_work( Params& params, bool run )
 
     // test error exits
     if(testcase == 0){
-        //The number of test cases is 0
+        //The number of test cases is 2
+        char *error_name = (char *)malloc(sizeof(char)*35);
         int all_testcase = 0;
         int passed_testcase = 0;
         int failed_testcase = 0;
+        //case1: test n is 0
+        blas::axpy( 0, alpha, dx, incx, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case2: test n is -1
+        blas::axpy( -1, alpha, dx, incx, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case3: test incx is 0
+        blas::axpy( n, alpha, dx, 0, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case4: test incx is -1
+        blas::axpy( n, alpha, dx, -1, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+
+        //case5: test incy is 0
+        blas::axpy( n, alpha, dx, incx, dy, 0, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+
+        //case6: test incy is -1
+        blas::axpy( n, alpha, dx, incx, dy, -1, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+
         printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
     }
     else{
