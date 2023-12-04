@@ -36,11 +36,12 @@ void gemm(
     std::vector<scalar_t*>  const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
+    if(testcase==1){
     blas_error_if( layout != Layout::ColMajor && layout != Layout::RowMajor );
     blas_error_if( batch_size < 0 );
     blas_error_if( info.size() != 0
@@ -53,7 +54,7 @@ void gemm(
             alpha, Aarray, lda, Barray, ldb, beta, Carray, ldc,
             batch_size, info );
     }
-
+    }
     bool fixed_size = (
            transA.size() == 1
         && transB.size() == 1
@@ -71,6 +72,7 @@ void gemm(
 
     blas::internal_set_device( queue.device() );
 
+    device_blas_int testcase_ = to_device_blas_int(testcase);
     if (fixed_size) {
         // convert arguments
         blas::Op transA_ = transA[0];
@@ -81,7 +83,6 @@ void gemm(
         device_blas_int lda_ = to_device_blas_int( lda[0] );
         device_blas_int ldb_ = to_device_blas_int( ldb[0] );
         device_blas_int ldc_ = to_device_blas_int( ldc[0] );
-
         // gemm needs 3 arrays (A, B, and C).
         size_t max_chunk = MaxBatchChunk;
         queue.work_ensure_size<void*>( 3*max_chunk );
@@ -104,14 +105,14 @@ void gemm(
                     transB_, transA_, n_, m_, k_,
                     alpha[0], dBarray, ldb_, dAarray, lda_,
                     beta[0],  dCarray, ldc_,
-                    ibatch_size, queue );
+                    ibatch_size, queue, testcase_, errname );
             }
             else {
                 internal::batch_gemm(
                     transA_, transB_, m_, n_, k_,
                     alpha[0], dAarray, lda_, dBarray, ldb_,
                     beta[0],  dCarray, ldc_,
-                    ibatch_size, queue );
+                    ibatch_size, queue, testcase_, errname );
             }
         }
     }
@@ -133,7 +134,7 @@ void gemm(
             scalar_t*  C_      = blas::batch::extract( Carray, i );
             blas::gemm( layout, transA_, transB_, m_, n_, k_,
                         alpha_, A_, lda_, B_, ldb_, beta_, C_, ldc_,
-                        queue );
+                        queue, testcase_, errname );
             queue.revolve();
         }
         queue.join();
@@ -164,11 +165,11 @@ void gemm(
     std::vector<float*>     const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
                 alpha, Aarray, lda, Barray, ldb, beta, Carray, ldc,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -188,11 +189,11 @@ void gemm(
     std::vector<double*>    const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
                 alpha, Aarray, lda, Barray, ldb, beta, Carray, ldc,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -212,11 +213,11 @@ void gemm(
     std::vector< std::complex<float>* > const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
                 alpha, Aarray, lda, Barray, ldb, beta, Carray, ldc,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 //------------------------------------------------------------------------------
@@ -236,11 +237,11 @@ void gemm(
     std::vector< std::complex<double>* > const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
-    blas::Queue& queue )
+    blas::Queue& queue, int64_t testcase, char *errname )
 {
     impl::gemm( layout, transA, transB, m, n, k,
                 alpha, Aarray, lda, Barray, ldb, beta, Carray, ldc,
-                batch_size, info, queue );
+                batch_size, info, queue, testcase, errname );
 }
 
 }  // namespace batch

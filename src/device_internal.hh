@@ -314,25 +314,25 @@ void amax(
     device_blas_int n,
     float const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     double const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     std::complex<float> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //---------------------------------------------------------
 void amax(    
     device_blas_int n,
     std::complex<double> const* dx, device_blas_int incdx,
     device_blas_int *result, 
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //----------------------------------------------------------
 
 
@@ -1011,7 +1011,7 @@ void batch_gemm(
     float beta,
     float** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void batch_gemm(
     blas::Op transA, blas::Op transB,
@@ -1022,7 +1022,7 @@ void batch_gemm(
     double beta,
     double** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void batch_gemm(
     blas::Op transA, blas::Op transB,
@@ -1033,7 +1033,7 @@ void batch_gemm(
     std::complex<float> beta,
     std::complex<float>** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 void batch_gemm(
     blas::Op transA, blas::Op transB,
@@ -1044,7 +1044,7 @@ void batch_gemm(
     std::complex<double> beta,
     std::complex<double>** dCarray, device_blas_int lddc,
     device_blas_int batch_size,
-    blas::Queue& queue );
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 // batch trsm
