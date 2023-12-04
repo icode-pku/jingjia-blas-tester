@@ -29,6 +29,7 @@ void test_gemv_device_work( Params& params, bool run )
     int64_t device  = params.device();
     int64_t align   = params.align();
     int64_t verbose = params.verbose();
+    int64_t testcase= params.testcase();
 
     // mark non-standard output values
     params.gflops();
@@ -94,97 +95,136 @@ void test_gemv_device_work( Params& params, bool run )
     real_t Ynorm = cblas_nrm2( Ym, y, std::abs(incy) );
 
     // test error exits
-    assert_throw( blas::gemv( Layout(0), trans,  m,  n, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gemv( layout,    Op(0),  m,  n, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gemv( layout,    trans, -1,  n, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gemv( layout,    trans,  m, -1, alpha, dA, lda, dx, incx, beta, dy, incy, queue ), blas::Error );
+    if(testcase == 0){
+        char *error_name = (char *)malloc(sizeof(char)*35);
+        int all_testcase = 0;
+        int passed_testcase = 0;
+        int failed_testcase = 0;
+        //case 1: Test trans is an illegal value
+        blas::gemv( layout,    Op(0),  m,  n, alpha, dA, lda, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 2: Test the return value when m is an illegal value
+        blas::gemv( layout,    trans, -1,  n, alpha, dA, lda, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 3: Test the return value when n is an illegal value
+        blas::gemv( layout,    trans,  m, -1, alpha, dA, lda, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        
+        
+        //case 4:  Test the return value when col-major order, trans=NoTrans, and lda is an illegal value
+        blas::gemv( Layout::ColMajor, Op::NoTrans,   m,  n, alpha, dA, m-1, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 5:  Test the return value when col-major order, trans=Trans, and lda is an illegal value
+        blas::gemv( Layout::ColMajor, Op::Trans,     m,  n, alpha, dA, m-1, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 6: Test the return value when col-major order, trans=ConjTrans, and lda is an illegal value
+        blas::gemv( Layout::ColMajor, Op::ConjTrans, m,  n, alpha, dA, m-1, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
-    assert_throw( blas::gemv( Layout::ColMajor, trans,  m,  n, alpha, dA, m-1, dx, incx, beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gemv( Layout::RowMajor, trans,  m,  n, alpha, dA, n-1, dx, incx, beta, dy, incy, queue ), blas::Error );
+        //case 7:  Test the return value when row-major order, trans=NoTrans, and lda is an illegal value
+        blas::gemv( Layout::RowMajor, Op::NoTrans,    m,  n, alpha, dA, n-1, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 8:  Test the return value when row-major order, trans=Trans, and lda is an illegal value
+        blas::gemv( Layout::RowMajor, Op::Trans,      m,  n, alpha, dA, n-1, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 9: Test the return value when row-major order, trans=ConjTrans, and lda is an illegal value
+        blas::gemv( Layout::RowMajor, Op::ConjTrans,  m,  n, alpha, dA, n-1, dx, incx, beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+       
+        //case 10: Test the return value when incx an illegal value
+        blas::gemv( layout,    trans,  m,  n, alpha, dA, lda, dx, 0,    beta, dy, incy, queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //case 11: Test the return value when incy an illegal value
+        blas::gemv( layout,    trans,  m,  n, alpha, dA, lda, dx, 0, beta, dy, 0,    queue, testcase, error_name );
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        queue.sync();
 
-    assert_throw( blas::gemv( layout,    trans,  m,  n, alpha, dA, lda, dx, 0,    beta, dy, incy, queue ), blas::Error );
-    assert_throw( blas::gemv( layout,    trans,  m,  n, alpha, dA, lda, dx, incx, beta, dy, 0,  queue   ), blas::Error );
+        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
 
-    if (verbose >= 1) {
-        printf( "\n"
-                "A Am=%5lld, An=%5lld, lda=%5lld, size=%10lld, norm=%.2e\n"
-                "x Xm=%5lld, inc=%5lld,           size=%10lld, norm=%.2e\n"
-                "y Ym=%5lld, inc=%5lld,           size=%10lld, norm=%.2e\n",
-                llong( Am ), llong( An ), llong( lda ), llong( size_A ), Anorm,
-                llong( Xm ), llong( incx ), llong( size_x ), Xnorm,
-                llong( Ym ), llong( incy ), llong( size_y ), Ynorm );
+        free(error_name);
     }
-    if (verbose >= 2) {
-        printf( "alpha = %.4e + %.4ei; beta = %.4e + %.4ei;\n",
-                real(alpha), imag(alpha),
-                real(beta),  imag(beta) );
-        printf( "A = "    ); print_matrix( m, n, A, lda );
-        printf( "x    = " ); print_vector( Xm, x, incx );
-        printf( "y    = " ); print_vector( Ym, y, incy );
-    }
-
-    // run test
-    testsweeper::flush_cache( params.cache() );
-    //double time = get_wtime();
-    blas::gemv( layout, trans, m, n, alpha, dA, lda, 
-                dx, incx, beta, dy, incy, queue);
-    queue.sync();
-    //time = get_wtime() - time;
-
-    double gflop = blas::Gflop< scalar_t >::gemv( m, n );
-    double gbyte = blas::Gbyte< scalar_t >::gemv( m, n );
-    //params.time()   = time * 1000;  // msec
-    //params.gflops() = gflop / time;
-    //params.gbytes() = gbyte / time;
-    blas::device_copy_vector(Ym, dy, std::abs(incy), y, std::abs(incy), queue);
-    queue.sync();
-
-    if (verbose >= 2) {
-        printf( "y2   = " ); print_vector( Ym, y, incy );
-    }
-
-    double time;
-    if (params.ref() == 'y' || params.check() == 'y') {
-        // run reference
-        testsweeper::flush_cache( params.cache() );
-        time = get_wtime();
-        cblas_gemv( cblas_layout_const(layout), cblas_trans_const(trans), m, n,
-                    alpha, A, lda, x, incx, beta, yref, incy );
-        time = get_wtime() - time;
-
-        params.ref_time()   = time * 1000;  // msec
-        params.ref_gflops() = gflop / time;
-        params.ref_gbytes() = gbyte / time;
-
+    else{
+        if (verbose >= 1) {
+            printf( "\n"
+                    "A Am=%5lld, An=%5lld, lda=%5lld, size=%10lld, norm=%.2e\n"
+                    "x Xm=%5lld, inc=%5lld,           size=%10lld, norm=%.2e\n"
+                    "y Ym=%5lld, inc=%5lld,           size=%10lld, norm=%.2e\n",
+                    llong( Am ), llong( An ), llong( lda ), llong( size_A ), Anorm,
+                    llong( Xm ), llong( incx ), llong( size_x ), Xnorm,
+                    llong( Ym ), llong( incy ), llong( size_y ), Ynorm );
+        }
         if (verbose >= 2) {
-            printf( "yref = " ); print_vector( Ym, yref, incy );
+            printf( "alpha = %.4e + %.4ei; beta = %.4e + %.4ei;\n",
+                    real(alpha), imag(alpha),
+                    real(beta),  imag(beta) );
+            printf( "A = "    ); print_matrix( m, n, A, lda );
+            printf( "x    = " ); print_vector( Xm, x, incx );
+            printf( "y    = " ); print_vector( Ym, y, incy );
         }
 
-        // check error compared to reference
-        // treat y as 1 x Ym matrix with ld = incy; k = Xm is reduction dimension
-        real_t error;
-        bool okay;
-        check_gemm( 1, Ym, Xm, alpha, beta, Anorm, Xnorm, Ynorm,
-                    yref, std::abs(incy), y, std::abs(incy), verbose, &error, &okay );
-        params.error() = error;
-        params.okay() = okay;
-    }
-
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
+        // run test
         testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
+        //double time = get_wtime();
         blas::gemv( layout, trans, m, n, alpha, dA, lda, 
-            dx, incx, beta, dy, incy, queue);
+                    dx, incx, beta, dy, incy, queue);
         queue.sync();
-        all_time += (get_wtime() - stime);
+        //time = get_wtime() - time;
+
+        double gflop = blas::Gflop< scalar_t >::gemv( m, n );
+        double gbyte = blas::Gbyte< scalar_t >::gemv( m, n );
+        //params.time()   = time * 1000;  // msec
+        //params.gflops() = gflop / time;
+        //params.gbytes() = gbyte / time;
+        blas::device_copy_vector(Ym, dy, std::abs(incy), y, std::abs(incy), queue);
+        queue.sync();
+
+        if (verbose >= 2) {
+            printf( "y2   = " ); print_vector( Ym, y, incy );
+        }
+
+        double time;
+        if (params.ref() == 'y' || params.check() == 'y') {
+            // run reference
+            testsweeper::flush_cache( params.cache() );
+            time = get_wtime();
+            cblas_gemv( cblas_layout_const(layout), cblas_trans_const(trans), m, n,
+                        alpha, A, lda, x, incx, beta, yref, incy );
+            time = get_wtime() - time;
+
+            params.ref_time()   = time * 1000;  // msec
+            params.ref_gflops() = gflop / time;
+            params.ref_gbytes() = gbyte / time;
+
+            if (verbose >= 2) {
+                printf( "yref = " ); print_vector( Ym, yref, incy );
+            }
+
+            // check error compared to reference
+            // treat y as 1 x Ym matrix with ld = incy; k = Xm is reduction dimension
+            real_t error;
+            bool okay;
+            check_gemm( 1, Ym, Xm, alpha, beta, Anorm, Xnorm, Ynorm,
+                        yref, std::abs(incy), y, std::abs(incy), verbose, &error, &okay );
+            params.error() = error;
+            params.okay() = okay;
+        }
+
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::gemv( layout, trans, m, n, alpha, dA, lda, 
+                dx, incx, beta, dy, incy, queue);
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time * 1000;  // msec
+        params.gflops() = gflop / all_time;
+        params.gbytes() = gbyte / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time * 1000;  // msec
-    params.gflops() = gflop / all_time;
-    params.gbytes() = gbyte / all_time;
 
     delete[] A;
     delete[] x;
