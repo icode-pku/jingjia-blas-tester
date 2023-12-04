@@ -103,7 +103,9 @@ void test_axpy_device_work( Params& params, bool run )
         blas::axpy( n, alpha, dx, incx, dy, -1, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
 
+        queue.sync();
         printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        free(error_name);
     }
     else{
         if (verbose >= 1) {

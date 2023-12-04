@@ -8,6 +8,7 @@
 #include "lapack_wrappers.hh"
 #include "blas/flops.hh"
 #include "print_matrix.hh"
+#include "blas/util.hh"
 
 // -----------------------------------------------------------------------------
 template <typename Tx>
@@ -69,30 +70,41 @@ void test_nrm2_device_work( Params& params, bool run )
         #endif
     }
 
+    int64_t idist = 1;
+    int iseed[4] = { 0, 0, 0, 1 };
+    lapack_larnv( idist, iseed, size_x, x );
+    cblas_copy( n, x, incx, xref, incx );
+
+    blas::device_copy_vector(n, x, std::abs(incx), dx, std::abs(incx), queue);
+    queue.sync();
+
     // test error exits
     if(testcase == 0){
         char *error_name = (char *)malloc(sizeof(char)*35);
         int all_testcase = 0;
         int passed_testcase = 0;
         int failed_testcase = 0;
-        //case 1: Test the return value when result is an nullptr
-       blas::nrm2( n, dx, incx, nullptr, queue, testcase, error_name );
+        //Test case 1: Test the return when result is an nullptr
+        blas::nrm2(  n, dx, incx, nullptr, queue, testcase, error_name);
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //Test case 2: Test the return when n is 0
+        blas::nrm2(  0, dx, incx, result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        //Test case 3: Test the return when  n is -1
+        blas::nrm2( -1, dx, incx, result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        //Test case 4: Test the return when incx is 0
+        blas::nrm2(  n, dx,    0, result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        //Test case 5: Test the return when incx is -1
+        blas::nrm2(  n, dx,   -1, result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+
         queue.sync();
-
         printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
-
         free(error_name);
     }
     else{
-        int64_t idist = 1;
-        int iseed[4] = { 0, 0, 0, 1 };
-        lapack_larnv( idist, iseed, size_x, x );
-        cblas_copy( n, x, incx, xref, incx );
-
-        blas::device_copy_vector(n, x, std::abs(incx), dx, std::abs(incx), queue);
-        queue.sync();
-
         if (verbose >= 1) {
             printf( "\n"
                     "n=%5lld, incx=%5lld, sizex=%10lld\n",

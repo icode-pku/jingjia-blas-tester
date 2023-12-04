@@ -218,6 +218,22 @@ struct is_complex< std::complex<T> >:
 {};
 
 // -----------------------------------------------------------------------------
+// internal helper function; 
+// return whether a variable equals zero 
+template <typename T>
+inline bool isEqualToZero(const T& value) {
+    return value == 0;
+}
+template <>
+inline bool isEqualToZero(const std::complex<float>& value) {
+    return value == std::complex<float>(0.0f, 0.0f);
+}
+template <>
+inline bool isEqualToZero(const std::complex<double>& value) {
+    return value == std::complex<double>(0.0, 0.0);
+}
+
+// -----------------------------------------------------------------------------
 // Previously extended real and imag to real types. Belatedly discovered that
 // C++11 extends std::real and std::imag to float and integer types,
 // so just use those now.
@@ -707,3 +723,4 @@ inline void abort_if( bool cond, const char* func,  const char* format, ... )
 }  // namespace blas
 
 #endif        //  #ifndef BLAS_UTIL_HH
+
