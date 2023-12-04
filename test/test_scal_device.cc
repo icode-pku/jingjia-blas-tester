@@ -67,11 +67,26 @@ void test_scal_device_work( Params& params, bool run )
 
     // test error exits
     if(testcase == 0){
-        //The number of test cases is 0
+        char *error_name = (char *)malloc(sizeof(char)*35);
         int all_testcase = 0;
         int passed_testcase = 0;
         int failed_testcase = 0;
+        //Test case 1: Test the return when n is 0
+        blas::scal(  0, alpha, dx, incx, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        //Test case 2: Test the return when n is -1
+        blas::scal( -1, alpha, dx, incx, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        //Test case 3: Test the return when incx is 0
+        blas::scal(  n, alpha, dx,    0, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        //Test case 4: Test the return when incx is -1
+        blas::scal(  n, alpha, dx,   -1, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+
+        queue.sync();
         printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        free(error_name);
     }
     else{
         if (verbose >= 1) {
