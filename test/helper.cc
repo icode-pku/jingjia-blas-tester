@@ -59,6 +59,9 @@ std::vector< routines_help_t > routines = {
     {"cublasgetmatrixasync", helper_cublasGetMatrixAsync, SectionHelp::test1},
     {"cublassetpointermode", helper_cublasSetPointerMode, SectionHelp::test1},
     {"cublasgetpointermode", helper_cublasGetPointerMode, SectionHelp::test1},
+    {"cublasloggerconfigure", helper_cublasLoggerConfigure, SectionHelp::test1},
+    {"cublasgetloggercallback", helper_cublasGetLoggerCallback, SectionHelp::test1},
+    {"cublassetloggercallback", helper_cublasSetLoggerCallback, SectionHelp::test1},
     { "", nullptr, SectionHelp::newline},
 };
 

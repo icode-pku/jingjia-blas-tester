@@ -27,6 +27,9 @@ void helper_cublasSetMatrixAsync();
 void helper_cublasGetMatrixAsync();
 void helper_cublasSetPointerMode();
 void helper_cublasGetPointerMode();
+void helper_cublasLoggerConfigure();
+void helper_cublasGetLoggerCallback();
+void helper_cublasSetLoggerCallback();
 
 void helper_test1();
 void helper_test2();
