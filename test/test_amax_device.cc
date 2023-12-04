@@ -61,7 +61,20 @@ void test_amax_device_work( Params& params, bool run )
         //Test case 1: Test result is an nullptr
         blas::amax( n, dx, incx, nullptr, queue, testcase, error_name);
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
+        //Test case 2: Test n is 0
+        blas::amax( 0, dx, incx, &result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result==0, error_name);
+        //Test case 3: Test n is -1
+        blas::amax( -1, dx, incx, &result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result==0, error_name);
+        //Test case 4: Test incx is 0
+        blas::amax( n, dx, 0, &result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result==0, error_name);
+        //Test case 5: Test incx is -1
+        blas::amax( n, dx, -1, &result, queue, testcase, error_name);
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result==0, error_name);
 
+        queue.sync();
         printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
         free(error_name);
     }
@@ -95,7 +108,7 @@ void test_amax_device_work( Params& params, bool run )
             time = get_wtime();
             int64_t ref = cblas_iamax( n, x, incx );
             time = get_wtime() - time;
-            ref += 1;
+            if(n>0 && incx>0) ref += 1;
             //printf( "result_dev = %5lld cblas= %5lld\n", llong( result ),llong(ref) );
             params.ref_time()   = time * 1000;  // msec
             params.ref_gflops() = gflop / time;
