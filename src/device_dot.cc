@@ -85,15 +85,18 @@ void dotu(
 #ifndef BLAS_HAVE_DEVICE
     throw blas::Error( "device BLAS not available", __func__ );
 #else
-    // check arguments
-    blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
-    blas_error_if( incx == 0 );  // standard BLAS doesn't detect inc[xy] == 0
-    blas_error_if( incy == 0 );
+    if(testcase == 1){
+        // check arguments
+        blas_error_if( n < 0 );      // standard BLAS returns, doesn't fail
+        blas_error_if( incx == 0 );  // standard BLAS doesn't detect inc[xy] == 0
+        blas_error_if( incy == 0 );
+    }
 
     // convert arguments
     device_blas_int n_    = to_device_blas_int( n );
     device_blas_int incx_ = to_device_blas_int( incx );
     device_blas_int incy_ = to_device_blas_int( incy );
+    device_blas_int testcase_ = to_device_blas_int( testcase );
 
     blas::internal_set_device( queue.device() );
 
@@ -107,14 +110,14 @@ void dotu(
             // use preallocated device workspace (resizing if needed)
             queue.work_ensure_size< char >( sizeof(scalar_t) );  // syncs if needed
             scalar_t* dev_work = (scalar_t*)queue.work();
-            internal::dotu( n_, x, incx_, y, incy_, dev_work, queue );
+            internal::dotu( n_, x, incx_, y, incy_, dev_work, queue, testcase_, errname );
             blas::device_memcpy( result, dev_work, 1, queue );
         }
         else {
-            internal::dotu( n_, x, incx_, y, incy_, result, queue );
+            internal::dotu( n_, x, incx_, y, incy_, result, queue, testcase_, errname );
         }
     #else // other devices (CUDA/HIP)
-        internal::dotu( n_, x, incx_, y, incy_, result, queue );
+        internal::dotu( n_, x, incx_, y, incy_, result, queue, testcase_, errname );
     #endif
 #endif
 }
