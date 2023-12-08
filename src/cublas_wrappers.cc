@@ -2922,7 +2922,7 @@ void batch_trsm(
     blas_dev_call(
         cublasDtrsmBatched(
             queue.handle(),
-            side2cublas(side,testcase), uplo2cublas(uplo,testcase), op2cublas(trans,testcase), diag2cublas(diag,testcase),
+            side2cublas(side), uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
             m, n,
             &alpha,
             (double const**) dAarray, ldda,
@@ -2932,7 +2932,7 @@ void batch_trsm(
     else{
         const char* s = device_errorstatus_to_string(cublasDtrsmBatched(
             queue.handle(),
-            side2cublas(side), uplo2cublas(uplo), op2cublas(trans), diag2cublas(diag),
+            side2cublas(side,testcase), uplo2cublas(uplo,testcase), op2cublas(trans,testcase), diag2cublas(diag,testcase),
             m, n,
             &alpha,
             (double const**) dAarray, ldda,

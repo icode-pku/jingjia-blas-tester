@@ -221,6 +221,10 @@ Params::Params():
     cache     ( "cache",   0,    ParamType::Value,  20,   1, 1024, "total cache size, in MiB" ),
     runs    ( "runs",  4,    ParamType::Value,   10,   1, 1000, "When testing performance, how many times do you run each" ),
     testcase   ( "testcase",  4,    ParamType::Value,   1,   0, 1, "1 indicates correct parameter testing, 0 indicates incorrect parameter testing" ),
+    Totalcase   ( "totalcase",  0,    ParamType::Value,   0,   0, 100000, "Totalcase in illegal parameter testing" ),
+    Passedcase   ( "passedcase",  0,    ParamType::Value,   0,   0, 100000, "Passedcase in illegal parameter testing" ),
+    Failedcase   ( "failedcase",  0,    ParamType::Value,   0,   0, 100000, "Failedcase in illegal parameter testing" ),
+    iscorrect   ( "iscorrect",  0,    ParamType::Value,   1,   0, 1, "Whether to test for correctness, otherwise test for performance" ),
     // ----- routine parameters
     //          name,      w,    type,            def,                    char2enum,         enum2char,         enum2str,         help
     datatype  ( "type",    4,    ParamType::List, DataType::Single,       char2datatype,     datatype2char,     datatype2str,     "s=single (float), d=double, c=complex-single, z=complex-double" ),
@@ -358,7 +362,20 @@ int main( int argc, char** argv )
             params.help( routine );
             throw;
         }
-
+        //correct
+        if(1==params.iscorrect()){
+            params.gflops.used(false);
+            params.gbytes.used(false);
+            params.ref_time.used(false);
+            params.ref_gflops.used(false);
+            params.ref_gbytes.used(false);
+            params.time.used(false);
+            params.runs.used(false);
+        }
+        else{//performance
+            params.okay.used(false);
+            params.error.used(false);
+        }
         // show align column if it has non-default values
         if (params.align.size() != 1 || params.align() != 1) {
             params.align.width( 5 );
@@ -369,7 +386,7 @@ int main( int argc, char** argv )
         testsweeper::DataType last = params.datatype();
         if(params.testcase()==1) params.header();
         do {
-            if (params.datatype() != last) {
+            if (params.testcase()==1 && params.datatype() != last) {
                 last = params.datatype();
                 printf( "\n" );
             }
@@ -394,14 +411,17 @@ int main( int argc, char** argv )
                 printf( "\n" );
             }
         } while(params.next());
-        if(params.testcase()==1){
+        if(params.testcase()==1){//合法参数测试
             // if (status) {
             //     printf( "All test cases: %d, %d tests FAILED for %s.\n", all_tests, status, routine );
             // }
             // else {
             //     printf( "All tests passed for %s.\n", routine );
             // }
-            printf( "For routine:%s  All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n", routine, all_tests, all_tests-status, status );
+            printf( "For routine:%s \nAll Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n", routine, all_tests, all_tests-status, status );
+        }
+        else{
+            printf( "For routine:%s \nAll Test Cases: %ld  Passed Cases: %ld  Failed Cases: %ld\n", routine, params.Totalcase(), params.Passedcase(), params.Failedcase() );
         }
     }
     catch (const QuitException& ex) {

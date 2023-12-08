@@ -91,7 +91,8 @@ void test_dot_device_work( Params& params, bool run )
 
     // test error exits
     if(testcase == 0){
-        //The number of test cases is 0
+        //The number of test cases is 2
+        char *error_name = (char *)malloc(sizeof(char)*35);
         int all_testcase = 0;
         int passed_testcase = 0;
         int failed_testcase = 0;

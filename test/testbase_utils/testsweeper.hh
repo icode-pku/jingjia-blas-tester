@@ -266,7 +266,6 @@ public:
 
     int  width() const { return width_; }
     void width( int w ) { width_ = w; }
-
 protected:
     // s_params is list of ParamBase objects, used by Params class
     static std::vector< ParamBase* > s_params;
