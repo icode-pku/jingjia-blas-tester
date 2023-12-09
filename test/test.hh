@@ -66,6 +66,10 @@ public:
     
     testsweeper::ParamInt    runs;//new add param by cj
     testsweeper::ParamInt    testcase;//new add param by cj
+    testsweeper::ParamInt    Totalcase;
+    testsweeper::ParamInt    Passedcase;
+    testsweeper::ParamInt    Failedcase;
+    testsweeper::ParamInt    iscorrect;
 
     testsweeper::ParamDouble     time;
     testsweeper::ParamDouble     gflops;
