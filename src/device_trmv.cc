@@ -65,7 +65,7 @@ void trmv(
                 //     x[ ix ] = conj( x[ ix ] );
                 //     ix += incx;
                 // }
-                scalar_t* x_host = new scalar_t[ n ];
+                scalar_t* x_host = new scalar_t[ n * std::abs(incx) ];
                 blas::device_copy_vector(n, x, std::abs(incx), x_host, std::abs(incx),queue);
                 queue.sync();
                 int64_t ix = (incx > 0 ? 0 : (-n + 1)*incx);
@@ -88,7 +88,7 @@ void trmv(
 
     if constexpr (is_complex<scalar_t>::value) {
     if (layout == Layout::RowMajor && trans == Op::ConjTrans) {
-        scalar_t* x_host = new scalar_t[ n ];
+        scalar_t* x_host = new scalar_t[ n * std::abs(incx) ];
         blas::device_copy_vector(n, x, std::abs(incx), x_host, std::abs(incx),queue);
         queue.sync();
         int64_t ix = (incx > 0 ? 0 : (-n + 1)*incx);

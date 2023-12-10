@@ -38,6 +38,7 @@ void test_trsv_device_work( Params& params, bool run )
     params.ref_gflops();
     params.ref_gbytes();
     params.runs();
+    params.iscorrect();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -46,6 +47,20 @@ void test_trsv_device_work( Params& params, bool run )
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -152,8 +167,10 @@ void test_trsv_device_work( Params& params, bool run )
         blas::trsv( layout, uplo, trans, diag, n, dA, lda, dx, 0, queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
         queue.sync();
-
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
 
         free(error_name);
     }
@@ -201,39 +218,45 @@ void test_trsv_device_work( Params& params, bool run )
                         n, A, lda, xref, incx );
             time = get_wtime() - time;
 
-            params.ref_time()   = time * 1000;  // msec
-            params.ref_gflops() = gflop / time;
-            params.ref_gbytes() = gbyte / time;
+            if(params.iscorrect()==0){
+                params.ref_time()   = time * 1000;  // msec
+                params.ref_gflops() = gflop / time;
+                params.ref_gbytes() = gbyte / time;
+            }
 
             if (verbose >= 2) {
                 printf( "xref = [];\n" ); print_vector( n, xref, incx );
             }
 
-            // check error compared to reference
-            // treat x as 1 x n matrix with ld = incx; k = n is reduction dimension
-            // alpha = 1, beta = 0.
-            real_t error;
-            bool okay;
-            check_gemm( 1, n, n, scalar_t(1), scalar_t(0), Anorm, Xnorm, real_t(0),
-                        xref, std::abs(incx), x, std::abs(incx), verbose, &error, &okay );
-            params.error() = error;
-            params.okay() = okay;
+            if(params.iscorrect()==1){
+                // check error compared to reference
+                // treat x as 1 x n matrix with ld = incx; k = n is reduction dimension
+                // alpha = 1, beta = 0.
+                real_t error;
+                bool okay;
+                check_gemm( 1, n, n, scalar_t(1), scalar_t(0), Anorm, Xnorm, real_t(0),
+                            xref, std::abs(incx), x, std::abs(incx), verbose, &error, &okay );
+                params.error() = error;
+                params.okay() = okay;
+            }
         }
 
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::trsv( layout, uplo, trans, diag, n, dA, lda, dx, incx, queue );
-            queue.sync();
-            all_time += (get_wtime() - stime);
+        if(params.iscorrect()==0){
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::trsv( layout, uplo, trans, diag, n, dA, lda, dx, incx, queue );
+                queue.sync();
+                all_time += (get_wtime() - stime);
+            }
+            all_time/=(double)runs;
+            params.time()   = all_time * 1000;  //msec
+            params.gflops() = gflop / all_time;
+            params.gbytes() = gbyte / all_time;
         }
-        all_time/=(double)runs;
-        params.time()   = all_time * 1000;  //msec
-        params.gflops() = gflop / all_time;
-        params.gbytes() = gbyte / all_time;
     }
 
     delete[] A;

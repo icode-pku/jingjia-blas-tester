@@ -138,29 +138,29 @@ void test_amax_device_work( Params& params, bool run )
             }
 
             if(params.iscorrect()==1){
-            // error = |ref - result|
-            real_t error = std::abs( ref - result );
-            params.error() = error;
+                // error = |ref - result|
+                real_t error = std::abs( ref - result );
+                params.error() = error;
 
-            // iamax must be exact!
-            params.okay() = (error == 0);
+                // iamax must be exact!
+                params.okay() = (error == 0);
             }
         }
         if(params.iscorrect()==0){
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::amax( n, dx, incx, &result, queue);
-            queue.sync();
-            all_time += (get_wtime() - stime);
-        }
-        all_time/=(double)runs;
-        params.time()   = all_time * 1000;  // msec
-        params.gflops() = gflop / all_time;
-        params.gbytes() = gbyte / all_time;
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::amax( n, dx, incx, &result, queue);
+                queue.sync();
+                all_time += (get_wtime() - stime);
+            }
+            all_time/=(double)runs;
+            params.time()   = all_time * 1000;  // msec
+            params.gflops() = gflop / all_time;
+            params.gbytes() = gbyte / all_time;
         }
     }
     delete[] x;

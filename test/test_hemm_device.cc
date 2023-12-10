@@ -41,9 +41,24 @@ void test_hemm_device_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.runs();
+    params.iscorrect();
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -136,8 +151,11 @@ void test_hemm_device_work( Params& params, bool run )
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
         queue.sync();
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
 
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
 
         free(error_name);
     }
@@ -186,38 +204,44 @@ void test_hemm_device_work( Params& params, bool run )
                         m, n, alpha, A, lda, B, ldb, beta, Cref, ldc );
             time = get_wtime() - time;
 
-            params.ref_time()   = time;
-            params.ref_gflops() = gflop / time;
+            if(params.iscorrect()==0){
+                params.ref_time()   = time;
+                params.ref_gflops() = gflop / time;
+            }
 
             if (verbose >= 2) {
                 printf( "Cref = " ); print_matrix( Cm, Cn, Cref, ldc );
             }
 
-            // check error compared to reference
-            real_t error;
-            bool okay;
-            check_gemm( Cm, Cn, An, alpha, beta, Anorm, Bnorm, Cnorm,
-                        Cref, ldc, C, ldc, verbose, &error, &okay );
-            params.error() = error;
-            params.okay() = okay;
+            if(params.iscorrect()==1){
+                // check error compared to reference
+                real_t error;
+                bool okay;
+                check_gemm( Cm, Cn, An, alpha, beta, Anorm, Bnorm, Cnorm,
+                            Cref, ldc, C, ldc, verbose, &error, &okay );
+                params.error() = error;
+                params.okay() = okay;
+            }
         }
 
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        alpha = 0.01 * params.alpha();
-        beta = 0.01 * params.beta();
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::hemm( layout, side, uplo, m, n,
-                    alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
-            queue.sync();
-            all_time += (get_wtime() - stime);
+        if(params.iscorrect()==0){
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            alpha = 0.01 * params.alpha();
+            beta = 0.01 * params.beta();
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::hemm( layout, side, uplo, m, n,
+                        alpha, dA, lda, dB, ldb, beta, dC, ldc, queue );
+                queue.sync();
+                all_time += (get_wtime() - stime);
+            }
+            all_time/=(double)runs;
+            params.time()   = all_time;  // s
+            params.gflops() = gflop / all_time;
         }
-        all_time/=(double)runs;
-        params.time()   = all_time;  // s
-        params.gflops() = gflop / all_time;
     }
 
     delete[] A;

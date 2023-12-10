@@ -35,6 +35,7 @@ void test_axpy_device_work( Params& params, bool run )
     params.ref_gflops();
     params.ref_gbytes();
     params.runs();
+    params.iscorrect();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -43,6 +44,20 @@ void test_axpy_device_work( Params& params, bool run )
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -104,7 +119,10 @@ void test_axpy_device_work( Params& params, bool run )
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
 
         queue.sync();
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
         free(error_name);
     }
     else{
@@ -140,57 +158,61 @@ void test_axpy_device_work( Params& params, bool run )
             time = get_wtime();
             cblas_axpy( n, alpha, x, incx, yref, incy );
             time = get_wtime() - time;
-
-            params.ref_time()   = time * 1000;  // msec
-            params.ref_gflops() = gflop / time;
-            params.ref_gbytes() = gbyte / time;
-
+            if(params.iscorrect()==0){
+                params.ref_time()   = time * 1000;  // msec
+                params.ref_gflops() = gflop / time;
+                params.ref_gbytes() = gbyte / time;
+            }
             if (verbose >= 2) {
                 printf( "yref = " ); print_vector( n, yref, incy );
             }
 
-            // maximum component-wise forward error:
-            // | fl(yi) - yi | / | yi |
-            real_t error = 0;
-            int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
-            int64_t ix = (incx > 0 ? 0 : (-n + 1)*incx);
-            for (int64_t i = 0; i < n; ++i) {
-                y[iy] = std::abs( y[iy] - yref[iy] )
-                    / (2*(std::abs( alpha * x[ix] ) + std::abs( y0[iy] )));
-                ix += incx;
-                iy += incy;
+            if(params.iscorrect()==1){
+                // maximum component-wise forward error:
+                // | fl(yi) - yi | / | yi |
+                real_t error = 0;
+                int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
+                int64_t ix = (incx > 0 ? 0 : (-n + 1)*incx);
+                for (int64_t i = 0; i < n; ++i) {
+                    y[iy] = std::abs( y[iy] - yref[iy] )
+                        / (2*(std::abs( alpha * x[ix] ) + std::abs( y0[iy] )));
+                    ix += incx;
+                    iy += incy;
+                }
+                params.error() = error;
+
+                if (verbose >= 2) {
+                    printf( "err  = " ); print_vector( n, y, incy, "%9.2e" );
+                }
+
+                // complex needs extra factor; see Higham, 2002, sec. 3.6.
+                if (blas::is_complex<scalar_t>::value) {
+                    error /= 2*sqrt(2);
+                }
+
+                real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+                params.error() = error;
+                params.okay() = (error < u);
             }
-            params.error() = error;
-
-
-            if (verbose >= 2) {
-                printf( "err  = " ); print_vector( n, y, incy, "%9.2e" );
-            }
-
-            // complex needs extra factor; see Higham, 2002, sec. 3.6.
-            if (blas::is_complex<scalar_t>::value) {
-                error /= 2*sqrt(2);
-            }
-
-            real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
-            params.error() = error;
-            params.okay() = (error < u);
 
         }
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::axpy( n, alpha, dx, incx, dy, incy, queue );
-            queue.sync();
-            all_time += (get_wtime() - stime);
+
+        if(params.iscorrect()==0){
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::axpy( n, alpha, dx, incx, dy, incy, queue );
+                queue.sync();
+                all_time += (get_wtime() - stime);
+            }
+            all_time/=(double)runs;
+            params.time()   = all_time * 1000;  // msec
+            params.gflops() = gflop / all_time;
+            params.gbytes() = gbyte / all_time;
         }
-        all_time/=(double)runs;
-        params.time()   = all_time * 1000;  // msec
-        params.gflops() = gflop / all_time;
-        params.gbytes() = gbyte / all_time;
     }
 
 

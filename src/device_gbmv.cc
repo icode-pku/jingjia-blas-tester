@@ -69,24 +69,24 @@ void gbmv(
                 beta  = conj( beta );
 
                 //x2 = new scalar_t[ m ];
-                scalar_t* x_host = new scalar_t[ m ];
+                scalar_t* x_host = new scalar_t[ m * std::abs(incx) ];
                 blas::device_copy_vector(m, x, std::abs(incx), x_host, std::abs(incx),queue);
                 queue.sync();
-                scalar_t* x2_host = new scalar_t[ m ];
-                x2 = blas::device_malloc<scalar_t>( m, queue );
+                scalar_t* x2_host = new scalar_t[ m * std::abs(incx) ];
+                x2 = blas::device_malloc<scalar_t>( m * std::abs(incx), queue );
                 int64_t ix = (incx > 0 ? 0 : (-m + 1)*incx);
                 for (int64_t i = 0; i < m; ++i) {
-                    x2_host[ i ] = conj( x_host [ ix ]);
+                    x2_host[ ix ] = conj( x_host [ ix ]);
                     ix += incx;
                     //x2[ i ] = conj( x[ ix ] );
                 }
-                incx_ = 1;
+                //incx_ = 1;
                 blas::device_copy_vector(m, x2_host, std::abs(incx), x2, std::abs(incx), queue);
                 queue.sync();
                 delete[] x_host;
                 delete[] x2_host;
 
-                scalar_t* y1_host = new scalar_t[ n ];
+                scalar_t* y1_host = new scalar_t[ n * std::abs(incy) ];
                 blas::device_copy_vector(n, y, std::abs(incy), y1_host, std::abs(incy),queue);
                 queue.sync();
                 int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);
@@ -110,7 +110,7 @@ void gbmv(
     if constexpr (is_complex<scalar_t>::value) {
         if (x2 != x) {  // RowMajor ConjTrans
             // y = conj( y )
-            scalar_t* y2_host = new scalar_t[ n ];
+            scalar_t* y2_host = new scalar_t[ n * std::abs(incy) ];
             blas::device_copy_vector(n, y, std::abs(incy), y2_host, std::abs(incy),queue);
             queue.sync();
             int64_t iy = (incy > 0 ? 0 : (-n + 1)*incy);

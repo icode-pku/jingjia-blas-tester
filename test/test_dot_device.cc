@@ -40,6 +40,7 @@ void test_dot_device_work( Params& params, bool run )
     params.ref_gflops();
     params.ref_gbytes();
     params.runs();
+    params.iscorrect();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -48,6 +49,20 @@ void test_dot_device_work( Params& params, bool run )
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -118,7 +133,10 @@ void test_dot_device_work( Params& params, bool run )
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
         
         queue.sync();
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
         free(error_name);
     }
     else{
@@ -156,39 +174,45 @@ void test_dot_device_work( Params& params, bool run )
             time = get_wtime();
             scalar_t ref = cblas_dot( n, x, incx, y, incy );
             time = get_wtime() - time;
-
-            params.ref_time()   = time * 1000;  // msec
-            params.ref_gflops() = gflop / time;
-            params.ref_gbytes() = gbyte / time;
+            if(params.iscorrect()==0){
+                params.ref_time()   = time * 1000;  // msec
+                params.ref_gflops() = gflop / time;
+                params.ref_gbytes() = gbyte / time;
+            }
 
             if (verbose >= 1) {
                 printf( "ref = %.4e + %.4ei\n", real(ref), imag(ref) );
             }
 
-            // check error compared to reference
-            // treat result as 1 x 1 matrix; k = n is reduction dimension
-            // alpha=1, beta=0, Cnorm=0
-            real_t error;
-            bool okay;
-            check_gemm( 1, 1, n, scalar_t(1), scalar_t(0), Xnorm, Ynorm, real_t(0),
-                        &ref, 1, &result_host, 1, verbose, &error, &okay );
-            params.error() = error;
-            params.okay() = okay;
+            if(params.iscorrect()==1){
+                // check error compared to reference
+                // treat result as 1 x 1 matrix; k = n is reduction dimension
+                // alpha=1, beta=0, Cnorm=0
+                real_t error;
+                bool okay;
+                check_gemm( 1, 1, n, scalar_t(1), scalar_t(0), Xnorm, Ynorm, real_t(0),
+                            &ref, 1, &result_host, 1, verbose, &error, &okay );
+                params.error() = error;
+                params.okay() = okay;
+            }
         }
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::dot( n, dx, incx, dy, incy, result, queue );
-            queue.sync();
-            all_time += (get_wtime() - stime);
+
+        if(params.iscorrect()==0){
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::dot( n, dx, incx, dy, incy, result, queue );
+                queue.sync();
+                all_time += (get_wtime() - stime);
+            }
+            all_time/=(double)runs;
+            params.time()   = all_time * 1000;  // msec
+            params.gflops() = gflop / all_time;
+            params.gbytes() = gbyte / all_time;
         }
-        all_time/=(double)runs;
-        params.time()   = all_time * 1000;  // msec
-        params.gflops() = gflop / all_time;
-        params.gbytes() = gbyte / all_time;
     }
 
     delete[] x;
