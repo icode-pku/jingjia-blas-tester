@@ -10,14 +10,6 @@ echo "--------------------------------------------------------------------------
 echo "Testing the performance of trmv"
 echo "--------------------------------------------------------------------------------------------------------------------------"
 cd $TEST
-DIM=""
-for m in 256 257 2048 2049; do
-    for n in 256 257 2048 2049; do
-        DIM+="$m*$n,"
-    done
-done
-DIM=${DIM%,}
-
-./$EXE --type=s,d,c,z --layout=r,c --uplo=l,u --trans=n,t,c --diag=n,u --dim=$DIM --incx=-2,-1,1,2 --iscorrect=0 dev-trmv 
+./$EXE --type=s,d,c,z --layout=r,c --uplo=l,u --trans=n,t,c --diag=n,u --dim=256,257,2048,2049 --incx=-2,-1,1,2 --iscorrect=0 dev-trmv 
 
 
