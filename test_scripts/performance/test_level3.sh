@@ -3,8 +3,8 @@
 OUTPUT_FILE3="performance_gemm_`date +%Y_%m_%d_%H_%M_%S`.txt"
 . test_level3_gemm.sh 2>&1 | tee -a $OUTPUT_FILE3
 
-# OUTPUT_FILE3="performance_gemmBatched_`date +%Y_%m_%d_%H_%M_%S`.txt"
-# . test_level3_gemmBatched.sh 2>&1 | tee -a $OUTPUT_FILE3
+OUTPUT_FILE3="performance_gemmBatched_`date +%Y_%m_%d_%H_%M_%S`.txt"
+. test_level3_gemmBatched.sh 2>&1 | tee -a $OUTPUT_FILE3
 
 OUTPUT_FILE3="performance_hemm_`date +%Y_%m_%d_%H_%M_%S`.txt"
 . test_level3_hemm.sh 2>&1 | tee -a $OUTPUT_FILE3
@@ -30,5 +30,5 @@ OUTPUT_FILE3="performance_trmm_`date +%Y_%m_%d_%H_%M_%S`.txt"
 OUTPUT_FILE3="performance_trsm_`date +%Y_%m_%d_%H_%M_%S`.txt"
 . test_level3_trsm.sh 2>&1 | tee -a $OUTPUT_FILE3
 
-# OUTPUT_FILE3="performance_trsmBatched_`date +%Y_%m_%d_%H_%M_%S`.txt"
-# . test_level3_trsmBatched.sh 2>&1 | tee -a $OUTPUT_FILE3
+OUTPUT_FILE3="performance_trsmBatched_`date +%Y_%m_%d_%H_%M_%S`.txt"
+. test_level3_trsmBatched.sh 2>&1 | tee -a $OUTPUT_FILE3
