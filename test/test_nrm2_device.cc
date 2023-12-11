@@ -37,6 +37,7 @@ void test_nrm2_device_work( Params& params, bool run )
     params.ref_gflops();
     params.ref_gbytes();
     params.runs();
+    params.iscorrect();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -45,6 +46,20 @@ void test_nrm2_device_work( Params& params, bool run )
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -101,7 +116,10 @@ void test_nrm2_device_work( Params& params, bool run )
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
 
         queue.sync();
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
         free(error_name);
     }
     else{
@@ -140,47 +158,53 @@ void test_nrm2_device_work( Params& params, bool run )
             result_cblas = cblas_nrm2( n, xref, incx );
             time = get_wtime() - time;
 
-            params.ref_time()   = time * 1000;  // msec
-            params.ref_gflops() = gflop / time;
-            params.ref_gbytes() = gbyte / time;
-
+            if(params.iscorrect()==0){
+                params.ref_time()   = time * 1000;  // msec
+                params.ref_gflops() = gflop / time;
+                params.ref_gbytes() = gbyte / time;
+            }
             if (verbose >= 2) {
                 printf( "result0 = %.2e\n", result_cblas );
             }
 
-            // relative forward error:
-            real_t error = std::abs( (result_cblas - result_host)
-                            / (sqrt(n+1) * result_cblas) );
-            params.error() = error;
+            if(params.iscorrect()==1){
+                // relative forward error:
+                real_t error = std::abs( (result_cblas - result_host)
+                                / (sqrt(n+1) * result_cblas) );
+                params.error() = error;
 
 
-            if (verbose >= 2) {
-                printf( "err  = " ); print_vector( n, x, incx, "%9.2e" );
+                if (verbose >= 2) {
+                    printf( "err  = " ); print_vector( n, x, incx, "%9.2e" );
+                }
+
+                // complex needs extra factor; see Higham, 2002, sec. 3.6.
+                if (blas::is_complex<scalar_t>::value) {
+                    error /= 2*sqrt(2);
+                }
+
+                real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+                params.error() = error;
+                params.okay() = (error < u);
             }
+        }
 
-            // complex needs extra factor; see Higham, 2002, sec. 3.6.
-            if (blas::is_complex<scalar_t>::value) {
-                error /= 2*sqrt(2);
+        if(params.iscorrect()==0){
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::nrm2( n, dx, incx, result, queue );
+                queue.sync();
+                all_time += (get_wtime() - stime);
             }
-
-            real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
-            params.error() = error;
-            params.okay() = (error < u);
+            all_time/=(double)runs;
+            params.time()   = all_time * 1000;  // msec
+            params.gflops() = gflop / all_time;
+            params.gbytes() = gbyte / all_time;
         }
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::nrm2( n, dx, incx, result, queue );
-            queue.sync();
-            all_time += (get_wtime() - stime);
-        }
-        all_time/=(double)runs;
-        params.time()   = all_time * 1000;  // msec
-        params.gflops() = gflop / all_time;
-        params.gbytes() = gbyte / all_time;
     }
 
 

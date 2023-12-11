@@ -39,3 +39,8 @@ lib/pkgconfig/*.pc
 make.inc
 test/tester
 wiki/
+test_scripts/correctness/*.txt
+test_scripts/correctness/helper/*.txt
+test_scripts/correctness/*.out
+test_scripts/performence/*.txt
+test_scripts/performence/*.out

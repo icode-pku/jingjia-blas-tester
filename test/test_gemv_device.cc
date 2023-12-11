@@ -38,6 +38,7 @@ void test_gemv_device_work( Params& params, bool run )
     params.ref_gflops();
     params.ref_gbytes();
     params.runs();
+    params.iscorrect();
 
     // adjust header to msec
     params.time.name( "time (ms)" );
@@ -46,6 +47,20 @@ void test_gemv_device_work( Params& params, bool run )
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -138,8 +153,11 @@ void test_gemv_device_work( Params& params, bool run )
         blas::gemv( layout,    trans,  m,  n, alpha, dA, lda, dx, 0, beta, dy, 0,    queue, testcase, error_name );
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
         queue.sync();
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
 
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
 
         free(error_name);
     }
@@ -191,39 +209,45 @@ void test_gemv_device_work( Params& params, bool run )
                         alpha, A, lda, x, incx, beta, yref, incy );
             time = get_wtime() - time;
 
-            params.ref_time()   = time * 1000;  // msec
-            params.ref_gflops() = gflop / time;
-            params.ref_gbytes() = gbyte / time;
+            if(params.iscorrect()==0){
+                params.ref_time()   = time * 1000;  // msec
+                params.ref_gflops() = gflop / time;
+                params.ref_gbytes() = gbyte / time;
+            }
 
             if (verbose >= 2) {
                 printf( "yref = " ); print_vector( Ym, yref, incy );
             }
 
-            // check error compared to reference
-            // treat y as 1 x Ym matrix with ld = incy; k = Xm is reduction dimension
-            real_t error;
-            bool okay;
-            check_gemm( 1, Ym, Xm, alpha, beta, Anorm, Xnorm, Ynorm,
-                        yref, std::abs(incy), y, std::abs(incy), verbose, &error, &okay );
-            params.error() = error;
-            params.okay() = okay;
+            if(params.iscorrect()==1){
+                // check error compared to reference
+                // treat y as 1 x Ym matrix with ld = incy; k = Xm is reduction dimension
+                real_t error;
+                bool okay;
+                check_gemm( 1, Ym, Xm, alpha, beta, Anorm, Xnorm, Ynorm,
+                            yref, std::abs(incy), y, std::abs(incy), verbose, &error, &okay );
+                params.error() = error;
+                params.okay() = okay;
+            }
         }
 
-        int runs = params.runs();
-        double stime;
-        double all_time=0.0f;
-        for(int i = 0; i < runs; i++){
-            testsweeper::flush_cache( params.cache() );
-            stime = get_wtime();
-            blas::gemv( layout, trans, m, n, alpha, dA, lda, 
-                dx, incx, beta, dy, incy, queue);
-            queue.sync();
-            all_time += (get_wtime() - stime);
+        if(params.iscorrect()==0){
+            int runs = params.runs();
+            double stime;
+            double all_time=0.0f;
+            for(int i = 0; i < runs; i++){
+                testsweeper::flush_cache( params.cache() );
+                stime = get_wtime();
+                blas::gemv( layout, trans, m, n, alpha, dA, lda, 
+                    dx, incx, beta, dy, incy, queue);
+                queue.sync();
+                all_time += (get_wtime() - stime);
+            }
+            all_time/=(double)runs;
+            params.time()   = all_time * 1000;  // msec
+            params.gflops() = gflop / all_time;
+            params.gbytes() = gbyte / all_time;
         }
-        all_time/=(double)runs;
-        params.time()   = all_time * 1000;  // msec
-        params.gflops() = gflop / all_time;
-        params.gbytes() = gbyte / all_time;
     }
 
     delete[] A;

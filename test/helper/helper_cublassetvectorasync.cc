@@ -2,7 +2,7 @@
 
 void helper_cublasSetVectorAsync()
 {
-    TestId CaseId(4, std::string("cublasSetAsyncVector(int n, int elemSize, const void *x, int incx, void *y, int incy, cudaStream_t stream)"));
+    TestId CaseId(4, std::string("cublasSetVectorAsync(int n, int elemSize, const void *x, int incx, void *y, int incy, cudaStream_t stream)"));
     CaseId.TestApiHeader();
     int All_tests = 0;
     int Passed_tests = 0;

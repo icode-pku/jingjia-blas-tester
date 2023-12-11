@@ -43,9 +43,24 @@ void test_device_batch_trsm_work( Params& params, bool run )
     params.ref_time();
     params.ref_gflops();
     params.runs();
+    params.iscorrect();
 
     if (! run)
         return;
+
+    if(1==params.iscorrect()){
+        params.gflops.used(false);
+        params.gbytes.used(false);
+        params.ref_time.used(false);
+        params.ref_gflops.used(false);
+        params.ref_gbytes.used(false);
+        params.time.used(false);
+        params.runs.used(false);
+    }
+    else{
+        params.okay.used(false);
+        params.error.used(false);
+    }
 
     if (blas::get_device_count() == 0) {
         params.msg() = "skipping: no GPU devices or no GPU support";
@@ -210,8 +225,10 @@ void test_device_batch_trsm_work( Params& params, bool run )
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
 
         queue.sync();
-
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        params.Totalcase()+=all_testcase;
+        params.Passedcase()+=passed_testcase;
+        params.Failedcase()+=failed_testcase;
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
         free(error_name);
     }
     else{
@@ -242,40 +259,45 @@ void test_device_batch_trsm_work( Params& params, bool run )
                         m_, n_, alpha_, Aarray[i], lda_, Brefarray[i], ldb_ );
         }
         time = get_wtime() - time;
-
-        params.ref_time()   = time;
-        params.ref_gflops() = gflop / time;
-
-        // check error compared to reference
-        // Am is reduction dimension
-        // beta = 0, Cnorm = 0 (initial).
-        real_t err, error = 0;
-        bool ok, okay = true;
-        for (size_t i = 0; i < batch; ++i) {
-            check_gemm( Bm, Bn, Am, alpha_, scalar_t(0), Anorm[i], Bnorm[i], real_t(0),
-                        Brefarray[i], ldb_, Barray[i], ldb_, verbose, &err, &ok );
-            error = std::max( error, err );
-            okay &= ok;
+        if(params.iscorrect()==0){
+            params.ref_time()   = time;
+            params.ref_gflops() = gflop / time;
         }
-        params.error() = error;
-        params.okay() = okay;
+
+        if(params.iscorrect()==1){
+            // check error compared to reference
+            // Am is reduction dimension
+            // beta = 0, Cnorm = 0 (initial).
+            real_t err, error = 0;
+            bool ok, okay = true;
+            for (size_t i = 0; i < batch; ++i) {
+                check_gemm( Bm, Bn, Am, alpha_, scalar_t(0), Anorm[i], Bnorm[i], real_t(0),
+                            Brefarray[i], ldb_, Barray[i], ldb_, verbose, &err, &ok );
+                error = std::max( error, err );
+                okay &= ok;
+            }
+            params.error() = error;
+            params.okay() = okay;
+        }
     }
 
-    int runs = params.runs();
-    double stime;
-    double all_time=0.0f;
-    for(int i = 0; i < runs; i++){
-        info.resize( 0 );
-        testsweeper::flush_cache( params.cache() );
-        stime = get_wtime();
-        blas::batch::trsm( layout, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb,
-                       batch, info, queue );
-        queue.sync();
-        all_time += (get_wtime() - stime);
+    if(params.iscorrect()==0){
+        int runs = params.runs();
+        double stime;
+        double all_time=0.0f;
+        for(int i = 0; i < runs; i++){
+            info.resize( 0 );
+            testsweeper::flush_cache( params.cache() );
+            stime = get_wtime();
+            blas::batch::trsm( layout, side, uplo, trans, diag, m, n, alpha, dAarray, ldda, dBarray, lddb,
+                        batch, info, queue );
+            queue.sync();
+            all_time += (get_wtime() - stime);
+        }
+        all_time/=(double)runs;
+        params.time()   = all_time;  // s
+        params.gflops() = gflop / all_time;
     }
-    all_time/=(double)runs;
-    params.time()   = all_time;  // s
-    params.gflops() = gflop / all_time;
     }
 
     delete[] A;
