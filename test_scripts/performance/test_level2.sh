@@ -11,4 +11,3 @@ OUTPUT_FILE2="performance_trmv_`date +%Y_%m_%d_%H_%M_%S`.txt"
 
 OUTPUT_FILE2="performance_trsv_`date +%Y_%m_%d_%H_%M_%S`.txt"
 . test_level2_trsv.sh 2>&1 | tee -a $OUTPUT_FILE2
-
