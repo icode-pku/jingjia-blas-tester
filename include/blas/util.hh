@@ -630,7 +630,6 @@ const int fileline,  const char *func, const char* except_error=nullptr,  int fl
         file << "," << std::string(filename) <<"," \
         << std::to_string(fileline) <<std::endl;
         file.close();
-        file.close();
     }
 }
 
