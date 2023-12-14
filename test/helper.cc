@@ -45,8 +45,8 @@ enum SectionHelp {
 };
 
 std::vector< routines_help_t > routines = {
-    {"example_test1", helper_test1, SectionHelp::test1},
-    {"example_test2", helper_test2, SectionHelp::test1},
+    // {"example_test1", helper_test1, SectionHelp::test1},
+    // {"example_test2", helper_test2, SectionHelp::test1},
     {"cublassetstream", helper_cublasSetStream, SectionHelp::test1},
     {"cublasgetstream", helper_cublasGetStream, SectionHelp::test1},
     {"cublassetvector", helper_cublasSetVector, SectionHelp::test1},
