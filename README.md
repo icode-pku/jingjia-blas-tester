@@ -81,7 +81,7 @@ When users use it, they only need to cd to the directory and run the following c
 bash test_levelxxx_xxx.sh
 ```
 
-### License
+## License
 
 Copyright (c) 2017-2022, University of Tennessee. All rights reserved.
 
