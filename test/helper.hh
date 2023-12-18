@@ -31,8 +31,8 @@ void helper_cublasLoggerConfigure();
 void helper_cublasGetLoggerCallback();
 void helper_cublasSetLoggerCallback();
 
-void helper_test1();
-void helper_test2();
+// void helper_test1();
+// void helper_test2();
 
 
 inline

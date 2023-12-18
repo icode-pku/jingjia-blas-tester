@@ -188,7 +188,7 @@ void test_gemm_device_work( Params& params, bool run )
         params.Passedcase()+=passed_testcase;
         params.Failedcase()+=failed_testcase;
 
-        printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
+        //printf("All Test Cases: %d  Passed Cases: %d  Failed Cases: %d\n",all_testcase, passed_testcase, failed_testcase);
 
         free(error_name);
     }
