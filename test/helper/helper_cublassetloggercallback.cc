@@ -1,5 +1,9 @@
 #include "../helper.hh"
 
+void calfun(cublasStatus_t status, const char* message){
+    //printf("log write=%s\n",blas::device_errorstatus_to_string(status));
+}
+
 void helper_cublasSetLoggerCallback()
 {
     TestId CaseId(1, std::string("cublasSetLoggerCallback(cublasLogCallback userCallback)"));
@@ -24,11 +28,11 @@ void helper_cublasSetLoggerCallback()
     
     HelperSafeCall(cublasSetStream( handle, stream));
 
-    cublasLogCallback calfunc;
+    //cublasLogCallback calfunc;
 
     //test case 1: legal parameters
     CaseId.TestProblemHeader(0, true);
-    stat = cublasSetLoggerCallback(calfunc);
+    stat = cublasSetLoggerCallback((cublasLogCallback)calfun);
     HelperTestCall("cublasSetLoggerCallback", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
 
     printf("All test cases: %d Passed test cases: %d Failed test cases: %d\n", All_tests, Passed_tests, Failed_tests);

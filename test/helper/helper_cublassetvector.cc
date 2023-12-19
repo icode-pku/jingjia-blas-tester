@@ -47,6 +47,7 @@ void helper_cublasSetVector()
     
     HelperSafeCall(cudaMemcpy(xcopy, dx, size_x*sizeof(float),cudaMemcpyDeviceToHost));
     //HelperSafeCall(cublasGetVector(size_x, sizeof(float), dx, incx, xcopy, incx));
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
     for(int i=0; i<n; i++){
         if(x[i*incx]!=xcopy[i*incx]){
             printf("cublasSetVector or cublasGetVector error\n");
@@ -55,7 +56,7 @@ void helper_cublasSetVector()
             break;
         }
     }
-
+    }
     //test case 2: Testing for illegal parameter elemSize
     CaseId.TestProblemHeader(1, false, "-1");
     stat = cublasSetVector(size_x, -1, x, incx, dx, incx);
