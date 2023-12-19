@@ -48,6 +48,7 @@ void helper_cublasSetMatrix()
     HelperTestCall("cublasSetMatrix", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
 
     HelperSafeCall(cudaMemcpy(Acopy, dA, size_A * sizeof(float), cudaMemcpyDeviceToHost));
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
     for (int i = 0; i < cols; i++) {
         for (int j = 0; j < rows; j++) {
             if (A[i * lda + j] != Acopy[i * ldb + j]) {
@@ -58,7 +59,7 @@ void helper_cublasSetMatrix()
             }
         }
     }
-
+    }
     //test case 2: Testing for illegal parameter rows
     CaseId.TestProblemHeader(0, false, "-1");
     stat = cublasSetMatrix(-1, cols, elemSize, A, lda, dA, ldb);

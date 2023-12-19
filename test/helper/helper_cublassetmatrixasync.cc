@@ -49,6 +49,7 @@ void helper_cublasSetMatrixAsync()
     HelperSafeCall(cudaStreamSynchronize(stream));
 
     HelperSafeCall(cudaMemcpy(Acopy, dA, size_A * sizeof(float), cudaMemcpyDeviceToHost));
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
     for (int i = 0; i < cols; i++) {
         for (int j = 0; j < rows; j++) {
             if (A[i * lda + j] != Acopy[i * ldb + j]) {
@@ -59,7 +60,7 @@ void helper_cublasSetMatrixAsync()
             }
         }
     }
-
+    }
     //test case 2: Testing for illegal parameter rows
     CaseId.TestProblemHeader(0, false, "-1");
     stat = cublasSetMatrixAsync(-1, cols, elemSize, A, lda, dA, ldb, stream);

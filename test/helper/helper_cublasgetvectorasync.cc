@@ -47,7 +47,7 @@ void helper_cublasGetVectorAsync()
     stat = cublasGetVectorAsync(size_x, sizeof(float), dx, incx, xcopy, incx, stream);
     HelperTestCall("cublasGetVectorAsync", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
     HelperSafeCall(cudaStreamSynchronize(stream));
-
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
     for(int i=0; i<n; i++){
         if(x[i*incx]!=xcopy[i*incx]){
             printf("cublasGetVectorAsync error!\n");
@@ -56,7 +56,7 @@ void helper_cublasGetVectorAsync()
             break;
         }
     }
-
+    }
     //test case 2: Testing for illegal parameter elemSize
     CaseId.TestProblemHeader(1,false, "-1");
     stat = cublasGetVectorAsync(size_x, -1, dx, incx, xcopy, incx, stream);

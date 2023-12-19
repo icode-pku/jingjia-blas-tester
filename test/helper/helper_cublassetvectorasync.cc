@@ -47,6 +47,7 @@ void helper_cublasSetVectorAsync()
     HelperSafeCall(cudaStreamSynchronize(stream));
 
     HelperSafeCall(cudaMemcpy(xcopy, dx, size_x*sizeof(float),cudaMemcpyDeviceToHost));
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
     for(int i=0; i<n; i++){
         if(x[i*incx]!=xcopy[i*incx]){
             printf("cublasSetVectorAsync error!\n");
@@ -55,7 +56,7 @@ void helper_cublasSetVectorAsync()
             break;
         }
     }
-
+    }
     //test case 2: Testing for illegal parameter elemSize
     CaseId.TestProblemHeader(1,false, "-1");
     stat = cublasSetVectorAsync(size_x, -1, x, incx, dx, incx, stream);

@@ -48,13 +48,15 @@ void helper_cublasGetMatrix()
     CaseId.TestProblemHeader(0, true);
     stat = cublasGetMatrix(rows, cols, elemSize, dA, lda, Acopy, ldb);
     HelperTestCall("cublasGetMatrix", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
-    for (int i = 0; i < cols; i++) {
-        for (int j = 0; j < rows; j++) {
-            if (A[i * lda + j] != Acopy[i * ldb + j]) {
-                printf("cublasSetMatrix error\n");
-                Passed_tests--;
-                Failed_tests++;
-                break;
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                if (A[i * lda + j] != Acopy[i * ldb + j]) {
+                    printf("cublasSetMatrix error\n");
+                    Passed_tests--;
+                    Failed_tests++;
+                    break;
+                }
             }
         }
     }

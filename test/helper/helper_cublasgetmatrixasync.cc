@@ -49,18 +49,18 @@ void helper_cublasGetMatrixAsync()
     stat = cublasGetMatrixAsync(rows, cols, elemSize, dA, lda, Acopy, ldb, stream);
     HelperTestCall("cublasGetMatrixAsync", check_return_status(stat, "CUBLAS_STATUS_SUCCESS", All_tests, Passed_tests, Failed_tests), stat, "CUBLAS_STATUS_SUCCESS");
     HelperSafeCall(cudaStreamSynchronize(stream));
-
-    for (int i = 0; i < cols; i++) {
-        for (int j = 0; j < rows; j++) {
-            if (A[i * lda + j] != Acopy[i * ldb + j]) {
-                printf("cublasSetMatrix error\n");
-                Passed_tests--;
-                Failed_tests++;
-                break;
+    if(strcmp(blas::device_errorstatus_to_string(stat),"CUBLAS_STATUS_SUCCESS")==0){
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                if (A[i * lda + j] != Acopy[i * ldb + j]) {
+                    printf("cublasSetMatrix error\n");
+                    Passed_tests--;
+                    Failed_tests++;
+                    break;
+                }
             }
         }
     }
-
     //test case 2: Testing for illegal parameter rows
     CaseId.TestProblemHeader(0, false, "-1");
     stat = cublasGetMatrixAsync(-1, cols, elemSize, dA, lda, Acopy, ldb, stream);
