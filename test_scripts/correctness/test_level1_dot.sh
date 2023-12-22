@@ -13,5 +13,5 @@ cd $TEST
 echo "-----------------------------------------Testing the illegal input of dot------------------------------------------------"
 ./$EXE --type=s,d,c,z --dim=1024 --testcase=0 dev-dot 
 echo "------------------------------------------Testing the legal input of dot-------------------------------------------------"
-./$EXE --type=s,d,c,z --dim=4,5,1024,1025,524288,524289 --incx=1,2 --incy=1,2 dev-dot 
+./$EXE --type=s,d,c,z --dim=4,5,1024,1025,524288,524289 --incx=-2,-1,1,2 --incy=-2,-1,1,2 dev-dot 
 
