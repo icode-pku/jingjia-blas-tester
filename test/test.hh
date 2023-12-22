@@ -150,10 +150,10 @@ double sync_get_wtime( blas::Queue& queue )
 }
 
 inline 
-bool result_match(const char *device_result,  const char *except_result, int &all, int &pass, int &failed){
+bool result_match(const char *device_result,  const char *except_result, int &all, int &pass, int &failed, bool iszero=true){
     //printf("error is: %s\n",device_result);
     all ++;
-    if(strcmp(device_result, except_result)==0){
+    if(iszero && strcmp(device_result, except_result)==0){
         pass ++;
         return true;
     }

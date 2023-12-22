@@ -115,24 +115,29 @@ void test_dot_device_work( Params& params, bool run )
         int failed_testcase = 0;
         //Test case 1: Test the return when n is 0
         blas::dot( 0, dx, incx, dy, incy, result, queue, testcase, error_name);
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase, blas::isEqualToZero(result_host)), error_name);
         //Test case 2: Test the return when n is -1
         blas::dot( -1, dx, incx, dy, incy, result, queue, testcase, error_name);
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase, blas::isEqualToZero(result_host)), error_name);
         //Test case 3: Test the return when incx is 0
         blas::dot(  n, dx,    0, dy, incy, result, queue, testcase, error_name);
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
         //Test case 4: Test the return when incx is -1
         blas::dot(  n, dx,   -1, dy, incy, result, queue, testcase, error_name);
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
         //Test case 5: Test the return when incy is 0
         blas::dot(  n, dx, incx, dy,    0, result, queue, testcase, error_name);
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
         //Test case 6: Test the return when incy is -1
         blas::dot(  n, dx, incx, dy,   -1, result, queue, testcase, error_name);
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&blas::isEqualToZero(result_host), error_name);
-        
         queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase), error_name);
+        
         params.Totalcase()+=all_testcase;
         params.Passedcase()+=passed_testcase;
         params.Failedcase()+=failed_testcase;

@@ -82,20 +82,25 @@ void test_asum_device_work( Params& params, bool run )
         int failed_testcase = 0;
         //case 1: Test the return value when result is a nullptr
         blas::asum( n, dx, incx, nullptr, queue, testcase, error_name );
+        queue.sync();
         Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_INVALID_VALUE", all_testcase, passed_testcase, failed_testcase), error_name);
         //case 2: Test the n is 0
         blas::asum( 0, dx, incx, &result_device, queue, testcase, error_name );
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result_device==0.0, error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase, result_device==0.0), error_name);
         //case 3: Test the n is -1
         blas::asum( -1, dx, incx, &result_device, queue, testcase, error_name );
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result_device==0.0, error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase, result_device==0.0), error_name);
         //case 4: Test the incx is 0
         blas::asum( n, dx, 0, &result_device, queue, testcase, error_name );
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result_device==0.0, error_name);
+        queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase, result_device==0.0), error_name);
         //case 5: Test the incx is -1
         blas::asum( n, dx, -1, &result_device, queue, testcase, error_name );
-        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase)&&result_device==0.0, error_name);
         queue.sync();
+        Blas_Match_Call( result_match(error_name, "CUBLAS_STATUS_SUCCESS", all_testcase, passed_testcase, failed_testcase, result_device==0.0), error_name);
+        
         params.Totalcase()+=all_testcase;
         params.Passedcase()+=passed_testcase;
         params.Failedcase()+=failed_testcase;
