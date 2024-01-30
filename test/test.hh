@@ -70,6 +70,12 @@ public:
     testsweeper::ParamInt    Passedcase;
     testsweeper::ParamInt    Failedcase;
     testsweeper::ParamInt    iscorrect;
+    testsweeper::ParamDouble  fthreshold;
+    testsweeper::ParamDouble  dthreshold;
+    testsweeper::ParamDouble  fabsolute;
+    testsweeper::ParamDouble  frelative;
+    testsweeper::ParamDouble  dabsolute;
+    testsweeper::ParamDouble  drelative;
 
     testsweeper::ParamDouble     time;
     testsweeper::ParamDouble     gflops;

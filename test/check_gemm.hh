@@ -12,11 +12,97 @@
 #include "lapack_wrappers.hh"
 
 #include <limits>
-
+#include <assert.h>
+#include <complex>
+#include <cmath>
+using testsweeper::ansi_bold;
+using testsweeper::ansi_red;
+using testsweeper::ansi_normal;
 // -----------------------------------------------------------------------------
 // Computes error for multiplication with general matrix result.
 // Covers dot, gemv, ger, geru, gemm, symv, hemv, symm, trmv, trsv?, trmm, trsm?.
 // Cnorm is norm of original C, before multiplication operation.
+template <typename T>
+void print_value( T *C, int64_t ldc, T const* Cref, int64_t ldcref, int64_t i, int64_t j)
+{
+    #define    C(i_, j_)    C[ (i_) + (j_)*ldc ]
+    #define Cref(i_, j_) Cref[ (i_) + (j_)*ldcref ]
+    printf("%s%sIn (%ld, %ld), Device result is %f, Host(ref) result is %f%s\n",ansi_bold, ansi_red, i, j, C(i, j), Cref(i, j),ansi_normal);
+    #undef C
+    #undef Cref
+}   
+
+template <typename T>
+void print_value( std::complex<T> *C, int64_t ldc, std::complex<T> const* Cref, int64_t ldcref, int64_t i, int64_t j)
+{
+    #define    C(i_, j_)    C[ (i_) + (j_)*ldc ]
+    #define Cref(i_, j_) Cref[ (i_) + (j_)*ldcref ]
+    printf("%s%sIn (%ld, %ld), Device result is (%fi + %f), Host(ref) result is (%fi + %f)%s\n",ansi_bold, ansi_red,i, j, real(C(i, j)), imag(C(i, j)), real(Cref(i, j)), imag(Cref(i, j)),ansi_normal);
+    #undef C
+    #undef Cref
+}   
+
+// Error margin: numbers beyond this value are considered equal to inf or NaN
+template <typename T>
+T getAlmostInfNumber() {
+  return static_cast<T>(1e35); // used for correctness testing of TRSV and TRSM routines
+}
+
+
+template<typename T>
+inline bool check(const T val1, const T val2){
+    const auto error_margin_relative = static_cast<T>(blas::paramspace::relative<T>);
+    const auto error_margin_absolute = static_cast<T>(blas::paramspace::absolute<T>);
+
+    const auto difference = std::fabs(val1- val2);
+    if(val1 == val2) return true;
+    else if ((std::isnan(val1) && std::isnan(val2)) || (std::isinf(val1) && std::isinf(val2))) {
+        return true;
+    }
+    else if ((std::isnan(val1) && std::isinf(val2)) || (std::isinf(val1) && std::isnan(val2))) {
+        return true;
+    }
+    else if ((std::abs(val1) > getAlmostInfNumber<T>() && (std::isinf(val2) || std::isnan(val2))) ||
+           (std::abs(val2) > getAlmostInfNumber<T>() && (std::isinf(val1) || std::isnan(val1)))) {
+        return true;
+    }
+    // The values are zero or very small: the relative error is less meaningful
+    else if (val1 == 0 || val2 == 0 || difference < error_margin_absolute) {
+        return (difference < error_margin_absolute);
+    }
+    else if(std::isnan(val2) || std::isnan(val1) || std::isinf(val2) || std::isinf(val1)){
+      return false;
+    }
+    else {
+        const auto absolute_sum = std::fabs(val1) + std::fabs(val2);
+        return (difference / absolute_sum) < error_margin_relative;
+    }
+}
+// template bool check<float>(const float, const float);
+// template bool check<double>(const double, const double);
+
+template <>
+inline bool check(const std::complex<float> val1, const std::complex<float> val2) {
+  const auto realf = check(real(val1), real(val2));
+  const auto imagf = check(imag(val1), imag(val2));
+  if (realf && imagf) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (realf || imagf) { return check(real(val1) + imag(val1), real(val2) + imag(val2)); }
+  return false; // neither real nor imag is good, return false
+}
+
+template <>
+inline bool check(const std::complex<double> val1, const std::complex<double> val2) {
+  const auto reald = check(real(val1), real(val2));
+  const auto imagd = check(imag(val1), imag(val2));
+  if (reald && imagd) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (reald || imagd) { return check(real(val1) + imag(val1), real(val2) + imag(val2)); }
+  return false; // neither real nor imag is good, return false
+}
+
+
+
 template <typename T>
 void check_gemm(
     int64_t m, int64_t n, int64_t k,
@@ -32,6 +118,7 @@ void check_gemm(
     bool* okay )
 {
     #define    C(i_, j_)    C[ (i_) + (j_)*ldc ]
+    #define    Cd(i_, j_)    Cd[ (i_) + (j_)*ldc ]
     #define Cref(i_, j_) Cref[ (i_) + (j_)*ldcref ]
 
     typedef blas::real_type<T> real_t;
@@ -41,10 +128,18 @@ void check_gemm(
     assert( k >= 0 );
     assert( ldc >= m );
     assert( ldcref >= m );
-
+    // if(std::is_same<T, float>::value||std::is_same<T, double>::value){
+    //     C(0,0)+=5.0;
+    // }
+    // else{
+    //     C(0,0)-=Cref(0,0);
+    //     C(0,1)-=Cref(0,1);
+    // }
+    T* Cd = (T*)malloc(sizeof(T)*n*m);
     // C -= Cref
     for (int64_t j = 0; j < n; ++j) {
         for (int64_t i = 0; i < m; ++i) {
+            Cd(i, j) = C(i, j);
             C(i, j) -= Cref(i, j);
         }
     }
@@ -68,11 +163,22 @@ void check_gemm(
         error[0] /= 2*sqrt(2);
     }
 
-    real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+    real_t u = blas::paramspace::correct_threshld< real_t >;
+    //printf("real u = %f\n",u);
     *okay = (error[0] < u);
-
+    if(!(*okay)){
+        for (int64_t j = 0; j < n; ++j) {
+            for (int64_t i = 0; i < m; ++i) {
+                if( ! check(Cd(i,j), Cref(i,j)) ){
+                    print_value(Cd, ldc, Cref, ldcref, i, j);
+                }
+            }
+        }
+    }
     #undef C
     #undef Cref
+    #undef Cd
+    free(Cd);
 }
 
 // -----------------------------------------------------------------------------
@@ -101,6 +207,7 @@ void check_herk(
     bool* okay )
 {
     #define    C(i_, j_)    C[ (i_) + (j_)*ldc ]
+    #define    Cd(i_, j_)    Cd[ (i_) + (j_)*ldc ]
     #define Cref(i_, j_) Cref[ (i_) + (j_)*ldcref ]
 
     typedef blas::real_type<T> real_t;
@@ -109,11 +216,19 @@ void check_herk(
     assert( k >= 0 );
     assert( ldc >= n );
     assert( ldcref >= n );
-
+    // if(std::is_same<T, float>::value||std::is_same<T, double>::value){
+    //     C(0,0)+=5.0;
+    // }
+    // else{
+    //     C(0,0)-=Cref(0,0);
+    //     C(0,1)-=Cref(0,1);
+    // }
+    T* Cd = (T*)malloc(sizeof(T)*n*n);
     // C -= Cref
     if (uplo == blas::Uplo::Lower) {
         for (int64_t j = 0; j < n; ++j) {
             for (int64_t i = j; i < n; ++i) {
+                Cd(i, j) = C(i, j);
                 C(i, j) -= Cref(i, j);
             }
         }
@@ -121,6 +236,7 @@ void check_herk(
     else {
         for (int64_t j = 0; j < n; ++j) {
             for (int64_t i = 0; i <= j; ++i) {
+                Cd(i, j) = C(i, j);
                 C(i, j) -= Cref(i, j);
             }
         }
@@ -149,11 +265,32 @@ void check_herk(
         error[0] /= 2*sqrt(2);
     }
 
-    real_t u = 0.5 * std::numeric_limits< real_t >::epsilon();
+    real_t u = blas::paramspace::correct_threshld< real_t >;//std::numeric_limits< real_t >::epsilon();
     *okay = (error[0] < u);
-
+    if(!(*okay)){
+        if (uplo == blas::Uplo::Lower) {
+            for (int64_t j = 0; j < n; ++j) {
+                for (int64_t i = j; i < n; ++i) {
+                    if( !check(Cd(i,j), Cref(i,j)) ){
+                        print_value(Cd, ldc, Cref, ldcref, i, j);
+                    }
+                }
+            }
+        }
+        else {
+            for (int64_t j = 0; j < n; ++j) {
+                for (int64_t i = 0; i <= j; ++i) {
+                    if( !check(Cd(i,j), Cref(i,j)) ){
+                        print_value(Cd, ldc, Cref, ldcref, i, j);
+                    }
+                }
+            }
+        }
+    }
     #undef C
     #undef Cref
+    #undef Cd
+    free(Cd);
 }
 
 #endif        //  #ifndef CHECK_GEMM_HH

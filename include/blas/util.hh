@@ -21,6 +21,17 @@
 
 namespace blas {
 
+
+namespace paramspace{
+    template<class Type>
+    inline double correct_threshld = 0.5 * std::numeric_limits< Type >::epsilon(); 
+
+    template<class Type>
+    inline double absolute = 0.001; 
+
+    template<class Type>
+    inline double relative = 0.005;
+}
 /// Use to silence compiler warning of unused variable.
 #define blas_unused( var ) ((void)var)
 

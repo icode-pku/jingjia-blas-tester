@@ -225,6 +225,12 @@ Params::Params():
     Passedcase   ( "passedcase",  0,    ParamType::Value,   0,   0, 100000, "Passedcase in illegal parameter testing" ),
     Failedcase   ( "failedcase",  0,    ParamType::Value,   0,   0, 100000, "Failedcase in illegal parameter testing" ),
     iscorrect   ( "iscorrect",  0,    ParamType::Value,   1,   0, 1, "Whether to test for correctness, otherwise test for performance" ),
+    fthreshold   ( "fthreshold",  12,  4,  ParamType::Value,  0,  -100,  100,  "float correct threshold" ),
+    dthreshold   ( "dthreshold",  12,  4,  ParamType::Value,  0,  -100,  100,  "double correct threshold" ),
+    fabsolute   ( "fabsolute",  12,  4,  ParamType::Value,  0.001,  -1000,  1000,  "float and complex<float> absolute" ),
+    frelative   ( "frelative",  12,  4,  ParamType::Value,  0.005,  -1000,  1000,  "float  and complex<float> relative" ),
+    dabsolute   ( "dabsolute",  12,  4,  ParamType::Value,  0.001,  -1000,  1000,  "double  and complex<double> absolute" ),
+    drelative   ( "drelative",  12,  4,  ParamType::Value,  0.005,  -1000,  1000,  "double  and complex<double> relative" ),
     // ----- routine parameters
     //          name,      w,    type,            def,                    char2enum,         enum2char,         enum2str,         help
     datatype  ( "type",    4,    ParamType::List, DataType::Single,       char2datatype,     datatype2char,     datatype2str,     "s=single (float), d=double, c=complex-single, z=complex-double" ),
@@ -300,6 +306,12 @@ Params::Params():
     cache();
 
     // routine's parameters are marked by the test routine; see main
+    fthreshold();
+    dthreshold();
+    fabsolute();
+    dabsolute();
+    frelative();
+    drelative();
 }
 
 // -----------------------------------------------------------------------------
@@ -362,6 +374,27 @@ int main( int argc, char** argv )
             params.help( routine );
             throw;
         }
+        // int64_t device  = params.device();
+        if(params.fthreshold()==0){
+            // printf("use default data float\n");
+            params.fthreshold() = blas::paramspace::correct_threshld<float>;
+        }
+        else{
+            blas::paramspace::correct_threshld<float> = params.fthreshold();
+        }
+        if(params.dthreshold()==0){
+            // printf("use default data double\n");
+            params.dthreshold() = blas::paramspace::correct_threshld<double>;
+        }
+        else{
+            blas::paramspace::correct_threshld<double> = params.dthreshold();
+        }
+
+        blas::paramspace::absolute<float> = params.fabsolute();
+        blas::paramspace::absolute<double> = params.dabsolute();
+
+        blas::paramspace::relative<float> = params.frelative();
+        blas::paramspace::relative<double> = params.drelative();
         //correct
         if(1==params.iscorrect()){
             params.gflops.used(false);
@@ -375,6 +408,13 @@ int main( int argc, char** argv )
         else{//performance
             params.okay.used(false);
             params.error.used(false);
+            //performance test is not need
+            params.fthreshold.used(false);
+            params.dthreshold.used(false);
+            params.fabsolute.used(false);
+            params.dabsolute.used(false);
+            params.frelative.used(false);
+            params.drelative.used(false);
         }
         // show align column if it has non-default values
         if (params.align.size() != 1 || params.align() != 1) {
@@ -384,12 +424,31 @@ int main( int argc, char** argv )
         // run tests
         int repeat = params.repeat();
         testsweeper::DataType last = params.datatype();
+        testsweeper::DataType plast = testsweeper::DataType(-1);
+        bool pre_support_datatype = true;
         if(params.testcase()==1) params.header();
         do {
             if (params.testcase()==1 && params.datatype() != last) {
                 last = params.datatype();
                 printf( "\n" );
             }
+            //------------------judge support datatype-----------------------
+            if(params.datatype() != plast){
+                plast = params.datatype();
+                if(blas::PrecisionSupport(testsweeper::datatype2char(params.datatype()), params.device())){
+                    pre_support_datatype = true;
+                }
+                else{
+                    printf("%s%sdevice %ld not support %s, all tests skipped%s\n", ansi_bold, ansi_red, params.device(), 
+                    testsweeper::datatype2string(params.datatype()), ansi_normal);
+                    pre_support_datatype = false;
+                    continue;
+                }
+            }
+            else{
+                if(!pre_support_datatype) continue;
+            }
+            //---------------end judge-------------------------------------------
             for (int iter = 0; iter < repeat; ++iter) {
                 try {
                     test_routine( params, true );
