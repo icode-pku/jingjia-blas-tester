@@ -135,7 +135,7 @@ void check_gemm(
     //     C(0,0)-=Cref(0,0);
     //     C(0,1)-=Cref(0,1);
     // }
-    T* Cd = (T*)malloc(sizeof(T)*n*m);
+    T* Cd = (T*)malloc(sizeof(T)*ldc*n);
     // C -= Cref
     for (int64_t j = 0; j < n; ++j) {
         for (int64_t i = 0; i < m; ++i) {
@@ -223,7 +223,7 @@ void check_herk(
     //     C(0,0)-=Cref(0,0);
     //     C(0,1)-=Cref(0,1);
     // }
-    T* Cd = (T*)malloc(sizeof(T)*n*n);
+    T* Cd = (T*)malloc(sizeof(T)*ldc*n);
     // C -= Cref
     if (uplo == blas::Uplo::Lower) {
         for (int64_t j = 0; j < n; ++j) {
