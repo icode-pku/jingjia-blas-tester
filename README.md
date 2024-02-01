@@ -41,7 +41,7 @@ cmake ..
 make -j4
 ```
 
-### The second method
+### The second method(recommend)
 
 1、Pull docker image
 
@@ -62,7 +62,7 @@ apt install libopenblas-dev
 3、make
 
 ```
-cd jingjai-blas-tester
+cd jingjia-blas-tester
 mkdir build && cd build
 cmake ..
 make -j4
@@ -71,7 +71,7 @@ make -j4
 4、run
 
 ```
-./tester [parameters] routine
+./tester [parameters] dev-routinename
 ```
 
 5、Test via script

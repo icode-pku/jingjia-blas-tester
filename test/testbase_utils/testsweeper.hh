@@ -129,6 +129,19 @@ inline const char* datatype2str( DataType en )
     return "";
 }
 
+inline const char* datatype2string( DataType en )
+{
+    switch (en) {
+        case DataType::Integer:       return "Integer";
+        case DataType::Single:        return "Single";
+        case DataType::Double:        return "Double";
+        case DataType::SingleComplex: return "SingleComplex";
+        case DataType::DoubleComplex: return "DoubleComplex";
+    }
+    return "";
+}
+
+
 // -----------------------------------------------------------------------------
 int scan_range( const char **strp, int64_t *start, int64_t *end, int64_t *step );
 int scan_range( const char **strp, double  *start, double  *end, double  *step );

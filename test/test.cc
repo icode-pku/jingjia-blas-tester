@@ -55,75 +55,75 @@ const char* section_names[] = {
 // { "", nullptr, Section::newline } entries force newline in help
 std::vector< testsweeper::routines_t > routines = {
     // Level 1 BLAS
-    { "asum",   test_asum,   Section::blas1   },
-    { "axpy",   test_axpy,   Section::blas1   },
-    { "copy",   test_copy,   Section::blas1   },
-    { "dot",    test_dot,    Section::blas1   },
-    { "dotu",   test_dotu,   Section::blas1   },
-    { "iamax",  test_iamax,  Section::blas1   },
-    { "nrm2",   test_nrm2,   Section::blas1   },
-    { "rot",    test_rot,    Section::blas1   },
-    { "rotg",   test_rotg,   Section::blas1   },
-    { "rotm",   test_rotm,   Section::blas1   },
-    { "rotmg",  test_rotmg,  Section::blas1   },
-    { "scal",   test_scal,   Section::blas1   },
-    { "swap",   test_swap,   Section::blas1   },
-    { "",       nullptr,     Section::newline },
+    // { "asum",   test_asum,   Section::blas1   },
+    // { "axpy",   test_axpy,   Section::blas1   },
+    // { "copy",   test_copy,   Section::blas1   },
+    // { "dot",    test_dot,    Section::blas1   },
+    // { "dotu",   test_dotu,   Section::blas1   },
+    // { "iamax",  test_iamax,  Section::blas1   },
+    // { "nrm2",   test_nrm2,   Section::blas1   },
+    // { "rot",    test_rot,    Section::blas1   },
+    // { "rotg",   test_rotg,   Section::blas1   },
+    // { "rotm",   test_rotm,   Section::blas1   },
+    // { "rotmg",  test_rotmg,  Section::blas1   },
+    // { "scal",   test_scal,   Section::blas1   },
+    // { "swap",   test_swap,   Section::blas1   },
+    // { "",       nullptr,     Section::newline },
 
-    // Level 2 BLAS
-    { "gemv",   test_gemv,   Section::blas2   },
-    { "ger",    test_ger,    Section::blas2   },
-    { "geru",   test_geru,   Section::blas2   },
-    { "",       nullptr,     Section::newline },
+    // // Level 2 BLAS
+    // { "gemv",   test_gemv,   Section::blas2   },
+    // { "ger",    test_ger,    Section::blas2   },
+    // { "geru",   test_geru,   Section::blas2   },
+    // { "",       nullptr,     Section::newline },
 
-    { "hemv",   test_hemv,   Section::blas2   },
-    { "her",    test_her,    Section::blas2   },
-    { "her2",   test_her2,   Section::blas2   },
-    { "",       nullptr,     Section::newline },
+    // { "hemv",   test_hemv,   Section::blas2   },
+    // { "her",    test_her,    Section::blas2   },
+    // { "her2",   test_her2,   Section::blas2   },
+    // { "",       nullptr,     Section::newline },
 
-    { "symv",   test_symv,   Section::blas2   },
-    { "syr",    test_syr,    Section::blas2   },
-    { "syr2",   test_syr2,   Section::blas2   },
-    { "",       nullptr,     Section::newline },
+    // { "symv",   test_symv,   Section::blas2   },
+    // { "syr",    test_syr,    Section::blas2   },
+    // { "syr2",   test_syr2,   Section::blas2   },
+    // { "",       nullptr,     Section::newline },
 
-    { "trmv",   test_trmv,   Section::blas2   },
-    { "trsv",   test_trsv,   Section::blas2   },
-    { "",       nullptr,     Section::newline },
+    // { "trmv",   test_trmv,   Section::blas2   },
+    // { "trsv",   test_trsv,   Section::blas2   },
+    // { "",       nullptr,     Section::newline },
 
-    // Level 3 BLAS
-    { "gemm",   test_gemm,   Section::blas3   },
-    { "",       nullptr,     Section::newline },
+    // // Level 3 BLAS
+    // { "gemm",   test_gemm,   Section::blas3   },
+    // { "",       nullptr,     Section::newline },
 
-    { "hemm",   test_hemm,   Section::blas3   },
-    { "herk",   test_herk,   Section::blas3   },
-    { "her2k",  test_her2k,  Section::blas3   },
-    { "",       nullptr,     Section::newline },
+    // { "hemm",   test_hemm,   Section::blas3   },
+    // { "herk",   test_herk,   Section::blas3   },
+    // { "her2k",  test_her2k,  Section::blas3   },
+    // { "",       nullptr,     Section::newline },
 
-    { "symm",   test_symm,   Section::blas3   },
-    { "syrk",   test_syrk,   Section::blas3   },
-    { "syr2k",  test_syr2k,  Section::blas3   },
-    { "",       nullptr,     Section::newline },
+    // { "symm",   test_symm,   Section::blas3   },
+    // { "syrk",   test_syrk,   Section::blas3   },
+    // { "syr2k",  test_syr2k,  Section::blas3   },
+    // { "",       nullptr,     Section::newline },
 
-    { "trmm",   test_trmm,   Section::blas3   },
-    { "trsm",   test_trsm,   Section::blas3   },
-    { "",       nullptr,     Section::newline },
+    // { "trmm",   test_trmm,   Section::blas3   },
+    // { "trsm",   test_trsm,   Section::blas3   },
+    // { "",       nullptr,     Section::newline },
 
-    { "batch-gemm",   test_batch_gemm,   Section::blas3   },
-    { "",             nullptr,           Section::newline },
+    // { "batch-gemm",   test_batch_gemm,   Section::blas3   },
+    // { "",             nullptr,           Section::newline },
 
-    { "batch-hemm",   test_batch_hemm,   Section::blas3   },
-    { "batch-herk",   test_batch_herk,   Section::blas3   },
-    { "batch-her2k",  test_batch_her2k,  Section::blas3   },
-    { "",             nullptr,           Section::newline },
+    // { "batch-hemm",   test_batch_hemm,   Section::blas3   },
+    // { "batch-herk",   test_batch_herk,   Section::blas3   },
+    // { "batch-her2k",  test_batch_her2k,  Section::blas3   },
+    // { "",             nullptr,           Section::newline },
 
-    { "batch-symm",   test_batch_symm,   Section::blas3   },
-    { "batch-syrk",   test_batch_syrk,   Section::blas3   },
-    { "batch-syr2k",  test_batch_syr2k,  Section::blas3   },
-    { "",              nullptr,          Section::newline },
+    // { "batch-symm",   test_batch_symm,   Section::blas3   },
+    // { "batch-syrk",   test_batch_syrk,   Section::blas3   },
+    // { "batch-syr2k",  test_batch_syr2k,  Section::blas3   },
+    // { "",              nullptr,          Section::newline },
 
-    { "batch-trmm",   test_batch_trmm,   Section::blas3   },
-    { "batch-trsm",   test_batch_trsm,   Section::blas3   },
-    { "",              nullptr,          Section::newline },
+    // { "batch-trmm",   test_batch_trmm,   Section::blas3   },
+    // { "batch-trsm",   test_batch_trsm,   Section::blas3   },
+    // { "",              nullptr,          Section::newline },
 
     // Device Level 1 BLAS
     { "dev-amax",         test_amax_device,         Section::device_blas1   },
@@ -184,20 +184,20 @@ std::vector< testsweeper::routines_t > routines = {
     { "",                 nullptr,                  Section::newline        },
 
     // auxiliary
-    { "error",            test_error,               Section::aux            },
-    { "max",              test_max,                 Section::aux            },
-    { "util",             test_util,                Section::aux            },
-    { "",                 nullptr,                  Section::newline        },
+    // { "error",            test_error,               Section::aux            },
+    // { "max",              test_max,                 Section::aux            },
+    // { "util",             test_util,                Section::aux            },
+    // { "",                 nullptr,                  Section::newline        },
 
-    { "memcpy",           test_memcpy,              Section::aux            },
-    { "copy_vector",      test_memcpy,              Section::aux            },
-    { "set_vector",       test_memcpy,              Section::aux            },
-    { "",                 nullptr,                  Section::newline        },
+    // { "memcpy",           test_memcpy,              Section::aux            },
+    // { "copy_vector",      test_memcpy,              Section::aux            },
+    // { "set_vector",       test_memcpy,              Section::aux            },
+    // { "",                 nullptr,                  Section::newline        },
 
-    { "memcpy_2d",        test_memcpy_2d,           Section::aux            },
-    { "copy_matrix",      test_memcpy_2d,           Section::aux            },
-    { "set_matrix",       test_memcpy_2d,           Section::aux            },
-    { "",                 nullptr,                  Section::newline        },
+    // { "memcpy_2d",        test_memcpy_2d,           Section::aux            },
+    // { "copy_matrix",      test_memcpy_2d,           Section::aux            },
+    // { "set_matrix",       test_memcpy_2d,           Section::aux            },
+    // { "",                 nullptr,                  Section::newline        },
 };
 
 // -----------------------------------------------------------------------------
@@ -225,6 +225,12 @@ Params::Params():
     Passedcase   ( "passedcase",  0,    ParamType::Value,   0,   0, 100000, "Passedcase in illegal parameter testing" ),
     Failedcase   ( "failedcase",  0,    ParamType::Value,   0,   0, 100000, "Failedcase in illegal parameter testing" ),
     iscorrect   ( "iscorrect",  0,    ParamType::Value,   1,   0, 1, "Whether to test for correctness, otherwise test for performance" ),
+    fthreshold   ( "fthreshold",  12,  4,  ParamType::Value,  0,  -100,  100,  "float correct threshold" ),
+    dthreshold   ( "dthreshold",  12,  4,  ParamType::Value,  0,  -100,  100,  "double correct threshold" ),
+    fabsolute   ( "fabsolute",  12,  4,  ParamType::Value,  0.001,  -1000,  1000,  "float and complex<float> absolute" ),
+    frelative   ( "frelative",  12,  4,  ParamType::Value,  0.005,  -1000,  1000,  "float  and complex<float> relative" ),
+    dabsolute   ( "dabsolute",  12,  4,  ParamType::Value,  0.001,  -1000,  1000,  "double  and complex<double> absolute" ),
+    drelative   ( "drelative",  12,  4,  ParamType::Value,  0.005,  -1000,  1000,  "double  and complex<double> relative" ),
     // ----- routine parameters
     //          name,      w,    type,            def,                    char2enum,         enum2char,         enum2str,         help
     datatype  ( "type",    4,    ParamType::List, DataType::Single,       char2datatype,     datatype2char,     datatype2str,     "s=single (float), d=double, c=complex-single, z=complex-double" ),
@@ -300,6 +306,12 @@ Params::Params():
     cache();
 
     // routine's parameters are marked by the test routine; see main
+    fthreshold();
+    dthreshold();
+    fabsolute();
+    dabsolute();
+    frelative();
+    drelative();
 }
 
 // -----------------------------------------------------------------------------
@@ -362,6 +374,27 @@ int main( int argc, char** argv )
             params.help( routine );
             throw;
         }
+        // int64_t device  = params.device();
+        if(params.fthreshold()==0){
+            // printf("use default data float\n");
+            params.fthreshold() = blas::paramspace::correct_threshld<float>;
+        }
+        else{
+            blas::paramspace::correct_threshld<float> = params.fthreshold();
+        }
+        if(params.dthreshold()==0){
+            // printf("use default data double\n");
+            params.dthreshold() = blas::paramspace::correct_threshld<double>;
+        }
+        else{
+            blas::paramspace::correct_threshld<double> = params.dthreshold();
+        }
+
+        blas::paramspace::absolute<float> = params.fabsolute();
+        blas::paramspace::absolute<double> = params.dabsolute();
+
+        blas::paramspace::relative<float> = params.frelative();
+        blas::paramspace::relative<double> = params.drelative();
         //correct
         if(1==params.iscorrect()){
             params.gflops.used(false);
@@ -375,6 +408,13 @@ int main( int argc, char** argv )
         else{//performance
             params.okay.used(false);
             params.error.used(false);
+            //performance test is not need
+            params.fthreshold.used(false);
+            params.dthreshold.used(false);
+            params.fabsolute.used(false);
+            params.dabsolute.used(false);
+            params.frelative.used(false);
+            params.drelative.used(false);
         }
         // show align column if it has non-default values
         if (params.align.size() != 1 || params.align() != 1) {
@@ -384,12 +424,31 @@ int main( int argc, char** argv )
         // run tests
         int repeat = params.repeat();
         testsweeper::DataType last = params.datatype();
+        testsweeper::DataType plast = testsweeper::DataType(-1);
+        bool pre_support_datatype = true;
         if(params.testcase()==1) params.header();
         do {
             if (params.testcase()==1 && params.datatype() != last) {
                 last = params.datatype();
                 printf( "\n" );
             }
+            //------------------judge support datatype-----------------------
+            if(params.datatype() != plast){
+                plast = params.datatype();
+                if(blas::PrecisionSupport(testsweeper::datatype2char(params.datatype()), params.device())){
+                    pre_support_datatype = true;
+                }
+                else{
+                    printf("%s%sdevice %ld not support %s, all tests skipped%s\n", ansi_bold, ansi_red, params.device(), 
+                    testsweeper::datatype2string(params.datatype()), ansi_normal);
+                    pre_support_datatype = false;
+                    continue;
+                }
+            }
+            else{
+                if(!pre_support_datatype) continue;
+            }
+            //---------------end judge-------------------------------------------
             for (int iter = 0; iter < repeat; ++iter) {
                 try {
                     test_routine( params, true );

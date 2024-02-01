@@ -10,6 +10,33 @@
 namespace blas {
 
 // -----------------------------------------------------------------------------
+bool PrecisionSupport(char data_type, int device){
+    switch (data_type) {
+        case 'i'://integer
+            return true;
+        case 's'://float
+        case 'c': //complex float
+            return true;
+        case 'd'://double
+        case 'z'://complex double 
+            #ifdef BLAS_HAVE_CUBLAS
+                cudaDeviceProp prop;
+                cudaGetDeviceProperties(&prop, device);
+                //printf("major: %d  minor: %d\n",prop.major, prop.minor);
+                //default major: 5*1000 minor: 0*10
+                if (prop.major *1000 + prop.minor*10 >= 5000) {
+                    return true;
+                }
+                return false;
+            #else
+                //其他平台需要针对不同编程模型获取数据类型支持情况
+                return false;
+            #endif
+        default:
+            return false;
+    }
+}
+
 /// @deprecated
 /// Set current GPU device.
 /// (CUDA, ROCm only; doesn't work with SYCL.)

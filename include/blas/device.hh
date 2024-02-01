@@ -396,6 +396,9 @@ inline const char* device_error_string( rocblas_status error )
     #endif
 
 #endif
+//-----------------------get device properties----------------------------------
+bool PrecisionSupport(char data_type, int device);
+
 
 // -----------------------------------------------------------------------------
 // set/get device functions
