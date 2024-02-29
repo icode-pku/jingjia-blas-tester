@@ -19,16 +19,16 @@ namespace impl {
 /// then calls low-level wrapper.
 /// @ingroup gemm_internal
 ///
-template <typename scalar_t>
+template <typename param_t, typename scalar_t>
 void gemm(
     blas::Layout layout,
     blas::Op transA,
     blas::Op transB,
     int64_t m, int64_t n, int64_t k,
-    scalar_t alpha,
+    param_t alpha,
     scalar_t const* A, int64_t lda,
     scalar_t const* B, int64_t ldb,
-    scalar_t beta,
+    param_t beta,
     scalar_t*       C, int64_t ldc,
     blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
@@ -181,5 +181,23 @@ void gemm(
     impl::gemm( layout, transA, transB, m, n, k,
                 alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
 }
+
+
+void gemm(
+    blas::Layout layout,
+    blas::Op transA,
+    blas::Op transB,
+    int64_t m, int64_t n, int64_t k,
+    float alpha,
+    half const* A, int64_t lda,
+    half const* B, int64_t ldb,
+    float beta,
+    half* C, int64_t ldc,
+    blas::Queue& queue, int64_t testcase, char *errname )
+{
+    impl::gemm( layout, transA, transB, m, n, k,
+                alpha, A, lda, B, ldb, beta, C, ldc, queue, testcase, errname );
+}
+
 
 }  // namespace blas

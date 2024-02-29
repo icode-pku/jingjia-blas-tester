@@ -19,10 +19,10 @@ namespace impl {
 /// then calls low-level wrapper.
 /// @ingroup scal_internal
 ///
-template <typename scalar_t>
+template <typename param_t, typename scalar_t>
 void scal(
     int64_t n,
-    scalar_t alpha,
+    param_t alpha,
     scalar_t* x, int64_t incx,
     blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr )
 {
@@ -99,5 +99,23 @@ void scal(
 {
     impl::scal( n, alpha, x, incx, queue, testcase, errname );
 }
+
+
+//cublasCsscal
+void scal(
+    int64_t n,
+    float alpha,
+    std::complex<float>* x, int64_t incx,
+    blas::Queue& queue, int64_t testcase, char *errname){
+        impl::scal( n, alpha, x, incx, queue, testcase, errname );
+    }
+//cublasZdscal
+void scal(
+    int64_t n,
+    double alpha,
+    std::complex<double>* x, int64_t incx,
+    blas::Queue& queue, int64_t testcase, char *errname){
+        impl::scal( n, alpha, x, incx, queue, testcase, errname );
+    }
 
 }  // namespace blas

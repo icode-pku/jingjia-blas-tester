@@ -21,7 +21,7 @@ namespace impl {
 /// then makes individual routine calls in parallel.
 /// @ingroup gemm_internal
 ///
-template <typename scalar_t>
+template <typename param_t, typename scalar_t>
 void gemm(
     blas::Layout layout,
     std::vector<blas::Op>   const& transA,
@@ -29,10 +29,10 @@ void gemm(
     std::vector<int64_t>    const& m,
     std::vector<int64_t>    const& n,
     std::vector<int64_t>    const& k,
-    std::vector<scalar_t >  const& alpha,
+    std::vector<param_t >  const& alpha,
     std::vector<scalar_t*>  const& Aarray, std::vector<int64_t> const& lda,
     std::vector<scalar_t*>  const& Barray, std::vector<int64_t> const& ldb,
-    std::vector<scalar_t >  const& beta,
+    std::vector<param_t >  const& beta,
     std::vector<scalar_t*>  const& Carray, std::vector<int64_t> const& ldc,
     size_t batch_size,
     std::vector<int64_t>& info,
@@ -244,5 +244,26 @@ void gemm(
                 batch_size, info, queue, testcase, errname );
 }
 
+//half precison
+void gemm(
+    blas::Layout layout,
+    std::vector<blas::Op>   const& transA,
+    std::vector<blas::Op>   const& transB,
+    std::vector<int64_t>    const& m,
+    std::vector<int64_t>    const& n,
+    std::vector<int64_t>    const& k,
+    std::vector<float >     const& alpha,
+    std::vector<half*>     const& Aarray, std::vector<int64_t> const& lda,
+    std::vector<half*>     const& Barray, std::vector<int64_t> const& ldb,
+    std::vector<float >     const& beta,
+    std::vector<half*>     const& Carray, std::vector<int64_t> const& ldc,
+    size_t batch_size,
+    std::vector<int64_t>& info,
+    blas::Queue& queue, int64_t testcase, char *errname )
+{
+    impl::gemm( layout, transA, transB, m, n, k,
+                alpha, Aarray, lda, Barray, ldb, beta, Carray, ldc,
+                batch_size, info, queue, testcase, errname );
+}
 }  // namespace batch
 }  // namespace blas

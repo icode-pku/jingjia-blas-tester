@@ -60,6 +60,7 @@ enum class DataType {
     Double        = 'd',
     SingleComplex = 'c',
     DoubleComplex = 'z',
+    Half          = 'h',
 };
 
 // ----------------------------------------
@@ -68,7 +69,7 @@ enum class DataType {
 inline DataType char2datatype( char ch )
 {
     ch = tolower( ch );
-    if (ch != 'i' && ch != 's' && ch != 'd' && ch != 'c' && ch != 'z') {
+    if (ch != 'i' && ch != 's' && ch != 'd' && ch != 'c' && ch != 'z' && ch != 'h') {
         throw_error( "invalid value '%c'", ch );
     }
     return DataType( ch );
@@ -110,6 +111,9 @@ inline DataType str2datatype( const char* str )
           || str_ == "c64"
           || str_ == "complex<double>"
           || str_ == "complex-double") return DataType::DoubleComplex;
+    else if(str_ == "h"
+          || str_ == "r16"
+          || str_ == "half") return DataType::Half;
     else {
         throw_error( "invalid value '%s'", str );
         return DataType(0);
@@ -125,6 +129,7 @@ inline const char* datatype2str( DataType en )
         case DataType::Double:        return "d";
         case DataType::SingleComplex: return "c";
         case DataType::DoubleComplex: return "z";
+        case DataType::Half:          return "h";
     }
     return "";
 }
@@ -137,6 +142,7 @@ inline const char* datatype2string( DataType en )
         case DataType::Double:        return "Double";
         case DataType::SingleComplex: return "SingleComplex";
         case DataType::DoubleComplex: return "DoubleComplex";
+        case DataType::Half:          return "Half";
     }
     return "";
 }

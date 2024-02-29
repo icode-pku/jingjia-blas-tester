@@ -18,7 +18,9 @@
 
 
 #include <assert.h>
+#include "blas/half.h"
 
+typedef unsigned short Half_t;
 namespace blas {
 
 
@@ -26,9 +28,10 @@ namespace paramspace{
     template<class Type>
     inline double correct_threshld = 0.5 * std::numeric_limits< Type >::epsilon(); 
 
+    //come from clblast
     template<class Type>
     inline double absolute = 0.001; 
-
+    //come from clblast
     template<class Type>
     inline double relative = 0.005;
 }

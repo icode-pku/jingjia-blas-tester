@@ -134,6 +134,7 @@ std::vector< testsweeper::routines_t > routines = {
     { "dev-dotu",         test_dotu_device,         Section::device_blas1   },
     { "dev-nrm2",         test_nrm2_device,         Section::device_blas1   },
     { "dev-scal",         test_scal_device,         Section::device_blas1   },
+    { "dev-scalu",        test_scalu_device,        Section::device_blas1   },
     { "dev-swap",         test_swap_device,         Section::device_blas1   },
     { "dev-copy",         test_copy_device,         Section::device_blas1   },
     { "",                 nullptr,                  Section::newline },
@@ -365,7 +366,7 @@ int main( int argc, char** argv )
         Params params;
         params.routine = routine;
         test_routine( params, false );
-
+        
         // Parse parameters up to routine name.
         try {
             params.parse( routine, argc-2, argv+1 );
@@ -392,9 +393,13 @@ int main( int argc, char** argv )
 
         blas::paramspace::absolute<float> = params.fabsolute();
         blas::paramspace::absolute<double> = params.dabsolute();
+        blas::paramspace::absolute<Half_t> = 0.15f;
 
         blas::paramspace::relative<float> = params.frelative();
         blas::paramspace::relative<double> = params.drelative();
+        blas::paramspace::relative<Half_t> = 0.08f;
+
+        blas::paramspace::correct_threshld<Half_t> = 1e-5f;
         //correct
         if(1==params.iscorrect()){
             params.gflops.used(false);

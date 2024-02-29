@@ -11,7 +11,12 @@ namespace blas {
 
 // -----------------------------------------------------------------------------
 bool PrecisionSupport(char data_type, int device){
+    cudaDeviceProp prop;
+    cudaGetDeviceProperties(&prop, device);
     switch (data_type) {
+        case 'h':
+            if(prop.major >=6) {return true;}
+            else {return false;}
         case 'i'://integer
             return true;
         case 's'://float
@@ -20,8 +25,6 @@ bool PrecisionSupport(char data_type, int device){
         case 'd'://double
         case 'z'://complex double 
             #ifdef BLAS_HAVE_CUBLAS
-                cudaDeviceProp prop;
-                cudaGetDeviceProperties(&prop, device);
                 //printf("major: %d  minor: %d\n",prop.major, prop.minor);
                 //default major: 5*1000 minor: 0*10
                 if (prop.major *1000 + prop.minor*10 >= 5000) {
