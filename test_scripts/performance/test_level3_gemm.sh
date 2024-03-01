@@ -20,5 +20,5 @@ for m in 256 257 2048 2049; do
 done
 DIM=${DIM%,}
 
-./$EXE --type=s,d,c,z --layout=r,c --transA=n,t,c --transB=n,t,c --dim=$DIM --iscorrect=0 dev-gemm
+./$EXE --type=s,d,c,z,h --layout=r,c --transA=n,t,c --transB=n,t,c --dim=$DIM --iscorrect=0 dev-gemm
 
