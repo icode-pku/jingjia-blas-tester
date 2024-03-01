@@ -23,7 +23,7 @@ T extract(std::vector<T> const &ivector, const int64_t index)
 
 // -----------------------------------------------------------------------------
 // batch gemm check
-template <typename T>
+template <typename U, typename T>
 void gemm_check(
         blas::Layout                 layout,
         std::vector<blas::Op> const &transA,
@@ -31,10 +31,10 @@ void gemm_check(
         std::vector<int64_t>  const &m,
         std::vector<int64_t>  const &n,
         std::vector<int64_t>  const &k,
-        std::vector<T >       const &alpha,
+        std::vector<U >       const &alpha,
         std::vector<T*>       const &A, std::vector<int64_t> const &lda,
         std::vector<T*>       const &B, std::vector<int64_t> const &ldb,
-        std::vector<T >       const &beta,
+        std::vector<U >       const &beta,
         std::vector<T*>       const &C, std::vector<int64_t> const &ldc,
         const size_t batchCount, std::vector<int64_t> &info)
 {

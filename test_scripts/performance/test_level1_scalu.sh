@@ -7,17 +7,8 @@ EXE="tester"
 
 # Start testing
 echo "--------------------------------------------------------------------------------------------------------------------------"
-echo "Testing the performance of gemmBatched"
+echo "Testing the performance of scalu"
 echo "--------------------------------------------------------------------------------------------------------------------------"
 cd $TEST
-DIM=""
-for m in 256 257 2048 2049; do
-    for n in 256 257 2048 2049; do
-        for k in 256 257 2048 2049; do   
-            DIM+="$m*$n*$k,"
-        done
-    done
-done
-DIM=${DIM%,}
+./$EXE --type=s,d,c,z --dim=4,5,1024,1025,524288,524289 --incx=1,2 --iscorrect=0 dev-scalu 
 
-./$EXE --type=s,d,c,z,h --layout=r,c --transA=n,t,c --transB=n,t,c --dim=$DIM --batch=1,10 --iscorrect=0 dev-batch-gemm

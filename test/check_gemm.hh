@@ -50,9 +50,9 @@ T getAlmostInfNumber() {
 
 
 template<typename T>
-inline bool check(const T val1, const T val2){
-    const auto error_margin_relative = static_cast<T>(blas::paramspace::relative<T>);
-    const auto error_margin_absolute = static_cast<T>(blas::paramspace::absolute<T>);
+inline bool check(const T val1, const T val2, bool ishalf = false){
+    const auto error_margin_relative = ishalf ? static_cast<float>(blas::paramspace::relative<Half_t>) : static_cast<T>(blas::paramspace::relative<T>);
+    const auto error_margin_absolute = ishalf ? static_cast<float>(blas::paramspace::absolute<Half_t>) : static_cast<T>(blas::paramspace::absolute<T>);
 
     const auto difference = std::fabs(val1- val2);
     if(val1 == val2) return true;
@@ -82,7 +82,7 @@ inline bool check(const T val1, const T val2){
 // template bool check<double>(const double, const double);
 
 template <>
-inline bool check(const std::complex<float> val1, const std::complex<float> val2) {
+inline bool check(const std::complex<float> val1, const std::complex<float> val2, bool ishalf) {
   const auto realf = check(real(val1), real(val2));
   const auto imagf = check(imag(val1), imag(val2));
   if (realf && imagf) { return true; }
@@ -92,7 +92,7 @@ inline bool check(const std::complex<float> val1, const std::complex<float> val2
 }
 
 template <>
-inline bool check(const std::complex<double> val1, const std::complex<double> val2) {
+inline bool check(const std::complex<double> val1, const std::complex<double> val2, bool ishalf) {
   const auto reald = check(real(val1), real(val2));
   const auto imagd = check(imag(val1), imag(val2));
   if (reald && imagd) { return true; }
@@ -115,7 +115,7 @@ void check_gemm(
     T* C, int64_t ldc,
     bool verbose,
     blas::real_type<T> error[1],
-    bool* okay )
+    bool* okay , bool ishalf = false)
 {
     #define    C(i_, j_)    C[ (i_) + (j_)*ldc ]
     #define    Cd(i_, j_)    Cd[ (i_) + (j_)*ldc ]
@@ -162,19 +162,21 @@ void check_gemm(
     if (blas::is_complex<T>::value) {
         error[0] /= 2*sqrt(2);
     }
-
-    real_t u = blas::paramspace::correct_threshld< real_t >;
-    //printf("real u = %f\n",u);
+    real_t u = ishalf ? blas::paramspace::correct_threshld< Half_t > : blas::paramspace::correct_threshld< real_t >;
     *okay = (error[0] < u);
+    bool hasprint = false;
     if(!(*okay)){
         for (int64_t j = 0; j < n; ++j) {
             for (int64_t i = 0; i < m; ++i) {
-                if( ! check(Cd(i,j), Cref(i,j)) ){
+                if( ! check(Cd(i,j), Cref(i,j), true) ){
                     print_value(Cd, ldc, Cref, ldcref, i, j);
+                    hasprint = true;
                 }
             }
         }
     }
+    //Two standards, just meet one of them
+    *okay = *okay | (!hasprint);
     #undef C
     #undef Cref
     #undef Cd

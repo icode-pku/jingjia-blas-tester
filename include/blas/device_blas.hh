@@ -254,6 +254,19 @@ void scal(
     std::complex<double>* x, int64_t incx,
     blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 
+//cublasCsscal
+void scal(
+    int64_t n,
+    float alpha,
+    std::complex<float>* x, int64_t incx,
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
+//cublasZdscal
+void scal(
+    int64_t n,
+    double alpha,
+    std::complex<double>* x, int64_t incx,
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
+
 //------------------------------------------------------------------------------
 void swap(
     int64_t n,
@@ -508,6 +521,17 @@ void gemm(
     std::complex<double>*       C, int64_t ldc,
     blas::Queue& queue, int64_t testcase = 1, char *errname =nullptr);
 
+void gemm(
+    blas::Layout layout,
+    blas::Op transA,
+    blas::Op transB,
+    int64_t m, int64_t n, int64_t k,
+    float alpha,
+    half const* A, int64_t lda,
+    half const* B, int64_t ldb,
+    float beta,
+    half* C, int64_t ldc,
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr);
 //------------------------------------------------------------------------------
 void hemm(
     blas::Layout layout,
@@ -979,6 +1003,22 @@ void gemm(
     size_t batch_size,
     std::vector<int64_t>& info,
     blas::Queue& queue, int64_t testcase=1, char *errname=nullptr );
+
+void gemm(
+    blas::Layout layout,
+    std::vector<blas::Op>   const& transA,
+    std::vector<blas::Op>   const& transB,
+    std::vector<int64_t>    const& m,
+    std::vector<int64_t>    const& n,
+    std::vector<int64_t>    const& k,
+    std::vector<float >     const& alpha,
+    std::vector<half*>     const& Aarray, std::vector<int64_t> const& lda,
+    std::vector<half*>     const& Barray, std::vector<int64_t> const& ldb,
+    std::vector<float >     const& beta,
+    std::vector<half*>     const& Carray, std::vector<int64_t> const& ldc,
+    size_t batch_size,
+    std::vector<int64_t>& info,
+    blas::Queue& queue, int64_t testcase = 1, char *errname = nullptr );
 
 //------------------------------------------------------------------------------
 // batch gemm, group API

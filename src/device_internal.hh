@@ -516,6 +516,18 @@ void scal(
     std::complex<double> *dx, device_blas_int incdx,
     blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
+void scal(
+    device_blas_int n,
+    float alpha,
+    std::complex<float> *dx, device_blas_int incdx,
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
+
+void scal(
+    device_blas_int n,
+    double alpha,
+    std::complex<double> *dx, device_blas_int incdx,
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
+
 //------------------------------------------------------------------------------
 void swap(
     device_blas_int n,
@@ -754,6 +766,15 @@ void gemm(
     std::complex<double>       *dC, device_blas_int lddc,
     blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
+void gemm(
+    blas::Op transA, blas::Op transB,
+    device_blas_int m, device_blas_int n, device_blas_int k,
+    float alpha,
+    half const *dA, device_blas_int ldda,
+    half const *dB, device_blas_int lddb,
+    float beta,
+    half       *dC, device_blas_int lddc,
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 //------------------------------------------------------------------------------
 void trsm(
     blas::Side side, blas::Uplo uplo, blas::Op trans, blas::Diag diag,
@@ -1046,6 +1067,16 @@ void batch_gemm(
     device_blas_int batch_size,
     blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr );
 
+void batch_gemm(
+    blas::Op transA, blas::Op transB,
+    device_blas_int m, device_blas_int n, device_blas_int k,
+    float alpha,
+    half const * const * dAarray, device_blas_int ldda,
+    half const * const * dBarray, device_blas_int lddb,
+    float beta,
+    half** dCarray, device_blas_int lddc,
+    device_blas_int batch_size,
+    blas::Queue& queue, device_blas_int testcase = 1, char *errname = nullptr);
 //------------------------------------------------------------------------------
 // batch trsm
 void batch_trsm(

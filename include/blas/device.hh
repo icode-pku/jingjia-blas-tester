@@ -17,6 +17,7 @@
 
 #ifdef BLAS_HAVE_CUBLAS
     #include <cuda_runtime.h>
+    #include <cuda_fp16.h>
     #include <cublas_v2.h>
 
 #elif defined(BLAS_HAVE_ROCBLAS)
@@ -258,6 +259,22 @@ private:
 // -----------------------------------------------------------------------------
 // Light wrappers around CUDA and cuBLAS functions.
 #ifdef BLAS_HAVE_CUBLAS
+inline void copydatafloat2half(int64_t elements, float *src, half* dest){
+    for(int64_t i=0; i<elements; i++){
+        dest[i] = __float2half(src[i]);
+    }
+}
+
+inline void copydatafloat2float(int64_t elements, float *src, float* dest){
+    for(int64_t i=0; i<elements; i++){
+        dest[i] = __half2float(__float2half(src[i]));
+    }
+}
+inline void copydatahalf2float(int64_t elements, half *src, float* dest){
+    for(int64_t i=0; i<elements; i++){
+        dest[i] = __half2float(src[i]);
+    }
+}
 
 inline bool is_device_error( cudaError_t error )
 {

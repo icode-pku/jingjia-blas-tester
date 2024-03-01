@@ -27,5 +27,8 @@ OUTPUT_FILE="performance_nrm2_`date +%Y_%m_%d_%H_%M_%S`.txt"
 OUTPUT_FILE="performance_scal_`date +%Y_%m_%d_%H_%M_%S`.txt"
 . test_level1_scal.sh 2>&1 | tee -a $OUTPUT_FILE
 
+OUTPUT_FILE="performance_scalu_`date +%Y_%m_%d_%H_%M_%S`.txt"
+. test_level1_scalu.sh 2>&1 | tee -a $OUTPUT_FILE
+
 OUTPUT_FILE="performance_swap_`date +%Y_%m_%d_%H_%M_%S`.txt"
 . test_level1_swap.sh 2>&1 | tee -a $OUTPUT_FILE

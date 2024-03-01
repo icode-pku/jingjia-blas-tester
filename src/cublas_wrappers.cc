@@ -848,6 +848,55 @@ void scal(
     }
 }
 
+void scal(
+    device_blas_int n,
+    float alpha,
+    std::complex<float> *dx, device_blas_int incdx,
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
+{
+    if(testcase == 1){
+        blas_dev_call(
+            cublasCsscal(
+                queue.handle(),
+                n,  &alpha,
+                (cuComplex*) dx, incdx));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasCsscal(
+                queue.handle(),
+                n,  &alpha,
+                (cuComplex*) dx, incdx));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
+}
+
+//------------------------------------------------------------------------------
+void scal(
+    device_blas_int n,
+    double alpha,
+    std::complex<double> *dx, device_blas_int incdx,
+    blas::Queue& queue, device_blas_int testcase, char *errname  )
+{
+    if(testcase == 1){
+        blas_dev_call(
+            cublasZdscal(
+                queue.handle(),
+                n,  &alpha,
+                (cuDoubleComplex*) dx, incdx));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasZdscal(
+                queue.handle(),
+                n, &alpha,
+                (cuDoubleComplex*) dx, incdx));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
+}
+
 //------------------------------------------------------------------------------
 // swap
 //------------------------------------------------------------------------------
@@ -1746,6 +1795,47 @@ void gemm(
                 (cuDoubleComplex*) dB, lddb,
                 (cuDoubleComplex*) &beta,
                 (cuDoubleComplex*) dC, lddc ));
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
+}
+
+
+void gemm(
+    blas::Op transA, blas::Op transB,
+    device_blas_int m, device_blas_int n, device_blas_int k,
+    float alpha,
+    half const *dA, device_blas_int ldda,
+    half const *dB, device_blas_int lddb,
+    float beta,
+    half       *dC, device_blas_int lddc,
+    blas::Queue& queue, device_blas_int testcase, char *errname )
+{
+    half alpha1 = __float2half(alpha);
+    half beta1 = __float2half(beta);
+    if(testcase == 1){
+        blas_dev_call(
+            cublasHgemm(
+                queue.handle(),
+                op2cublas(transA), op2cublas(transB),
+                m, n, k,
+                (__half*)&alpha1, 
+                (__half*)dA, ldda,
+                (__half*)dB, lddb,
+                (__half*)&beta1,  
+                (__half*)dC, lddc ));
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasHgemm(
+                queue.handle(),
+                op2cublas(transA, testcase), op2cublas(transB, testcase),
+                m, n, k,
+                (__half*)&alpha1, 
+                (__half*)dA, ldda,
+                (__half*)dB, lddb,
+                (__half*)&beta1,  
+                (__half*)dC, lddc ));
         int len = strlen(s);
         strncpy(errname, s, len);
         errname[len]='\0';
@@ -2869,7 +2959,49 @@ void batch_gemm(
         errname[len]='\0';
     }
 }
-
+//------------------------------------------------------------------------------
+void batch_gemm(
+    blas::Op transA, blas::Op transB,
+    device_blas_int m, device_blas_int n, device_blas_int k,
+    float alpha,
+    half const * const * dAarray, device_blas_int ldda,
+    half const * const * dBarray, device_blas_int lddb,
+    float beta,
+    half** dCarray, device_blas_int lddc,
+    device_blas_int batch_size,
+    blas::Queue& queue, device_blas_int testcase, char *errname )
+{
+    half alpha_ = __float2half(alpha);
+    half beta_ = __float2half(beta);
+    if(testcase ==1){
+    blas_dev_call(
+        cublasHgemmBatched(
+            queue.handle(),
+            op2cublas(transA), op2cublas(transB),
+            m, n, k,
+            &alpha_,
+            (__half const**) dAarray, ldda,
+            (__half const**) dBarray, lddb,
+            &beta_,
+            (__half**) dCarray, lddc,
+            batch_size ) );
+    }
+    else{
+        const char* s = device_errorstatus_to_string(cublasHgemmBatched(
+            queue.handle(),
+            op2cublas(transA, testcase), op2cublas(transB, testcase),
+            m, n, k,
+            &alpha_,
+            (__half const**) dAarray, ldda,
+            (__half const**) dBarray, lddb,
+            &beta_,
+            (__half**) dCarray, lddc,
+            batch_size ) );
+        int len = strlen(s);
+        strncpy(errname, s, len);
+        errname[len]='\0';
+    }
+}
 //------------------------------------------------------------------------------
 // batch trsm
 //------------------------------------------------------------------------------
